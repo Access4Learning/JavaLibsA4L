@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:lang="http://www.springframework.org/schema/lang"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/lang
+       http://www.springframework.org/schema/lang/spring-lang.xsd">
+
+    <bean name="MessageXML" class="org.sifassociation.messaging.SIF2MessageXML"/>
+    
+<!--
+    <lang:jruby id="ClassicMessages"
+        script-interfaces="org.sifassociation.testing.IScriptHooks" 
+        script-source="resources/scripts/ClassicMessages.rb">
+    </lang:jruby>
+        
+    <lang:jruby id="XQuery"
+        script-interfaces="org.sifassociation.testing.IScriptHooks" 
+        script-source="resources/scripts/XQuery.rb">
+    </lang:jruby>
+
+
+    <bean name="US26Collection" class="org.sifassociation.querying.EXistXQuery">
+        <constructor-arg value="xmldb:exist://localhost:8079/exist/xmlrpc/db/US26" />
+    </bean>
+        
+    <lang:jruby id="XQueryCSQ"
+        script-interfaces="org.sifassociation.testing.IScriptHooks" 
+        script-source="resources/scripts/XQueryCSQs.rb">
+    </lang:jruby>
+    
+    <bean name="CSQsCollection" class="org.sifassociation.querying.EXistXQuery">
+        <constructor-arg value="xmldb:exist://localhost:8080/exist/xmlrpc/db/csq" />
+    </bean>
+
+    <lang:jruby id="Payloads"
+        script-interfaces="org.sifassociation.testing.IScriptHooks" 
+        script-source="resources/scripts/Payloads.rb">
+    </lang:jruby>
+    
+    <lang:jruby id="Edits"
+        script-interfaces="org.sifassociation.testing.IScriptHooks" 
+        script-source="resources/scripts/Edits.rb">
+    </lang:jruby>    
+    
+    <lang:jruby id="SIF3Payloads"
+        script-interfaces="org.sifassociation.testing.IScriptHooks" 
+        script-source="resources/scripts/SIF3Payloads.rb">
+    </lang:jruby>
+-->
+
+    <lang:jruby id="ExampleIds"
+        script-interfaces="org.sifassociation.testing.IScriptHooks" 
+        script-source="resources/scripts/ExampleRefIds.rb">
+    </lang:jruby>
+
+</beans>

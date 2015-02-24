@@ -1,0 +1,28 @@
+<SIF_Message xmlns="http://www.sifinfo.org/infrastructure/2.x" Version="2.0r1">
+  <SIF_Event>
+    <SIF_Header>
+      <SIF_MsgId>0000013666714590000A8F7494C5FD17</SIF_MsgId>
+      <SIF_Timestamp>2012-03-30T18:49:33-07:00</SIF_Timestamp>
+      <SIF_Security>
+        <SIF_SecureChannel>
+          <SIF_AuthenticationLevel>0</SIF_AuthenticationLevel>
+          <SIF_EncryptionLevel>0</SIF_EncryptionLevel>
+        </SIF_SecureChannel>
+      </SIF_Security>
+      <SIF_SourceId>SIF_Empty_Query_Agent</SIF_SourceId>
+      <SIF_Contexts>
+        <SIF_Context>SIF_Default</SIF_Context>
+      </SIF_Contexts>
+    </SIF_Header>
+    <SIF_ObjectData>
+      <SIF_EventObject ObjectName="AccountingPeriod" Action="Change">
+        <AccountingPeriod xmlns="http://www.sifinfo.org/infrastructure/2.x" RefId="94CF812E9C95A044E31926D962A9AFD8">
+          <Name>EfLg5eE1T;</Name>
+          <FiscalYearRefId>9D1F2EBFFE288765F038BB9AE0086073</FiscalYearRefId>
+          <StartDate>2011-05-13</StartDate>
+          <EndDate>2011-02-01</EndDate>
+        </AccountingPeriod>
+      </SIF_EventObject>
+    </SIF_ObjectData>
+  </SIF_Event>
+</SIF_Message>

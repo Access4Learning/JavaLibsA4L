@@ -1,0 +1,70 @@
+<SIF_Message xmlns="http://www.sifinfo.org/infrastructure/2.x" Version="2.0r1">
+  <SIF_Provision>
+    <SIF_Header>
+      <SIF_MsgId>000001374CE81A0F000ADC432E3D7C50</SIF_MsgId>
+      <SIF_Timestamp>2012-05-14T12:51:48-07:00</SIF_Timestamp>
+      <SIF_Security>
+        <SIF_SecureChannel>
+          <SIF_AuthenticationLevel>0</SIF_AuthenticationLevel>
+          <SIF_EncryptionLevel>0</SIF_EncryptionLevel>
+        </SIF_SecureChannel>
+      </SIF_Security>
+      <SIF_SourceId>SIF_Empty_Query_Agent</SIF_SourceId>
+      <SIF_Contexts>
+        <SIF_Context>SIF_Default</SIF_Context>
+      </SIF_Contexts>
+    </SIF_Header>
+    <SIF_ProvideObjects>
+      <SIF_Object ObjectName="AccountingPeriod">
+        <SIF_ExtendedQuerySupport>0</SIF_ExtendedQuerySupport>
+        <SIF_Contexts>
+          <SIF_Context>SIF_Default</SIF_Context>
+        </SIF_Contexts>
+      </SIF_Object>
+    </SIF_ProvideObjects>
+    <SIF_SubscribeObjects>
+      <SIF_Object ObjectName="AccountingPeriod">
+        <SIF_Contexts>
+          <SIF_Context>SIF_Default</SIF_Context>
+        </SIF_Contexts>
+      </SIF_Object>
+    </SIF_SubscribeObjects>
+    <SIF_PublishAddObjects>
+      <SIF_Object ObjectName="AccountingPeriod">
+        <SIF_Contexts>
+          <SIF_Context>SIF_Default</SIF_Context>
+        </SIF_Contexts>
+      </SIF_Object>
+    </SIF_PublishAddObjects>
+    <SIF_PublishChangeObjects>
+      <SIF_Object ObjectName="AccountingPeriod">
+        <SIF_Contexts>
+          <SIF_Context>SIF_Default</SIF_Context>
+        </SIF_Contexts>
+      </SIF_Object>
+    </SIF_PublishChangeObjects>
+    <SIF_PublishDeleteObjects>
+      <SIF_Object ObjectName="AccountingPeriod">
+        <SIF_Contexts>
+          <SIF_Context>SIF_Default</SIF_Context>
+        </SIF_Contexts>
+      </SIF_Object>
+    </SIF_PublishDeleteObjects>
+    <SIF_RequestObjects>
+      <SIF_Object ObjectName="AccountingPeriod">
+        <SIF_ExtendedQuerySupport>0</SIF_ExtendedQuerySupport>
+        <SIF_Contexts>
+          <SIF_Context>SIF_Default</SIF_Context>
+        </SIF_Contexts>
+      </SIF_Object>
+    </SIF_RequestObjects>
+    <SIF_RespondObjects>
+      <SIF_Object ObjectName="AccountingPeriod">
+        <SIF_ExtendedQuerySupport>0</SIF_ExtendedQuerySupport>
+        <SIF_Contexts>
+          <SIF_Context>SIF_Default</SIF_Context>
+        </SIF_Contexts>
+      </SIF_Object>
+    </SIF_RespondObjects>
+  </SIF_Provision>
+</SIF_Message>

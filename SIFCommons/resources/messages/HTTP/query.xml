@@ -1,0 +1,32 @@
+<SIF_Message xmlns="http://www.sifinfo.org/infrastructure/2.x" Version="2.0r1">
+  <SIF_Request>
+    <SIF_Header>
+      <SIF_MsgId>000001365F254718000A54181B9CC52F</SIF_MsgId>
+      <SIF_Timestamp>2012-03-29T08:49:08-07:00</SIF_Timestamp>
+      <SIF_Security>
+        <SIF_SecureChannel>
+          <SIF_AuthenticationLevel>0</SIF_AuthenticationLevel>
+          <SIF_EncryptionLevel>0</SIF_EncryptionLevel>
+        </SIF_SecureChannel>
+      </SIF_Security>
+      <SIF_SourceId>SIF_Empty_Query_Agent</SIF_SourceId>
+      <SIF_Contexts>
+        <SIF_Context>SIF_Default</SIF_Context>
+      </SIF_Contexts>
+    </SIF_Header>
+    <SIF_Version>2.0r1</SIF_Version>
+    <SIF_MaxBufferSize>1024000</SIF_MaxBufferSize>
+    <SIF_Query>
+      <SIF_QueryObject ObjectName="StudentPersonal"/>
+      <SIF_ConditionGroup Type="None">
+        <SIF_Conditions Type="None">
+          <SIF_Condition>
+            <SIF_Element>Name/LastName</SIF_Element>
+            <SIF_Operator>EQ</SIF_Operator>
+            <SIF_Value>Smith</SIF_Value>
+          </SIF_Condition>
+        </SIF_Conditions>
+      </SIF_ConditionGroup>
+    </SIF_Query>
+  </SIF_Request>
+</SIF_Message>

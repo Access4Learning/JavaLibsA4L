@@ -1,0 +1,692 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>SpringSource.org | </title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="alternate" type="application/rss+xml" title="SpringSource.org RSS" href="http://www.springsource.org/node/feed" />
+<link rel="shortcut icon" href="/sites/all/themes/s2org11/favicon.ico" type="image/x-icon" />
+  <link type="text/css" rel="stylesheet" media="all" href="/modules/aggregator/aggregator.css?p" />
+<link type="text/css" rel="stylesheet" media="all" href="/modules/node/node.css?p" />
+<link type="text/css" rel="stylesheet" media="all" href="/modules/system/defaults.css?p" />
+<link type="text/css" rel="stylesheet" media="all" href="/modules/system/system.css?p" />
+<link type="text/css" rel="stylesheet" media="all" href="/modules/system/system-menus.css?p" />
+<link type="text/css" rel="stylesheet" media="all" href="/modules/user/user.css?p" />
+<link type="text/css" rel="stylesheet" media="all" href="/sites/all/modules/cck/theme/content-module.css?p" />
+<link type="text/css" rel="stylesheet" media="all" href="/sites/all/modules/ctools/css/ctools.css?p" />
+<link type="text/css" rel="stylesheet" media="all" href="/sites/all/modules/custom/google_cse/google_cse.css?p" />
+<link type="text/css" rel="stylesheet" media="all" href="/sites/all/modules/date/date.css?p" />
+<link type="text/css" rel="stylesheet" media="all" href="/sites/all/modules/filefield/filefield.css?p" />
+<link type="text/css" rel="stylesheet" media="all" href="/sites/all/modules/nice_menus/nice_menus.css?p" />
+<link type="text/css" rel="stylesheet" media="all" href="/sites/all/themes/zen/framework/nice_menus.css?p" />
+<link type="text/css" rel="stylesheet" media="all" href="/sites/all/modules/prettify/styles/drupalorg.css?p" />
+<link type="text/css" rel="stylesheet" media="all" href="/sites/all/modules/cck/modules/fieldgroup/fieldgroup.css?p" />
+<link type="text/css" rel="stylesheet" media="all" href="/sites/all/modules/views/css/views.css?p" />
+<link type="text/css" rel="stylesheet" media="all" href="/sites/all/themes/s2org11/css/html-reset.css?p" />
+<link type="text/css" rel="stylesheet" media="all" href="/sites/all/themes/s2org11/css/wireframes.css?p" />
+<link type="text/css" rel="stylesheet" media="all" href="/sites/all/themes/s2org11/css/layout-fixed.css?p" />
+<link type="text/css" rel="stylesheet" media="all" href="/sites/all/themes/s2org11/css/page-backgrounds.css?p" />
+<link type="text/css" rel="stylesheet" media="all" href="/sites/all/themes/s2org11/css/tabs.css?p" />
+<link type="text/css" rel="stylesheet" media="all" href="/sites/all/themes/s2org11/css/messages.css?p" />
+<link type="text/css" rel="stylesheet" media="all" href="/sites/all/themes/s2org11/css/pages.css?p" />
+<link type="text/css" rel="stylesheet" media="all" href="/sites/all/themes/s2org11/css/block-editing.css?p" />
+<link type="text/css" rel="stylesheet" media="all" href="/sites/all/themes/s2org11/css/blocks.css?p" />
+<link type="text/css" rel="stylesheet" media="all" href="/sites/all/themes/s2org11/css/navigation.css?p" />
+<link type="text/css" rel="stylesheet" media="all" href="/sites/all/themes/s2org11/css/panels-styles.css?p" />
+<link type="text/css" rel="stylesheet" media="all" href="/sites/all/themes/s2org11/css/views-styles.css?p" />
+<link type="text/css" rel="stylesheet" media="all" href="/sites/all/themes/s2org11/css/nodes.css?p" />
+<link type="text/css" rel="stylesheet" media="all" href="/sites/all/themes/s2org11/css/comments.css?p" />
+<link type="text/css" rel="stylesheet" media="all" href="/sites/all/themes/s2org11/css/forms.css?p" />
+<link type="text/css" rel="stylesheet" media="all" href="/sites/all/themes/s2org11/css/fields.css?p" />
+<link type="text/css" rel="stylesheet" media="print" href="/sites/all/themes/s2org11/css/print.css?p" />
+<!--[if IE]>
+<link type="text/css" rel="stylesheet" media="all" href="/sites/all/themes/s2org11/css/ie.css?p" />
+<![endif]-->
+<!--[if lte IE 6]>
+<link type="text/css" rel="stylesheet" media="all" href="/sites/all/themes/s2org11/css/ie6.css?p" />
+<![endif]-->
+  <script type="text/javascript" src="/misc/jquery.js?p"></script>
+<script type="text/javascript" src="/misc/drupal.js?p"></script>
+<script type="text/javascript" src="/sites/all/modules/nice_menus/superfish/js/superfish.js?p"></script>
+<script type="text/javascript" src="/sites/all/modules/nice_menus/superfish/js/jquery.bgiframe.min.js?p"></script>
+<script type="text/javascript" src="/sites/all/modules/nice_menus/superfish/js/jquery.hoverIntent.minified.js?p"></script>
+<script type="text/javascript" src="/sites/all/modules/nice_menus/nice_menus.js?p"></script>
+<script type="text/javascript" src="/sites/all/libraries/prettify/src/prettify.js?p"></script>
+<script type="text/javascript" src="/sites/all/modules/prettify/prettify.loader.js?p"></script>
+<script type="text/javascript" src="/sites/all/themes/s2org11/js/navigation.js?p"></script>
+<script type="text/javascript" src="/sites/all/themes/s2org11/js/popup.js?p"></script>
+<script type="text/javascript" src="/sites/all/themes/s2org11/js/elqNow/elqCfg.js?p"></script>
+<script type="text/javascript" src="/sites/all/themes/s2org11/js/elqNow/elqImg.js?p"></script>
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+jQuery.extend(Drupal.settings, { "basePath": "/", "nice_menus_options": { "delay": 800, "speed": 1 }, "prettify": { "linenums": false, "match": ".content", "nocode": "no-code", "custom": [  ], "markup": { "code": true, "pre": true, "precode": false } } });
+//--><!]]>
+</script>
+
+ 	  <style type="text/css">
+ 	  html {overflow-x:hidden;}
+
+	  </style>
+<script type="text/javascript" src="/sites/all/themes/s2org11/js/homepage.js"></script>
+</head>
+<body class="page front not-logged-in no-sidebars">
+
+	  
+
+  
+  <div id="page-wrapper"><div id="page">
+
+     <!--[if (IE 6)|(IE 7)|(IE 8)]>
+    <div style="background: url('/sites/all/themes/s2org11/images/BG_SiteBillboardAndHeader.png') repeat-x scroll 0 0 #367B09;">
+<![endif]-->
+
+    <div style="background: url(/sites/all/themes/s2org11/images/BG_BillboardLeaf.png) no-repeat scroll center top, url('/sites/all/themes/s2org11/images/BG_SiteBillboardAndHeader.png') repeat-x scroll 0 0 #367B09;">
+    <div id="top">
+  	 <div style = "height:448px;margin-top:0px;">
+  		<div style = "height:80px;margin-top:0px; background:url('/sites/all/themes/s2org11/images/BG_SiteTopNav.png') repeat-x scroll 0 0 #F1F1F1;
+  	-moz-border-radius: 0 0 5px 5px;
+    -webkit-border-bottom-left-radius: 5px;
+    -webkit-border-bottom-right-radius: 5px;
+    border-radius: 0 0 5px 5px;
+-moz-box-shadow: 0 0 15px #333;
+-webkit-box-shadow: 0 0 15px#333;
+box-shadow: 0 0 15px #333;">
+<div style="margin-left:10px;margin-right:10px;">
+  		          <table valign="top" height="80" style="font-size:14px;text-transform:uppercase;color:#666;margin:0;">
+  	   	          <tr>
+  		          <td>
+  		           <a href="/"><img src="/sites/all/themes/s2org11/images/logo_springsource_community.png"></a>
+  		           </td>
+  		           <td width="5">&nbsp;</td>
+  		           <td align="center" width="2">
+  		           <img src="/sites/all/themes/s2org11/images/nav_sep_line.png">
+  		           </td>
+  		           <td align="center" width="94">
+  		           <!--[If IE 7]><div style="margin-top:-3px;"><![endif]-->
+  		             		           <a href="/features" onmouseover="mouseOver1()" onmouseout="mouseOut1()">
+  		           <img src="/sites/all/themes/s2org11/images/nav_features.png" id="b1"></a><br>
+  		             		           <!--[If IE 7]></div><![endif]-->
+  		           </td>
+  		           <td align="center" width="2">
+  		           <img src="/sites/all/themes/s2org11/images/nav_sep_line.png">
+  		           </td>
+  		           <td align="center" width="118">
+  		           <!--[If IE 7]><div style="margin-top:-3px;"><![endif]-->
+  		             		           <a href="/get-started" onmouseover="mouseOver2()" onmouseout="mouseOut2()">
+  		           <img src="/sites/all/themes/s2org11/images/nav_getstarted.png" id="b2"></a><br>
+  		             		           <!--[If IE 7]></div><![endif]-->
+  		           </td>
+  		           <td align="center" width="2">
+  		           <img src="/sites/all/themes/s2org11/images/nav_sep_line.png">
+  		           </td>
+  		           <td align="center" width="122">
+  		           <!--[If IE 7]><div style="margin-top:-3px;"><![endif]-->
+  		             		           <a href="/get-involved" onmouseover="mouseOver3()" onmouseout="mouseOut3()">
+  		           <img src="/sites/all/themes/s2org11/images/nav_getinvolved.png" id="b3"></a><br>
+  		             		           <!--[If IE 7]></div><![endif]-->
+  		           </td>
+  		           <td align="center" width="2">
+  		           <img src="/sites/all/themes/s2org11/images/nav_sep_line.png">
+  		           </td>
+  		           <td align="center" width="134">
+  		           <!--[If IE 7]><div style="margin-top:-3px;"><![endif]-->
+  		             		           <a href="/news-events" onmouseover="mouseOver4()" onmouseout="mouseOut4()">
+  		           <img src="/sites/all/themes/s2org11/images/nav_newsevents.png" id="b4"></a><br>
+  		             		           <!--[If IE 7]></div><![endif]-->
+  		           </td>
+  		           <td width="2" align="center">
+  		           <img src="/sites/all/themes/s2org11/images/nav_sep_line.png">
+  		           </td>
+
+  		            <td align="center">
+
+  		              <div id="search-box">
+          <form action="/search/google" method="get" id="search-theme-form">
+            <div><div id="search" class="container-inline">
+
+              <input type="text" maxlength="128" size="16" name="query" value="Search" class="form-text" onblur="this.value = this.value || 'Search'; this.style.color = '#656565';" onfocus="if(this.value=='Search') {this.value='';} this.style.color = '#666';" />
+                          
+              <input type="hidden" name="output" value="xml_no_dtd" />
+              <input type="hidden" name="client" value="google-csbe" />
+              <input type="hidden" name="cx" value="009687201310241541466:zerjfa_shxo" />
+              <input type="hidden" name="ie" value="utf-8" />
+              <input type="hidden" name="oe" value="utf-8" />
+              <input type="hidden" name="op" value="Search" />
+            </div></div>
+          </form>
+      </div>
+  			      </td>
+  			      
+  			      </tr>
+  		      </table>
+</div>
+  		
+              </div>
+
+  		      <table style="width:100%;margin: -10px 10px 0 10px;">
+			  		  <tr>
+			  		  <td valign="top" width="434">
+			  		  <p>&nbsp;</p>
+			  		  <img src="/sites/all/themes/s2org11/images/what-is-spring-home-text.png">
+			  		  <p style = "font-size:18px;color:#fff;margin-top:15px;margin-bottom:40px;line-height:24px;text-shadow: 0 1px 0 #333">Spring is the most popular application development framework for enterprise Java&#153;. Millions of developers use Spring to create high performing, easily testable, reusable code without any lock-in.</p>
+			  		  <a href="/get-started"><img src="/sites/all/themes/s2org11/images/button_getstarted_shadow-home.png"></a>&nbsp;&nbsp;<a href="/get-involved"><img src="/sites/all/themes/s2org11/images/button_getinvolved_shadow.png"></a>
+			  		  </td>
+			  		  <td width="30"></td>
+			  		  <td>
+			  		  <p style="line-height:18px;">&nbsp;</p>
+			  		  <!--<img src="/sites/all/themes/s2org11/images/home-video-big_shadow.png">-->
+<div class="homepage">
+
+    <div class="video">
+        <img src="http://www.springsource.org/files/homepage/home-video-big_WhatIsSpring_496.png">
+        <div class="iframe"></div>
+    </div>
+
+</div>
+			  		  <p style="line-height:10px;">&nbsp;</p>
+			  		  </td>
+			  		  </tr>
+		  </table>
+
+
+		      </div></div></div>
+<!--[if (IE 6)|(IE 7)|(IE 8)]></div><![endif]-->
+    <div id="header"><div class="section clearfix">
+
+
+
+
+
+
+      <!--        <a href="/" title="Home" rel="home" id="logo"><img src="/files/logo.jpg" alt="Home" /></a>
+      -->
+
+      
+      
+      
+
+    </div></div><!-- /.section, /#header -->
+
+
+    <div id="main-wrapper"><div id="main" class="clearfix">
+
+
+      <br>
+
+
+	  <table style="margin:0 10px 0 10px;">
+	  <tr height="40px"></tr>
+	  <tr>
+
+	  <td width="450px" align="left" valign="top">
+	  <!--[If (IE 6)|(IE 7)]> <p style="line-height:0px;">&nbsp;</p> <![endif]-->
+
+	  <div class="region region-content-left">
+  <div id="block-views-NewsBlog_Home-block_1" class="block block-views first last region-odd even region-count-1 count-4"><div class="block-inner">
+
+  
+  <div class="content">
+    <div class="views_view view view-NewsBlog-Home view-id-NewsBlog_Home view-display-id-block_1 view-news-blogs-home view-dom-id-2">
+  
+      <div class="view-header">
+      <p class="home-title">Latest News</p>
+<p style="margin-bottom:-35px;">&nbsp;</p>    </div>
+  
+  
+  
+      <div class="view-content">
+        <div class="views-row views-row-1 views-row-odd views-row-first">
+      
+  <div class="views-field-title">
+                <span class="field-content"><a href="http://www.springsource.org/node/3562">SpringSource Tool Suite 2.9.2 released</a></span>
+  </div>
+  
+  <div class="views-field-timestamp">
+                <span class="field-content">May 24, 2012</span>
+  </div>
+  
+  <div class="views-field-description">
+                <span class="field-content">Dear Spring Community,
+&nbsp;
+We're pleased to announce the update release 2.9.2 of the SpringSource Tool Suite (STS).
+&nbsp;
+This update release got updated to support and ship the just released...</span>
+  </div>
+  </div>
+  <div class="views-row views-row-2 views-row-even">
+      
+  <div class="views-field-title">
+                <span class="field-content"><a href="http://feedproxy.google.com/~r/SpringSourceTeamBlog/~3/yhAzB0wD0d8/">Understanding proxy usage in Spring</a></span>
+  </div>
+  
+  <div class="views-field-timestamp">
+                <span class="field-content">May 23, 2012</span>
+  </div>
+  
+  <div class="views-field-description">
+                <span class="field-content">In the Spring framework, many technical features rely on proxy usage. We are going to go in depth on this topic using three examples: Transactions, Caching and Java Configuration. All the code...</span>
+  </div>
+  </div>
+  <div class="views-row views-row-3 views-row-odd views-row-last">
+      
+  <div class="views-field-title">
+                <span class="field-content"><a href="http://www.springsource.org/node/3558">This Week in Spring - May 22nd, 2012</a></span>
+  </div>
+  
+  <div class="views-field-timestamp">
+                <span class="field-content">May 22, 2012</span>
+  </div>
+  
+  <div class="views-field-description">
+                <span class="field-content">
+		 Welcome back to another installment of This Week in Spring. We have a lot of great content this week, as usual! 
+	 
+	
+	  Rossen Stoyanchev has put up another blog in his series on Spring MVC 3.2...</span>
+  </div>
+  </div>
+    </div>
+  
+  
+  
+  
+  
+  
+</div><!-- /.view -->
+  </div>
+
+  
+</div></div> <!-- /block-inner, /block -->
+</div><!-- /.region -->
+	  </td>
+	  <td width= "40px">&nbsp;</td>
+	  <td width="450px" align="left" valign="top">
+	  <!--[If (IE 6)|(IE 7)]> <p style="line-height:0px;">&nbsp;</p> <![endif]-->
+
+
+	  <div class="region region-content-right">
+  <div id="block-block-44" class="block block-block first last region-odd odd region-count-1 count-3"><div class="block-inner">
+
+  
+  <div class="content">
+    <p class="home-title">Social Stream</p>
+
+<!--[If IE]>
+	  <div class="views_view view view-twitter-profile-springsource view-id-twitter_profile_springsource view-display-id-block_1 view-dom-id-1">
+  
+  
+  
+  
+      <div class="view-content">
+        <div class="views-row views-row-1 views-row-odd views-row-first">
+      
+  <div class="views-field-timestamp">
+                <span class="field-content">May 23, 2012 5:56 am</span>
+  </div>
+  
+  <div class="views-field-title">
+                <span class="field-content"><a href="http://twitter.com/SpringSource/statuses/205235784574435328">SpringSource: This Week in Spring: May 22nd http://t.co/lHj7Mfwu</a></span>
+  </div>
+  </div>
+  <div class="views-row views-row-2 views-row-even">
+      
+  <div class="views-field-timestamp">
+                <span class="field-content">May 18, 2012 5:59 pm</span>
+  </div>
+  
+  <div class="views-field-title">
+                <span class="field-content"><a href="http://twitter.com/SpringSource/statuses/203605679393603584">SpringSource: Spring Integration 2.2.0 Milestone 1 Released http://t.co/eRscU2Ts Thanks @z_oleg #SpringFramework</a></span>
+  </div>
+  </div>
+  <div class="views-row views-row-3 views-row-odd">
+      
+  <div class="views-field-timestamp">
+                <span class="field-content">May 17, 2012 12:39 am</span>
+  </div>
+  
+  <div class="views-field-title">
+                <span class="field-content"><a href="http://twitter.com/SpringSource/statuses/202981651452669953">SpringSource: New Blog Post: Spring MVC 3.2 Preview: Chat Sample by @rstoya05 http://t.co/i7BDXLeP #SpringFramework</a></span>
+  </div>
+  </div>
+  <div class="views-row views-row-4 views-row-even">
+      
+  <div class="views-field-timestamp">
+                <span class="field-content">May 17, 2012 12:37 am</span>
+  </div>
+  
+  <div class="views-field-title">
+                <span class="field-content"><a href="http://twitter.com/SpringSource/statuses/202981231795769344">SpringSource: Spring AMQP 1.1.0 Released http://t.co/w3M2Yg2J Supports RabbitMQ 2.8 #SpringFramework #RabbitMQ</a></span>
+  </div>
+  </div>
+  <div class="views-row views-row-5 views-row-odd">
+      
+  <div class="views-field-timestamp">
+                <span class="field-content">May 17, 2012 12:36 am</span>
+  </div>
+  
+  <div class="views-field-title">
+                <span class="field-content"><a href="http://twitter.com/SpringSource/statuses/202980790643077120">SpringSource: Spring Data REST 1.0.0.M2 Released http://t.co/chf0Dqpg #SpringFramework #SpringData</a></span>
+  </div>
+  </div>
+  <div class="views-row views-row-6 views-row-even views-row-last">
+      
+  <div class="views-field-timestamp">
+                <span class="field-content">May 16, 2012 4:02 pm</span>
+  </div>
+  
+  <div class="views-field-title">
+                <span class="field-content"><a href="http://twitter.com/SpringSource/statuses/202851518179835904">SpringSource: Spring Data JPA 1.1.0 GA Released http://t.co/d7P1oT6M Thanks @olivergierke #SpringFramework #SpringData</a></span>
+  </div>
+  </div>
+    </div>
+  
+  
+  
+  
+  
+  
+</div><!-- /.view -->
+<![endif]-->
+
+<style type = "text/css">
+.twtr-hd, 
+.twtr-ft 
+{ 
+display: none; 
+}
+</style>
+<div style="margin-left:-5px;">
+<script src="http://widgets.twimg.com/j/2/widget.js"></script>
+<script>
+new TWTR.Widget({
+  version: 2,
+  type: 'search',
+  search: 'springsource',
+  interval: 20000,
+  title: '',
+  subject: '',
+  width: 450,
+  height: 457,
+  theme: {
+    shell: {
+      background: '#eeeeee',
+      color: '#eeeeee'
+    },
+    tweets: {
+      background: '#eeeeee',
+      color: '#444444',
+      links: '#0a96c5'
+    }
+  },
+  features: {
+    scrollbar: false,
+    loop: true,
+    live: true,
+    hashtags: true,
+    timestamp: true,
+    avatars: true,
+    toptweets: true,
+    behavior: 'default'
+  }
+}).render().start();
+</script>
+</div>
+  </div>
+
+  
+</div></div> <!-- /block-inner, /block -->
+</div><!-- /.region -->
+
+	  </td>
+	  <td width= "40px">&nbsp;</td>
+	  </tr>
+	  </table>
+
+	  <table style="margin:0 10px 0 10px;">
+	  <tr>
+	  <td width="450px" align="left" valign="top">
+	  <hr>
+      <p class="intro" style="margin-top:20px;"><em><a href="/news-events">More news...</a></em></p>
+
+	  </td>
+	  <td width= "40px">&nbsp;</td>
+	  <td width="450px" align="left" valign="top">
+      <hr>
+	  	  <table>
+	  	  <tr>
+	  	  <td width="30%">
+	  	  <a href="http://www.twitter.com/springsource" target="_blank"><img src="/sites/all/themes/s2org11/images/icon_social_s2.png"></a>&nbsp;<a href="http://www.twitter.com/vmware" target="_blank"><img src="/sites/all/themes/s2org11/images/icon_social_vm.png"></a>
+	  	  </td>
+	  	  <td width="40%">&nbsp;
+	  	  </td>
+	  	  <td width=35>
+	  	  <a href="http://twitter.com/#!/springsource" target="_blank"><img src="/sites/all/themes/s2org11/images/icon_twitter_home.png"></a>
+	  	  </td>
+	  	  <td width=35>
+	  	  <a href="http://www.linkedin.com/company/springsource" target="_blank">
+	  	  <img src="/sites/all/themes/s2org11/images/icon_linkedin_home.png"></a>
+	  	  </td>
+	  	  <td width=35>
+	  	  <a href="http://www.youtube.com/user/SpringSourceDev" target="_blank">
+	  	  <img src="/sites/all/themes/s2org11/images/icon_youtube_home.png"></a>
+	  	  </td>
+	  	  <td width=35>
+	  	  <a href="http://www.facebook.com/groups/10463298884/" target="_blank">
+	  	  <img src="/sites/all/themes/s2org11/images/icon_facebook_home.png">
+	  	  </td>
+	  	  </tr>
+          </table>
+	  </td>
+	  <td width= "40px">&nbsp;</td>
+	  </tr>
+	  </table>
+
+
+     <p>&nbsp;</p>
+
+
+    </div></div><!-- /#main, /#main-wrapper -->
+
+    <div style="background-color:#252525;margin-top:-14px;">
+ <div id="footer"><div class="section">
+
+        
+        <!--           <div id="footer-message"><p>Copyright 2011 <a href="http://www.springsource.org">www.springsource.org</a>&nbsp;&nbsp;-&nbsp; <a href="/node/feed">RSS</a>&nbsp;&nbsp;-&nbsp; Site maintained by <a href="http://www.springsource.com">SpringSource</a>
+</p>
+
+
+    
+</div>
+         -->
+
+        <div class="region region-footer">
+  <div id="block-block-23" class="block block-block first region-odd odd region-count-1 count-1"><div class="block-inner">
+
+  
+  <div class="content">
+    <p>&nbsp;</p>
+<p>&nbsp;</p>
+<table style="margin:0 10px 0 10px;">
+
+<tr valign="top">
+<th class="footerth" style="padding-left:-10px;"><a href="http://www.springsource.com" target="_blank">SpringSource</a></th>
+
+<th class="footerth"><a href="/features">Features</a></th>
+
+<th class="footerth"><a href="/get-started">Get Started</a></th>
+
+<th class="footerth"><a href="/get-involved">Get Involved</a></th>
+
+<th class="footerth"><a href="/projects">Projects</a></th>
+
+
+</tr>
+<tr>
+<td valign="top" width="195px">
+
+<span class="footerlist">
+<a href="/about">About Us</a><br>
+<a href="http://blog.springsource.com">Our Blog</a><br>
+<a href="http://www.springsource.com/customers" target="_blank">Our Customers</a><br>
+<a href="/news-events">Latest News & Events</a><br>
+<a href="http://www.vmware.com/jobs/" target="_blank">SpringSource Jobs</a>&nbsp;&nbsp;<a href="http://www.vmware.com/jobs/" target="_blank"><img src="http://www.springsource.org/sites/all/themes/s2org11/images/ICO_PopUp-NewWindow.png"></a><br>
+<a href="http://www.springsource.com/support/professional-services" target="_blank">Consulting</a><br>
+<a href="http://www.springsource.com/contact" target="_blank">Contact Us</a><br>
+<a href="http://www.springsource.com/newsevents/newsletter-registration" target="_blank">Subscribe to Newsletter</a><br>
+
+</span>
+
+<p style="margin-top:15px;"><a href="http://www.springsource.com/newsevents/newsletter-registration" target="_blank">
+<img src="http://www.springsource.org/sites/all/themes/s2org11/images/button_home_subscribe.png"></a></p>
+</td>
+
+
+<td valign="top" width="140px">
+
+<span class="footerlist">
+
+<a href="/features/modern-web">Modern Web</a><br>
+<a href="/features/data-access">Data Access</a><br>
+<a href="/features/integration">Integration</a><br>
+<a href="/features/mobile">Mobile</a><br>
+<a href="/features/social">Social</a><br>
+<a href="/features/security">Security</a><br>
+<a href="/features/cloud-ready">Cloud Ready</a><br>
+</span>
+</td>
+
+
+<td valign="top" width="160px">
+
+<span class="footerlist">
+<a href="http://www.springsource.com/products/springsource-tool-suite-download" target="_blank">Get Tool Kit (STS)</a> <br>
+<a href="/tutorials">Tutorials</a> <br>
+<a href="/samples">Code Samples</a> <br>
+<a href="/documentation">Documentation</a> <br>
+<a href="http://forum.springsource.org">Forums</a> <br>
+<a href="http://www.springsource.com/training" target="_blank">Training</a><br>
+
+
+</span>
+</td>
+
+
+<td valign="top" width="156px">
+
+<span class="footerlist">
+
+
+<a href="http://forum.springsource.org">Discussions</a><br>
+<a href="https://jira.springsource.org" target="_blank">Issue Tracker</a><br>
+<a href="https://github.com/SpringSource" target="_blank">Source Repository</a>&nbsp;&nbsp;<a href="https://github.com/SpringSource" target="_blank"><img src="http://www.springsource.org/sites/all/themes/s2org11/images/ICO_PopUp-NewWindow.png"></a><br> 
+
+</span>
+</td>
+
+<td valign="top" width="140px">
+
+<span class="footerlist">
+
+<a href="/spring-amqp">Spring AMQP</a><br>
+<a href="/spring-android">Spring for Android</a><br>
+<a href="/spring-batch">Spring Batch</a><br>
+<a href="/spring-data">Spring Data</a><br>
+<a href="/spring-framework">Spring Framework</a><br>
+<a href="/spring-gemfire">Spring Gemfire</a><br>
+<a href="/spring-integration">Spring Integration</a><br>
+
+
+</span>
+</td>
+
+<td valign="top" width="140px">
+
+<span class="footerlist">
+
+<a href="/spring-mobile">Spring Mobile</a><br>
+<a href="http://www.springframework.net" target="_blank">Spring .NET</a>&nbsp;&nbsp;<a href="http://www.springframework.net" target="_blank"><img src="http://www.springsource.org/sites/all/themes/s2org11/images/ICO_PopUp-NewWindow.png"></a><br>
+<a href="/spring-roo">Spring Roo</a><br>
+<a href="/spring-security">Spring Security</a><br>
+<a href="/spring-social">Spring Social</a><br>
+<a href="/spring-web-flow">Spring Web Flow</a><br>
+<a href="/spring-web-services">Spring Web Services</a><br>
+
+</span>
+</td>
+
+
+
+</tr>
+</table>
+
+
+<div style="background-color:#1e1e1e;width:952;-moz-border-radius: 5px;
+    -webkit-border-bottom-left-radius: 5px;
+    -webkit-border-bottom-right-radius: 5px;
+    border-radius: 5px;">
+<center>
+<p class="copyright">
+<a style="color:#eee;" href="/user">&#169;</a>&nbsp;
+<script type="text/javascript">
+
+var d = new Date();
+document.write(d.getFullYear());
+
+</script>
+SpringSource, a division of VMware.
+All Rights Reserved.
+<a href="http://www.vmware.com/help/legal.html" target="_blank">Terms of Use</a> and
+<a href="http://www.vmware.com/help/privacy.html" target="_blank">Privacy</a>
+</p>
+</center>
+</div>
+
+<p>&nbsp;</p><p>&nbsp;</p>  </div>
+
+  
+</div></div> <!-- /block-inner, /block -->
+<div id="block-block-7" class="block block-block last region-even even region-count-2 count-2"><div class="block-inner">
+
+  
+  <div class="content">
+    
+
+
+<!-- Begin Google Code -->
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));</script>
+<script type="text/javascript">
+var pageTracker = _gat._getTracker("UA-2728886-3");
+pageTracker._setDomainName("springsource.org");
+pageTracker._setAllowHash(false);
+pageTracker._setAllowLinker(true);
+pageTracker._trackPageview();
+var OrgTracker = _gat._getTracker("UA-2728886-2");
+OrgTracker._setDomainName("springsource.org");
+OrgTracker._setAllowHash(false);
+OrgTracker._setAllowLinker(true);
+OrgTracker._trackPageview();
+</script>
+<!-- End Google Code -->  </div>
+
+  
+</div></div> <!-- /block-inner, /block -->
+</div><!-- /.region -->
+
+      </div></div><!-- /.section, /#footer -->
+
+    </div>
+
+  </div></div><!-- /#page, /#page-wrapper -->
+
+  
+  <script type="text/javascript" src="/sites/all/modules/custom/google_cse/google_cse.js?p"></script>
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+jQuery.extend(Drupal.settings, { "googleCSE": { "language": "en" } });
+//--><!]]>
+</script>
+
+</body>
+</html>

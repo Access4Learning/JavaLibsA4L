@@ -1,0 +1,29 @@
+<SIF_Message xmlns="http://www.sifinfo.org/infrastructure/2.x" Version="2.0r1">
+  <SIF_Register>
+    <SIF_Header>
+      <SIF_MsgId>0000013660184E13000A54181B9CC52F</SIF_MsgId>
+      <SIF_Timestamp>2012-03-29T13:14:47-07:00</SIF_Timestamp>
+      <SIF_Security>
+        <SIF_SecureChannel>
+          <SIF_AuthenticationLevel>0</SIF_AuthenticationLevel>
+          <SIF_EncryptionLevel>0</SIF_EncryptionLevel>
+        </SIF_SecureChannel>
+      </SIF_Security>
+      <SIF_SourceId>SIF_Empty_Query_Agent</SIF_SourceId>
+      <SIF_Contexts>
+        <SIF_Context>SIF_Default</SIF_Context>
+      </SIF_Contexts>
+    </SIF_Header>
+    <SIF_Name>Empty Query Results Test</SIF_Name>
+    <SIF_Version>2.0r1</SIF_Version>
+    <SIF_MaxBufferSize>1024000</SIF_MaxBufferSize>
+    <SIF_Mode>Pull</SIF_Mode>
+    <SIF_NodeVendor>SIF Association</SIF_NodeVendor>
+    <SIF_NodeVersion>0.2</SIF_NodeVersion>
+    <SIF_Application>
+      <SIF_Vendor>SIF Association</SIF_Vendor>
+      <SIF_Product>LimitedData</SIF_Product>
+      <SIF_Version>0.2</SIF_Version>
+    </SIF_Application>
+  </SIF_Register>
+</SIF_Message>

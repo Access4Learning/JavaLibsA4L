@@ -1,0 +1,18 @@
+<SIF_Message xmlns="http://www.sifinfo.org/infrastructure/2.x" Version="2.5">
+  <SIF_SystemControl>
+    <SIF_Header>
+      <SIF_MsgId>C332B8A9DFA5480AB89B6B6F62BE57B3</SIF_MsgId>
+      <SIF_Timestamp>2006-12-27T08:39:40-08:00</SIF_Timestamp>
+      <SIF_SourceId>AcmeAgent</SIF_SourceId>
+    </SIF_Header>
+    <SIF_SystemControlData>
+      <SIF_CancelServiceInputs>
+        <SIF_NotificationType>None</SIF_NotificationType>
+        <SIF_ServiceMsgIds>
+          <SIF_ServiceMsgId>C332B8A9DFA5480AB89B6B6F62BE57B3</SIF_ServiceMsgId>
+          <SIF_ServiceMsgId>1058ABCDE0284076F08365109BE7C892</SIF_ServiceMsgId>
+        </SIF_ServiceMsgIds>
+      </SIF_CancelServiceInputs>
+    </SIF_SystemControlData>
+  </SIF_SystemControl>
+</SIF_Message>

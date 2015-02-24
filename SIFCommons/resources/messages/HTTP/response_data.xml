@@ -1,0 +1,22 @@
+<SIF_Message xmlns="http://www.sifinfo.org/infrastructure/2.x" Version="2.0r1">
+  <SIF_Response>
+    <SIF_Header>
+      <SIF_MsgId>00000138C3E34807000AB8467BE9DAA9</SIF_MsgId>
+      <SIF_Timestamp>2012-07-26T08:24:45-07:00</SIF_Timestamp>
+      <SIF_Security>
+        <SIF_SecureChannel>
+          <SIF_AuthenticationLevel>0</SIF_AuthenticationLevel>
+          <SIF_EncryptionLevel>0</SIF_EncryptionLevel>
+        </SIF_SecureChannel>
+      </SIF_Security>
+      <SIF_SourceId>SIF_Empty_Query_Agent</SIF_SourceId>
+      <SIF_Contexts>
+        <SIF_Context>SIF_Default</SIF_Context>
+      </SIF_Contexts>
+    </SIF_Header>
+    <SIF_RequestMsgId>00000138c3e347fd000ab8467be9daa9</SIF_RequestMsgId>
+    <SIF_PacketNumber>4</SIF_PacketNumber>
+    <SIF_MorePackets>Yes</SIF_MorePackets>
+    <SIF_ObjectData />
+  </SIF_Response>
+</SIF_Message>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<provisionRequest>
+  <provisionedZones>
+    <provisionedZone id="">
+      <services>
+        <service name="" contextId="DEFAULT" type="">
+          <rights>
+            <right type="">REQUESTED</right>
+          </rights>
+        </service>
+      </services>
+    </provisionedZone>
+  </provisionedZones>
+</provisionRequest>

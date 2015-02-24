@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<alert xmlns="http://www.sifassociation.org/infrastructure/3.0.1">
+    <reporter></reporter>
+    <exchange>REQUEST</exchange>
+    <level>INFO</level>
+   <description>This is a test alert.</description>
+</alert>

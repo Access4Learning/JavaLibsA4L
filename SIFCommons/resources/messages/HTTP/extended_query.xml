@@ -1,0 +1,38 @@
+<SIF_Message xmlns="http://www.sifinfo.org/infrastructure/2.x" Version="2.0r1">
+  <SIF_Request>
+    <SIF_Header>
+      <SIF_MsgId>0000013750DB46E0000A7EB9CCAD0340</SIF_MsgId>
+      <SIF_Timestamp>2012-05-15T07:16:04-07:00</SIF_Timestamp>
+      <SIF_Security>
+        <SIF_SecureChannel>
+          <SIF_AuthenticationLevel>0</SIF_AuthenticationLevel>
+          <SIF_EncryptionLevel>0</SIF_EncryptionLevel>
+        </SIF_SecureChannel>
+      </SIF_Security>
+      <SIF_SourceId>SIF_Empty_Query_Agent</SIF_SourceId>
+      <SIF_Contexts>
+        <SIF_Context>SIF_Default</SIF_Context>
+      </SIF_Contexts>
+    </SIF_Header>
+    <SIF_Version>2.0r1</SIF_Version>
+    <SIF_MaxBufferSize>1024000</SIF_MaxBufferSize>
+    <SIF_ExtendedQuery>
+      <SIF_Select Distinct="false" RowCount="All">
+        <SIF_Element ObjectName="StudentPersonal">Name/FirstName</SIF_Element>
+        <SIF_Element ObjectName="StudentPersonal">Name/LastName</SIF_Element>
+      </SIF_Select>
+      <SIF_From ObjectName="StudentPersonal"/>
+      <SIF_Where>
+        <SIF_ConditionGroup Type="None">
+          <SIF_Conditions Type="None">
+            <SIF_Condition>
+              <SIF_Element ObjectName="StudentPersonal">@RefId</SIF_Element>
+              <SIF_Operator>EQ</SIF_Operator>
+              <SIF_Value>F0F29E6AE742498D9CB91CBB3BE6890E</SIF_Value>
+            </SIF_Condition>
+          </SIF_Conditions>
+        </SIF_ConditionGroup>
+      </SIF_Where>
+    </SIF_ExtendedQuery>
+  </SIF_Request>
+</SIF_Message>

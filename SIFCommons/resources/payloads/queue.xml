@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- To Do:  Ask Ron why this is invalid against the schema (create vs. provide). -->
+<queue>
+  <polling></polling>
+  <name></name>
+  <ownerUri></ownerUri>
+  <maxConcurrentConnections></maxConcurrentConnections>
+</queue>
