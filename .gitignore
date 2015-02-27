@@ -1,3 +1,2 @@
-/SIFController/dist/
-/SIFConnector/dist/
-/CSQReports/dist/
+$GIT_DIR/**/build
+$GIT_DIR/**/dist
