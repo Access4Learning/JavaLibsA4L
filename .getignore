@@ -1,3 +1,2 @@
-CSQReports.war
-SIFConnector.war
-SIFController.war
+$GIT_DIR/**/build
+$GIT_DIR/**/dist
