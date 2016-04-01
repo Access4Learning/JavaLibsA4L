@@ -24,7 +24,7 @@ public class RAMMessageLog implements IMessageLog {
     private List<String> listing = null;
     private Map<String, LogEntry> entries = null;
     private final Object sync = new Object();
-    private int last = 0;
+    private Map<String, Integer> last = null;
 
     /**
      * So our collections are marked as thread safe.
@@ -34,6 +34,7 @@ public class RAMMessageLog implements IMessageLog {
     public RAMMessageLog() {
         listing = Collections.synchronizedList(new ArrayList<String>(100));
         entries = Collections.synchronizedMap(new HashMap<String, LogEntry>(100));
+        last = Collections.synchronizedMap(new HashMap<String, Integer>(5));
     }
     
     /**
@@ -69,11 +70,46 @@ public class RAMMessageLog implements IMessageLog {
     }
     
     /**
+     * Manages retrieval of last indexes.
+     * 
+     * @see setLastIndex
+     * 
+     * @param webSessionID
+     * @return lastIndex or zero
+     */
+    protected int getLastIndex(String webSessionID) {
+        // So we get where to start updating the log for this web session.
+        Integer index;
+        index = last.get(webSessionID);
+        
+        // So a new websession gets initalized.
+        if(null == index) {
+            index = 0;
+            setLastIndex(webSessionID, index);
+        }
+        
+        return index;
+    }
+    
+    /**
+     * Manages setting of last indexes.
+     * 
+     * @see getLastIndex
+     * 
+     * @param webSessionID
+     * @param index 
+     */
+    protected void setLastIndex(String webSessionID, int index) {
+        last.put(webSessionID, index);
+    }
+    
+    /**
      * Helps page through the log.
      * 
      * Note:  Returns the listing in reverse chronological (newest first) order.
      * Note:  Changes the state of last.
      * 
+     * @param webSessionID
      * @param begin
      * @param end
      * @return XML of specified log listings.
@@ -81,7 +117,7 @@ public class RAMMessageLog implements IMessageLog {
      * @see getLatestListing
      * @since 3.0
      */
-    protected String getEntriesListing(int begin, int end) {
+    protected String getEntriesListing(String webSessionID, int begin, int end) {
         // So we stay within the bounds of current entires.
         if(0 > begin) {
             begin = 0;
@@ -91,9 +127,9 @@ public class RAMMessageLog implements IMessageLog {
         }
         
         // So we know where we left off.
-        last = end;
+        setLastIndex(webSessionID, end);
         
-        System.out.println(last);  // Debug
+        System.out.println(end);  // Debug
 
         // So we have all the entries.
         Element root = new Element("listing");
@@ -102,7 +138,7 @@ public class RAMMessageLog implements IMessageLog {
                 ListIterator<String> position = listing.listIterator(end);
                 do {
                     LogEntry current = 
-                            entries.get(position.previous().toString());
+                            entries.get(position.previous());
                     
                     root.appendChild(current.toXOM(true));
 
@@ -114,31 +150,33 @@ public class RAMMessageLog implements IMessageLog {
         // So we have the results.
         return root.toXML();
     }
-            
+    
     /**
      * So we can update the users view of the log from where we last left off.
      * 
      * Note:  Depends on the state of last.
      * 
+     * @param webSessionID
      * @return XML of specified log listings.
      * 
      * @since 3.0
      */
     @Override
-    public String getLatestListing() {
+    public String getLatestListing(String webSessionID) {
         
         System.out.println(last);  // Debug
         
-        int begin = last;
+        int begin = getLastIndex(webSessionID);
         int end = entries.size();
         
-        return getEntriesListing(begin, end);
+        return getEntriesListing(webSessionID, begin, end);
     }
     
 
     /**
      * So we can easily get the desired page of log entries.
      * 
+     * @param webSessionID
      * @param page
      * @param pageSize
      * @return XML of specified log listings.
@@ -146,26 +184,27 @@ public class RAMMessageLog implements IMessageLog {
      * @since 3.0
      */
     @Override
-    public String getPageListing(int page, int pageSize) {
+    public String getPageListing(String webSessionID, int page, int pageSize) {
         int min = page * pageSize;
         int max = (page + 1) * pageSize;
         int end = (entries.size()) - min;
         int begin = (entries.size()) - max;
         
-        return getEntriesListing(begin, end);
+        return getEntriesListing(webSessionID, begin, end);
     }
     
     /**
      * So we can always get the first page of log entries.
      * 
+     * @param webSessionID
      * @param pageSize
      * @return XML of specified log listings.
      * 
      * @since 3.0
      */
     @Override
-    public String getNewestListing(int pageSize) {
-        return getPageListing(0, pageSize);
+    public String getNewestListing(String webSessionID, int pageSize) {
+        return getPageListing(webSessionID, 0, pageSize);
     }
     
     
@@ -211,7 +250,7 @@ public class RAMMessageLog implements IMessageLog {
                         listing.listIterator(listing.size());
                 do {
                     LogEntry current = 
-                            entries.get(position.previous().toString());
+                            entries.get(position.previous());
                     
                     if(current.isMatch(xpath, namespaceT, namespaceP)) {
                         root.appendChild(current.toXOM(true));

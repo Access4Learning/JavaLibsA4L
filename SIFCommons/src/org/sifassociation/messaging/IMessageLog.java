@@ -38,7 +38,7 @@ public interface IMessageLog {
      *
      * @since 3.0
      */
-    String getLatestListing();
+    String getLatestListing(String webSessionID);
 
     /**
      * So we can get a listing of log entries matching the given XPath.
@@ -60,7 +60,7 @@ public interface IMessageLog {
      *
      * @since 3.0
      */
-    String getNewestListing(int pageSize);
+    String getNewestListing(String webSessionID, int pageSize);
 
     /**
      * So we can let the user know how many pages there are to inspect.
@@ -81,7 +81,7 @@ public interface IMessageLog {
      *
      * @since 3.0
      */
-    String getPageListing(int page, int pageSize);
+    String getPageListing(String webSessionID, int page, int pageSize);
     
     /**
      * So we can stop processing entries when we reach the end.

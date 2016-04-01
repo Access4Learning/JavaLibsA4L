@@ -8,8 +8,10 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import nu.xom.*;
@@ -28,12 +30,13 @@ public class XMLMessageLog implements IMessageLog {
     private String connectorId = "";
     private SIFEXistUtil rest = null;
     private final Object sync = new Object();
-    private int last = 0;
+    private Map<String, Integer> last = null;
     
     /**
      * So we know what we have in RAM.
      * So what we have is on disk.
      * 
+     * @param id
      * @param url
      * @param user
      * @param password 
@@ -42,6 +45,7 @@ public class XMLMessageLog implements IMessageLog {
         this.listing = Collections.synchronizedList(new ArrayList<String>(100));
         this.connectorId = id;
         this.rest = new SIFEXistUtil(url, user, password);
+        last = Collections.synchronizedMap(new HashMap<String, Integer>(5));
     }
     
     private String getRelativePath(String name) {
@@ -64,9 +68,7 @@ public class XMLMessageLog implements IMessageLog {
                 this.rest.createResource(path, current.toString());
             } catch (MalformedURLException ex) {
                 Logger.getLogger(XMLMessageLog.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IOException ex) {
-                Logger.getLogger(XMLMessageLog.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (ParsingException ex) {
+            } catch (IOException | ParsingException ex) {
                 Logger.getLogger(XMLMessageLog.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
@@ -89,13 +91,45 @@ public class XMLMessageLog implements IMessageLog {
             entry = rest.readResource(path);
         } catch (MalformedURLException ex) {
             Logger.getLogger(XMLMessageLog.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(XMLMessageLog.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ParsingException ex) {
+        } catch (IOException | ParsingException ex) {
             Logger.getLogger(XMLMessageLog.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         return entry;
+    }
+    
+    /**
+     * Manages retrieval of last indexes.
+     * 
+     * @see setLastIndex
+     * 
+     * @param webSessionID
+     * @return lastIndex or zero
+     */
+    protected int getLastIndex(String webSessionID) {
+        // So we get where to start updating the log for this web session.
+        Integer index;
+        index = last.get(webSessionID);
+        
+        // So a new websession gets initalized.
+        if(null == index) {
+            index = 0;
+            setLastIndex(webSessionID, index);
+        }
+        
+        return index;
+    }
+    
+    /**
+     * Manages setting of last indexes.
+     * 
+     * @see getLastIndex
+     * 
+     * @param webSessionID
+     * @param index 
+     */
+    protected void setLastIndex(String webSessionID, int index) {
+        last.put(webSessionID, index);
     }
     
     /**
@@ -104,6 +138,7 @@ public class XMLMessageLog implements IMessageLog {
      * Note:  Returns the listing in reverse chronological (newest first) order.
      * Note:  Changes the state of last.
      * 
+     * @param webSessionID
      * @param begin
      * @param end
      * @return XML of specified log listings.
@@ -111,7 +146,7 @@ public class XMLMessageLog implements IMessageLog {
      * @see getLatestListing
      * @since 3.0
      */
-    protected String getEntriesListing(int begin, int end) {
+    protected String getEntriesListing(String webSessionID, int begin, int end) {
         // So we stay within the bounds of current entires.
         if(0 > begin) {
             begin = 0;
@@ -121,26 +156,24 @@ public class XMLMessageLog implements IMessageLog {
         }
         
         // So we know where we left off.
-        last = end;
+        setLastIndex(webSessionID, end);
         
-        System.out.println(last);  // Debug
+        System.out.println(end);  // Debug
 
         // So we have all the entries.
         Element root = new Element("listing");
         if(begin < end) {
             synchronized(sync) {
-                String path = "";
+                String path;
                 ListIterator<String> position = listing.listIterator(end);
                 do {
-                    path = this.getRelativePath(position.previous().toString());
+                    path = this.getRelativePath(position.previous());
                     LogEntry current = new LogEntry();
                     try {
                         current.parse(this.rest.readResource(path));
                     } catch (MalformedURLException ex) {
                         Logger.getLogger(XMLMessageLog.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (IOException ex) {
-                        Logger.getLogger(XMLMessageLog.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (ParsingException ex) {
+                    } catch (IOException | ParsingException ex) {
                         Logger.getLogger(XMLMessageLog.class.getName()).log(Level.SEVERE, null, ex);
                     }
                     
@@ -160,25 +193,27 @@ public class XMLMessageLog implements IMessageLog {
      * 
      * Note:  Depends on the state of last.
      * 
+     * @param webSessionID
      * @return XML of specified log listings.
      * 
      * @since 3.0
      */
     @Override
-    public String getLatestListing() {
+    public String getLatestListing(String webSessionID) {
         
         System.out.println(last);  // Debug
         
-        int begin = last;
+        int begin = getLastIndex(webSessionID);
         int end = this.listing.size();
         
-        return getEntriesListing(begin, end);
+        return getEntriesListing(webSessionID, begin, end);
     }
     
 
     /**
      * So we can easily get the desired page of log entries.
      * 
+     * @param webSessionID
      * @param page
      * @param pageSize
      * @return XML of specified log listings.
@@ -186,26 +221,27 @@ public class XMLMessageLog implements IMessageLog {
      * @since 3.0
      */
     @Override
-    public String getPageListing(int page, int pageSize) {
+    public String getPageListing(String webSessionID, int page, int pageSize) {
         int min = page * pageSize;
         int max = (page + 1) * pageSize;
         int end = (this.listing.size()) - min;
         int begin = (this.listing.size()) - max;
         
-        return getEntriesListing(begin, end);
+        return getEntriesListing(webSessionID, begin, end);
     }
     
     /**
      * So we can always get the first page of log entries.
      * 
+     * @param webSessionID
      * @param pageSize
      * @return XML of specified log listings.
      * 
      * @since 3.0
      */
     @Override
-    public String getNewestListing(int pageSize) {
-        return getPageListing(0, pageSize);
+    public String getNewestListing(String webSessionID, int pageSize) {
+        return getPageListing(webSessionID, 0, pageSize);
     }
     
     
@@ -248,19 +284,17 @@ public class XMLMessageLog implements IMessageLog {
         Element root = new Element("listing");
         if(0 < xpath.length()) {
             synchronized(sync) {
-                String path = "";
+                String path;
                 ListIterator<String> position = 
                         listing.listIterator(listing.size());
                 do {
-                    path = this.getRelativePath(position.previous().toString());
+                    path = this.getRelativePath(position.previous());
                     LogEntry current = new LogEntry();
                     try {
                         current.parse(this.rest.readResource(path));
                     } catch (MalformedURLException ex) {
                         Logger.getLogger(XMLMessageLog.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (IOException ex) {
-                        Logger.getLogger(XMLMessageLog.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (ParsingException ex) {
+                    } catch (IOException | ParsingException ex) {
                         Logger.getLogger(XMLMessageLog.class.getName()).log(Level.SEVERE, null, ex);
                     }
                     
@@ -291,7 +325,7 @@ public class XMLMessageLog implements IMessageLog {
     public String toString() {
         Element root = new Element("logEntries");
         synchronized(sync) {
-            String path = "";
+            String path;
             for(String id : listing) {
                 path = this.getRelativePath(id);
                 LogEntry entry = new LogEntry();
@@ -299,9 +333,7 @@ public class XMLMessageLog implements IMessageLog {
                     entry.parse(this.rest.readResource(path));
                 } catch (MalformedURLException ex) {
                     Logger.getLogger(XMLMessageLog.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (IOException ex) {
-                    Logger.getLogger(XMLMessageLog.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (ParsingException ex) {
+                } catch (IOException | ParsingException ex) {
                     Logger.getLogger(XMLMessageLog.class.getName()).log(Level.SEVERE, null, ex);
                 }            
 
