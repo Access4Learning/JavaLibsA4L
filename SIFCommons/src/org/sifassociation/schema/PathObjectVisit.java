@@ -6,6 +6,7 @@ package org.sifassociation.schema;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.xml.namespace.QName;
 import org.apache.ws.commons.schema.XmlSchemaAnnotation;
 import org.apache.ws.commons.schema.XmlSchemaAnnotationItem;
 import org.apache.ws.commons.schema.XmlSchemaAttribute;
@@ -28,12 +29,14 @@ public class PathObjectVisit implements IElementVisit {
     private List<Boolean> mandatories;
     private XmlSchemaAnnotation annotation;
     private List<XPathPlus> paths;
+    private QName type;
     
     public PathObjectVisit() {
         crumbs = new ArrayList<String>();
         mandatories = new ArrayList<Boolean>();
         annotation = null;
         paths = new ArrayList<XPathPlus>();
+        type = new QName("");
     } 
     
     private String getCurrentXPath()  {
@@ -76,6 +79,7 @@ public class PathObjectVisit implements IElementVisit {
                     annotation = element.getSchemaType().getAnnotation();
                 }
             }
+            type = element.getSchemaTypeName();
         }
         if(object instanceof XmlSchemaAttribute) {
             XmlSchemaAttribute attribute = (XmlSchemaAttribute)object;
@@ -86,6 +90,7 @@ public class PathObjectVisit implements IElementVisit {
                     annotation = attribute.getSchemaType().getAnnotation();
                 }
             }
+            type = attribute.getSchemaTypeName();
         }
     }
     
@@ -95,8 +100,20 @@ public class PathObjectVisit implements IElementVisit {
         if(2 == crumbs.size()) {
             XPathPlus current = new XPathPlus(
                     getCurrentXPath(), isMandatory(), annotation);
+            current.setType(type);
             if(paths.contains(current)) {
                 paths.remove(paths.size()-1);
+            }
+            int index = mandatories.size() - 1;
+            if(0 <= index) {
+                current.setMandatory(mandatories.get(index));
+            }
+            if(object instanceof XmlSchemaElement) {
+                XmlSchemaElement element = (XmlSchemaElement)object; 
+                QName name = element.getQName();
+                if(null != name) {
+                    current.setNamespace(name.getNamespaceURI());
+                }
             }
             paths.add(current);
         }
