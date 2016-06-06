@@ -11,22 +11,19 @@ import org.apache.ws.commons.schema.XmlSchemaAnnotation;
 import org.apache.ws.commons.schema.XmlSchemaAttribute;
 import org.apache.ws.commons.schema.XmlSchemaElement;
 import org.apache.ws.commons.schema.XmlSchemaEnumerationFacet;
-import org.apache.ws.commons.schema.XmlSchemaFacet;
 import org.apache.ws.commons.schema.XmlSchemaObject;
-import org.apache.ws.commons.schema.XmlSchemaPatternFacet;
 import org.apache.ws.commons.schema.XmlSchemaSimpleType;
-import org.apache.ws.commons.schema.XmlSchemaSimpleTypeContent;
-import org.apache.ws.commons.schema.XmlSchemaSimpleTypeRestriction;
 import org.apache.ws.commons.schema.XmlSchemaUse;
 
 /**
- * Builds XPaths and whether they are mandatory.
+ * Builds ALL XPaths and whether they are mandatory.
  * Designed for use with a SIF Collection XSD.
+ * Useful when you want a complete view of an object not just its elements.
  * 
  * @author jlovell
  * @since 3.0
  */
-public class PathMandatoryVisit implements IElementVisit {
+public class PathAllVisit implements IElementVisit {
 
     private List<String> crumbs;
     private List<Boolean> mandatories;
@@ -34,7 +31,7 @@ public class PathMandatoryVisit implements IElementVisit {
     private List<XPathPlus> paths;
     private QName type;
     
-    public PathMandatoryVisit() {
+    public PathAllVisit() {
         crumbs = new ArrayList<String>();
         mandatories = new ArrayList<Boolean>();
         annotation = null;
@@ -90,59 +87,27 @@ public class PathMandatoryVisit implements IElementVisit {
     
     @Override
     public void tail(XmlSchemaObject object) { 
-        // So we generate all our XPaths when we reach the bottom of the tree.
-        if(object instanceof XmlSchemaSimpleType)
+        // So we generate all our XPaths.
+        if( object instanceof XmlSchemaAttribute || object instanceof XmlSchemaElement)
         {
             XPathPlus current = new XPathPlus(
                     getCurrentXPath(), isMandatory(), annotation);
             current.setType(type);
-            
-            // So we can share enumerations in the documentation.
-            try {
-                XmlSchemaSimpleTypeContent content = 
-                        ((XmlSchemaSimpleType)object).getContent();
-                XmlSchemaSimpleTypeRestriction restriction = null;
-                if(content instanceof XmlSchemaSimpleTypeRestriction) {
-                    restriction = (XmlSchemaSimpleTypeRestriction)content;
-                }
-                List<XmlSchemaFacet> facets = restriction.getFacets();
-                List<String> values = new ArrayList<String>();
-                for (XmlSchemaFacet facet : facets) {
-                    if(facet instanceof XmlSchemaEnumerationFacet) {
-                        XmlSchemaEnumerationFacet enumFacet = 
-                                (XmlSchemaEnumerationFacet)facet;
-                        values.add(enumFacet.getValue().toString());
-                    }
-                }
-                String combined = "";
-                for(String enumeration : values) {
-                    if(combined.isEmpty()) {
-                        combined = combined + enumeration;
-                    }
-                    else {
-                        combined = combined + ", " + enumeration;
-                    }
-                }
-                current.setEnumerations(combined);
-            } catch (NullPointerException ex) {
-                // It is okay if there are no facets.
-            }
-
             int index = mandatories.size() - 1;
             if(0 <= index) {
                 current.setMandatory(mandatories.get(index));
             }
             if(object instanceof XmlSchemaElement) {
-                XmlSchemaElement element = (XmlSchemaElement)object; 
+                XmlSchemaElement element = (XmlSchemaElement)object;
                 QName name = element.getQName();
                 if(null != name) {
                     current.setNamespace(name.getNamespaceURI());
-                }                
+                }
             }
             paths.add(current);
         }
         // So we forget our parents other children.
-        else if(object instanceof XmlSchemaAttribute) {
+        if(object instanceof XmlSchemaAttribute) {
             XmlSchemaAttribute attribute = (XmlSchemaAttribute)object;
             int crumbIndex = crumbs.size()-1;
             if(0 < crumbs.size() && null != attribute.getName()) {

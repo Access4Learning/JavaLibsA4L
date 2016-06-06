@@ -3,6 +3,7 @@
  * and open the template in the editor.
  */
 package org.sifassociation.schema;
+import javax.xml.namespace.QName;
 import org.apache.ws.commons.schema.XmlSchemaAnnotation;
 
 /**
@@ -15,6 +16,10 @@ public class XPathPlus {
     private String path;
     private boolean compleatlyMandatory;
     private XmlSchemaAnnotation annotation;
+    private boolean mandatory;
+    private String namespace;
+    private QName type;
+    private String enumerations;
     
     public XPathPlus(
             String path, 
@@ -23,6 +28,10 @@ public class XPathPlus {
         this.path = path;
         this.compleatlyMandatory = compleatlyMandatory;
         this.annotation = annotation;
+        this.mandatory = false;
+        this.namespace = "";
+        this.type = new QName("", "", "");
+        this.enumerations = "";
     }
 
     public String getPath() {
@@ -32,20 +41,65 @@ public class XPathPlus {
     public String getName() {
         String name = "";
         int last = path.lastIndexOf('/');
-        if(last > 0) {
+        if(last >= 0) {
             name = path.substring(last+1, path.length());
         }
         return name;
+    }
+    
+    public String getParentPath() {
+        String parent = "";
+        int last = path.lastIndexOf('/');
+        if(last > 0) {
+            parent = path.substring(0, last);
+        }
+        return parent;        
     }
     
     public boolean isCompleatlyMandatory() {
         return compleatlyMandatory;
     }
 
+    public boolean isMandatory() {
+        return mandatory;
+    }
+
+    public void setMandatory(boolean mandatory) {
+        this.mandatory = mandatory;
+    }
+
+    public String getNamespace() {
+        return namespace;
+    }
+
+    public void setNamespace(String namespace) {
+        this.namespace = namespace;
+    }
+    
     public XmlSchemaAnnotation getAnnotation() {
         return annotation;
     }
 
+    public QName getType() {
+        if(null != type) {
+            return type;
+        }
+        
+        return new QName("http://www.w3.org/2001/XMLSchema", "string", "xs");
+    }
+
+    public void setType(QName type) {
+        this.type = type;
+    }
+
+    public String getEnumerations() {
+        return enumerations;
+    }
+
+    public void setEnumerations(String enumerations) {
+        this.enumerations = enumerations;
+    }
+    
     @Override
     public String toString() {
         return compleatlyMandatory + "\t" + path;

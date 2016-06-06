@@ -317,6 +317,29 @@ public class SIFXmlSchemaUtil {
         return null;
     }
 
+    // So working with our numerous anotations is simplified.
+    // Assumes:  All top level tag names are unique.
+    public static Map<String, Node> getAppInfoNodes(XmlSchemaAnnotation annotation) {
+        if(null != annotation) {
+            Map<String, Node> appInfos = new HashMap<String, Node>(6);
+            List<XmlSchemaAnnotationItem> items = annotation.getItems();
+            for(XmlSchemaAnnotationItem item : items) {
+                NodeList markup = null;
+                if(item instanceof XmlSchemaAppInfo) {
+                    markup = ((XmlSchemaAppInfo)item).getMarkup();
+                    if(null != markup) {
+                        for(int i = 0; i < markup.getLength(); i++) {
+                            Node infoItem = markup.item(i);
+                            appInfos.put(infoItem.getLocalName(), infoItem);
+                        }
+                    }
+                }
+            }
+            return appInfos;
+        }
+        return null;
+    }
+    
     // So show our users the documentation is easier.
     public static String getDocumentation(XmlSchemaAnnotation annotation) {
         if(null != annotation) {
@@ -465,6 +488,41 @@ public class SIFXmlSchemaUtil {
             Map<QName, XmlSchemaElement> elements, QName service) {
         Set<QName> services = SIFXmlSchemaUtil.getSIFServices(elements);
         PathObjectVisit visitor = new PathObjectVisit();
+
+        for(QName key : services) {
+            if(key.equals(service)) {
+                XmlSchemaElement element = elements.get(key);
+                SIFXmlSchemaUtil.traverse(element, visitor);
+            }
+        }
+        List<XPathPlus> fields = new ArrayList<XPathPlus>();
+        for(XPathPlus field : visitor.getPaths() ) {   
+            fields.add(field);
+        }        
+        return fields;
+    }
+    
+    // So we have the entier structure (not just the SIF elements).
+    // So we have the events status and other annotations for each object.
+    public static List<XPathPlus> getAllXPaths(String filePath, QName service) {
+        Map<QName, XmlSchemaElement> elements = getRootElements(filePath);
+        return getAllXPaths(elements, service);
+    }
+    
+    // So we have the entier structure (not just the SIF elements).
+    // So we have the events status and other annotations for each object.
+    public static List<XPathPlus> getAllXPaths(
+            InputStream is, String basePath, QName service) {
+        Map<QName, XmlSchemaElement> elements = getRootElements(is, basePath);
+        return getAllXPaths(elements, service);
+    }
+    
+    // So we have the entier structure (not just the SIF elements).
+    // So we have the events status and other annotations for each object.
+    public static List<XPathPlus> getAllXPaths(
+            Map<QName, XmlSchemaElement> elements, QName service) {
+        Set<QName> services = SIFXmlSchemaUtil.getSIFServices(elements);
+        PathAllVisit visitor = new PathAllVisit();
 
         for(QName key : services) {
             if(key.equals(service)) {
