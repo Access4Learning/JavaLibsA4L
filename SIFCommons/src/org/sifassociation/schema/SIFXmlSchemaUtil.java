@@ -496,9 +496,9 @@ public class SIFXmlSchemaUtil {
             }
         }
         List<XPathPlus> fields = new ArrayList<XPathPlus>();
-        for(XPathPlus field : visitor.getPaths() ) {
+        for(XPathPlus field : visitor.getPaths() ) {   
             fields.add(field);
-        }
+        }        
         return fields;
     }
     
