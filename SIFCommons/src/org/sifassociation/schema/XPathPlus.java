@@ -20,6 +20,7 @@ public class XPathPlus {
     private String namespace;
     private QName type;
     private String enumerations;
+    private String patterns;
     
     public XPathPlus(
             String path, 
@@ -32,6 +33,7 @@ public class XPathPlus {
         this.namespace = "";
         this.type = new QName("", "", "");
         this.enumerations = "";
+        this.patterns = "";
     }
 
     public String getPath() {
@@ -98,6 +100,14 @@ public class XPathPlus {
 
     public void setEnumerations(String enumerations) {
         this.enumerations = enumerations;
+    }
+
+    public String getPatterns() {
+        return patterns;
+    }
+
+    public void setPatterns(String patterns) {
+        this.patterns = patterns;
     }
     
     @Override
