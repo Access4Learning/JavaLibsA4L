@@ -5,6 +5,7 @@
 package org.sifassociation.schema;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import javax.xml.namespace.QName;
 import org.apache.ws.commons.schema.XmlSchemaAnnotation;
@@ -97,7 +98,7 @@ public class PathMandatoryVisit implements IElementVisit {
                     getCurrentXPath(), isMandatory(), annotation);
             current.setType(type);
             
-            // So we can share enumerations in the documentation.
+            // So we can share enumerations & patterns in the documentation.
             try {
                 XmlSchemaSimpleTypeContent content = 
                         ((XmlSchemaSimpleType)object).getContent();
@@ -106,28 +107,28 @@ public class PathMandatoryVisit implements IElementVisit {
                     restriction = (XmlSchemaSimpleTypeRestriction)content;
                 }
                 List<XmlSchemaFacet> facets = restriction.getFacets();
-                List<String> values = new ArrayList<String>();
+                List<String> enums = new ArrayList<>();
+                List<String> patts = new ArrayList<>();
                 for (XmlSchemaFacet facet : facets) {
+                    // Enumerations
                     if(facet instanceof XmlSchemaEnumerationFacet) {
                         XmlSchemaEnumerationFacet enumFacet = 
                                 (XmlSchemaEnumerationFacet)facet;
-                        values.add(enumFacet.getValue().toString());
+                        enums.add(enumFacet.getValue().toString());
                     }
+                    // Patterns
+                    if(facet instanceof XmlSchemaPatternFacet) {
+                        XmlSchemaPatternFacet pattFacet = 
+                                (XmlSchemaPatternFacet)facet;
+                        patts.add(pattFacet.getValue().toString());
+                    }                    
                 }
-                String combined = "";
-                for(String enumeration : values) {
-                    if(combined.isEmpty()) {
-                        combined = combined + enumeration;
-                    }
-                    else {
-                        combined = combined + ", " + enumeration;
-                    }
-                }
-                current.setEnumerations(combined);
+                current.setEnumerations(formatList(enums));
+                current.setPatterns(formatList(patts));
             } catch (NullPointerException ex) {
                 // It is okay if there are no facets.
             }
-
+            
             int index = mandatories.size() - 1;
             if(0 <= index) {
                 current.setMandatory(mandatories.get(index));
@@ -172,4 +173,18 @@ public class PathMandatoryVisit implements IElementVisit {
         return paths;
     }
     
+    // So we can condense lists of strings consistently.
+    public static String formatList(List<String> strings) {
+        String combined = "";
+        for (Iterator<String> it = strings.iterator(); it.hasNext();) {
+            String individual = it.next();
+            if(combined.isEmpty()) {
+                combined = combined + individual;
+            }
+            else {
+                combined = combined + ", " + individual;
+            }
+        }
+        return combined;
+    }
 }
