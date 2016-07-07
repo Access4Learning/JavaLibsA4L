@@ -76,6 +76,7 @@ public class SIFFileUtil {
                 br = new BufferedReader(new InputStreamReader(is));
                 while((line = br.readLine()) != null) {
                         sb.append(line);
+                        sb.append("\n");
                 }
         } finally {
                 if (br != null) {

@@ -7,20 +7,30 @@ package org.sifassociation.messaging;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.GregorianCalendar;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.script.ScriptException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import nu.xom.*;
+import org.sifassociation.goessner.XmlJson;
 import org.sifassociation.util.SIFAuthUtil;
 
 /**
@@ -130,6 +140,7 @@ public class LogEntry {
         this.setIdentification(id);
         this.setCategorization("received");
         this.setDisplay(request.getMethod());
+        
         // So the URL includes the query string.
         String url = request.getRequestURL().toString();
         if(null != request.getQueryString()) {
@@ -404,7 +415,20 @@ public class LogEntry {
         try {
             doc = parser.build(httpBody, null);
         } catch (Exception ex) {
-            // The HTTP body was not XML (this is okay).
+            String temp = "";
+            try {
+                // The HTTP body was not XML (this is okay), see if we can convert.
+                temp = XmlJson.getInstance().json2xml(httpBody);
+            } catch (ScriptException | NoSuchMethodException | ParsingException | IOException ex1) {
+                // Not JSON either, (this is okay) we just won't be able to search/format.
+            }
+            if(!temp.isEmpty()) {
+                try {
+                    doc = parser.build(temp, null);
+                } catch (ParsingException | IOException ex1) {
+                    // Still just fine!
+                }
+            }
         }
         if(doc != null) {
             this.parsedBody = new Element(doc.getRootElement());
@@ -499,12 +523,66 @@ public class LogEntry {
     public void setProtocol(String protocol) {
         this.protocol = protocol;
     }
+
+    /**
+     * So we can support query parameters.
+     * 
+     * @param url
+     * @return
+     * @throws UnsupportedEncodingException 
+     * @see http://stackoverflow.com/questions/13592236/parse-a-uri-string-into-name-value-collection
+     * @author Pr0gr4mm3r
+     * @since 3.1
+     * @version 3.1
+     */
+    private static Map<String, List<String>> splitQuery(URL url) throws UnsupportedEncodingException {
+        final Map<String, List<String>> query_pairs = new LinkedHashMap<String, List<String>>();
+        if(null != url.getQuery()) {  // Added JWL
+            final String[] pairs = url.getQuery().split("&");
+            for (String pair : pairs) {
+                final int idx = pair.indexOf("=");
+                final String key = idx > 0 ? URLDecoder.decode(pair.substring(0, idx), "UTF-8") : pair;
+                if (!query_pairs.containsKey(key)) {
+                    query_pairs.put(key, new LinkedList<String>());
+                }
+                final String value = idx > 0 && pair.length() > idx + 1 ? URLDecoder.decode(pair.substring(idx + 1), "UTF-8") : null;
+                query_pairs.get(key).add(value);
+            }
+        }
+        return query_pairs;
+    }
+    
+    public String getParameter(String key) {
+        String value = "";
+        
+        URL temp = null;
+        try {
+            temp = new URL(this.getRelatedURL());
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(LogEntry.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if(null != temp) {
+            Map<String, List<String>> parameters = null;
+            try {
+                parameters = splitQuery(temp);
+            } catch (UnsupportedEncodingException ex) {
+                Logger.getLogger(LogEntry.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            if(null != parameters) {
+                List<String> matches = parameters.get(key);
+                if(null != matches && 1 == matches.size()) {
+                    value = matches.get(0);
+                }
+            }
+        }
+        
+        return value;
+    }
     
     public List<SIFCertificateInfo> getCertificates() {
         return certificates;
     }
 
-    
     /**
      * So we can check if this log entry matches the given XPath.
      * 

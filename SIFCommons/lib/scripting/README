@@ -1,0 +1,27 @@
+JSR 223 Reference Implementation Bundle
+---------------------------------------
+
+Contents of Bundle:
+
+script-api.jar   - The JSR 223 Reference implementation
+script-js.jar    - Some sample classes implementing the javax.script.ScriptEngine interface,
+                   which every ScriptEngine used by the JSR 223 Scripting Framework
+                   must implement.
+js.jar           -The binary distribution the Mozilla Rhino Javascript v1.6R2 implementation.
+
+Note that script-js.jar and js.jar are not part of the Reference Implementation.
+They are co-bundled as a convenience, to help developers evaluate the Reference
+Implementation.
+
+
+To Use:
+
+To use the Reference Implementation , script-api.jar must be included on the classpath.
+
+Any implementations  of  javax.script.ScriptEngine used by the Scripting Framework must be packaged in jar files according to section 
+SCR.4.2.4.1 of the JSR 223 specification and the jar files must also be included on the classpath.
+
+To use the included Javascript engine with the Reference Implementation, script-js.jar and the classes in the org.mozilla.javascript package 
+must be on the classpath.  The file js.jar, which contains the org.mozilla.javascript package is included in this bundle as a convenience.
+
+
