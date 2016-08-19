@@ -3,6 +3,8 @@
  * and open the template in the editor.
  */
 package org.sifassociation.schema;
+import java.util.HashMap;
+import java.util.Map;
 import javax.xml.namespace.QName;
 import org.apache.ws.commons.schema.XmlSchemaAnnotation;
 
@@ -15,7 +17,9 @@ import org.apache.ws.commons.schema.XmlSchemaAnnotation;
 public class XPathPlus {
     private String path;
     private boolean compleatlyMandatory;
+    private Map<String, String> appInfos;
     private XmlSchemaAnnotation annotation;
+    private String documentation;
     private boolean mandatory;
     private String namespace;
     private QName type;
@@ -29,6 +33,8 @@ public class XPathPlus {
         this.path = path;
         this.compleatlyMandatory = compleatlyMandatory;
         this.annotation = annotation;
+        this.appInfos = null;
+        this.documentation = "";
         this.mandatory = false;
         this.namespace = "";
         this.type = new QName("", "", "");
@@ -77,11 +83,31 @@ public class XPathPlus {
     public void setNamespace(String namespace) {
         this.namespace = namespace;
     }
-    
+
     public XmlSchemaAnnotation getAnnotation() {
         return annotation;
     }
+    
+    /* So we can work with the documentation in the annotations without messing up the XML tree. */
+    
+    public Map<String, String> getAppInfos() {
+        return appInfos;
+    }
 
+    public void setAppInfos(Map<String, String> appInfos) {
+        this.appInfos = appInfos;
+    }
+    
+    public String getDocumentation() {
+        return documentation;
+    }
+
+    public void setDocumentation(String documentation) {
+        this.documentation = documentation;
+    }
+    
+    /* End */
+    
     public QName getType() {
         if(null != type) {
             return type;

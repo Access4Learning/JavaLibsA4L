@@ -5,12 +5,16 @@
 package org.sifassociation.schema;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.xml.namespace.QName;
 import org.apache.ws.commons.schema.XmlSchemaAnnotation;
+import org.apache.ws.commons.schema.XmlSchemaAnnotationItem;
+import org.apache.ws.commons.schema.XmlSchemaAppInfo;
 import org.apache.ws.commons.schema.XmlSchemaAttribute;
+import org.apache.ws.commons.schema.XmlSchemaDocumentation;
 import org.apache.ws.commons.schema.XmlSchemaElement;
 import org.apache.ws.commons.schema.XmlSchemaEnumerationFacet;
 import org.apache.ws.commons.schema.XmlSchemaFacet;
@@ -20,6 +24,8 @@ import org.apache.ws.commons.schema.XmlSchemaSimpleType;
 import org.apache.ws.commons.schema.XmlSchemaSimpleTypeContent;
 import org.apache.ws.commons.schema.XmlSchemaSimpleTypeRestriction;
 import org.apache.ws.commons.schema.XmlSchemaUse;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * Builds XPaths and whether they are mandatory.
@@ -107,15 +113,30 @@ public class PathMandatoryVisit implements IElementVisit {
         if(object instanceof XmlSchemaSimpleType)
         {
             // So we include the best annotation/documentation possible.
-            XmlSchemaAnnotation annotation = this.getCurrentAnnotation();
+            // Note:  Must be set and used wihtout impacting the XML tree.
+            XmlSchemaAnnotation annotation = this.getCurrentAnnotation();   
             Map<String, String> appInfos = SIFXmlSchemaUtil.getAppInfos(annotation);
+            String documentation = SIFXmlSchemaUtil.getDocumentation(annotation);
             if(null != appInfos) {
                 String last = appInfos.getOrDefault("useLastAnnotation", "false");
                 if("true".equals(last)) {
                     for(int i = annotations.size()-2; 0 <= i; i--) {
-                        XmlSchemaAnnotation temp = annotations.get(i);
-                        if(null != temp && !temp.getItems().isEmpty()) {
-                            annotation = temp;
+                        XmlSchemaAnnotation lastAnnotation = annotations.get(i);
+                        if(null != lastAnnotation && !lastAnnotation.getItems().isEmpty()) {
+                            // appinfos
+                            Map<String, String> temp = new HashMap<>();
+                            Map<String, String> lastAppInfos = 
+                                    SIFXmlSchemaUtil.getAppInfos(lastAnnotation);
+                            if(null != lastAppInfos) {
+                                temp.putAll(lastAppInfos);
+                                temp.putAll(appInfos);
+                                appInfos = temp;
+                            }
+                            // documentation
+                            if(documentation.isEmpty()) {
+                                documentation = SIFXmlSchemaUtil.getDocumentation(lastAnnotation);
+                            }
+                            // So we only copy the last annotation.
                             break;
                         }
                     }
@@ -124,6 +145,8 @@ public class PathMandatoryVisit implements IElementVisit {
             
             XPathPlus current = new XPathPlus(
                     getCurrentXPath(), isMandatory(), annotation);
+            current.setAppInfos(appInfos);
+            current.setDocumentation(documentation);
             current.setType(this.getCurrentType());
             
             // So we can share enumerations & patterns in the documentation.
