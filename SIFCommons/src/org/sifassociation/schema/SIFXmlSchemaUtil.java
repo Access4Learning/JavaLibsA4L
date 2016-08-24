@@ -306,8 +306,10 @@ public class SIFXmlSchemaUtil {
                     if(null != markup) {
                         for(int i = 0; i < markup.getLength(); i++) {
                             Node infoItem = markup.item(i);
-                            appInfos.put(infoItem.getLocalName(), 
-                                    infoItem.getTextContent());
+                            if(null != infoItem) {
+                                    appInfos.put(infoItem.getLocalName(), 
+                                            infoItem.getTextContent());                                
+                            }                            
                         }
                     }
                 }

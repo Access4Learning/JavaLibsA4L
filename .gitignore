@@ -2,3 +2,5 @@ $GIT_DIR/**/build
 $GIT_DIR/**/dist
 /SIFCommons/build/
 /SIFCommons/dist/
+/SIFCommonsDemo/build/
+/SIFCommonsDemo/dist/

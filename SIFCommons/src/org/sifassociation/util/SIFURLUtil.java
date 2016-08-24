@@ -12,11 +12,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
+ * Get part of the URL path based on position. 
+ * Note:  The names of these functions are a bit deceptive.
+ * 
  * @author jlovell
  */
 public class SIFURLUtil {
     
+    // Simple gets the second to last piece of the path.
     public static String getCollection(String url) {
         URL parsed;
         try {
@@ -33,6 +36,7 @@ public class SIFURLUtil {
         return "";
     }
     
+    // Simple gets the last piece of the path.
     public static String getResource(String url) {
         URL parsed;
         try {
@@ -47,6 +51,24 @@ public class SIFURLUtil {
             return stripMatrixParameters(parts[parts.length-1]);
         }
         return "";
+    }
+
+    // So we can do a quick comparison in our tests.
+    public static String getServicePath(String url) {
+        URL parsed;
+        try {
+            parsed = new URL(url);
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(SIFURLUtil.class.getName()).log(Level.SEVERE, null, ex);
+            return "";
+        }
+        String path = parsed.getPath();
+        String[] parts = path.split("/");
+        if(3 < parts.length) {
+            return stripMatrixParameters(parts[parts.length-3]) + "/{}/" + 
+                    stripMatrixParameters(parts[parts.length-1]);
+        }
+        return "";        
     }
     
     private static String stripMatrixParameters(String segment) {

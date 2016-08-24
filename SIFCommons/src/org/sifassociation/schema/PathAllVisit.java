@@ -27,16 +27,16 @@ public class PathAllVisit implements IElementVisit {
 
     private List<String> crumbs;
     private List<Boolean> mandatories;
-    private XmlSchemaAnnotation annotation;
+    private List<XmlSchemaAnnotation> annotations;
     private List<XPathPlus> paths;
-    private QName type;
+    private List<QName> types;
     
     public PathAllVisit() {
         crumbs = new ArrayList<String>();
         mandatories = new ArrayList<Boolean>();
-        annotation = null;
+        annotations = new ArrayList<XmlSchemaAnnotation>();
         paths = new ArrayList<XPathPlus>();
-        type = new QName("");
+        types = new ArrayList<QName>();
     } 
     
     private String getCurrentXPath()  {
@@ -62,6 +62,16 @@ public class PathAllVisit implements IElementVisit {
         return true;
     }
     
+    private XmlSchemaAnnotation getCurrentAnnotation() {
+        int i = annotations.size()-1;
+        return annotations.get(i);
+    }
+    
+    private QName getCurrentType() {
+        int i = types.size()-1;
+        return types.get(i);
+    }
+    
     @Override
     public void head(XmlSchemaObject object) {
         if(object instanceof XmlSchemaElement) { 
@@ -72,15 +82,15 @@ public class PathAllVisit implements IElementVisit {
                 crumbs.add(name);
             }
             mandatories.add(0 < element.getMinOccurs());
-            annotation = element.getAnnotation();
-            type = element.getSchemaTypeName();
+            annotations.add(element.getAnnotation());
+            types.add(element.getSchemaTypeName());
         }
         if(object instanceof XmlSchemaAttribute) {
             XmlSchemaAttribute attribute = (XmlSchemaAttribute)object;
             crumbs.add("@" + attribute.getName());
             mandatories.add(XmlSchemaUse.REQUIRED == attribute.getUse());
-            annotation = attribute.getAnnotation();
-            type = attribute.getSchemaTypeName();
+            annotations.add(attribute.getAnnotation());
+            types.add(attribute.getSchemaTypeName());
         }
 
     }
@@ -91,8 +101,8 @@ public class PathAllVisit implements IElementVisit {
         if( object instanceof XmlSchemaAttribute || object instanceof XmlSchemaElement)
         {
             XPathPlus current = new XPathPlus(
-                    getCurrentXPath(), isMandatory(), annotation);
-            current.setType(type);
+                    getCurrentXPath(), isMandatory(), this.getCurrentAnnotation());
+            current.setType(this.getCurrentType());
             int index = mandatories.size() - 1;
             if(0 <= index) {
                 current.setMandatory(mandatories.get(index));
@@ -104,7 +114,11 @@ public class PathAllVisit implements IElementVisit {
                     current.setNamespace(name.getNamespaceURI());
                 }
             }
-            paths.add(current);
+            // So restricted paths keep there outer most requirments.
+            int i = paths.indexOf(current);
+            if(-1 == i) {
+                paths.add(current);
+            }
         }
         // So we forget our parents other children.
         if(object instanceof XmlSchemaAttribute) {
@@ -117,6 +131,14 @@ public class PathAllVisit implements IElementVisit {
             if(0 < mandatories.size()) {
                 mandatories.remove(mandatoryIndex);
             }
+            int annotationIndex = annotations.size()-1;
+            if(0 < annotations.size() && null != attribute.getName()) {
+                annotations.remove(annotationIndex);
+            }
+            int typeIndex = types.size()-1;
+            if(0 < types.size()) {
+                types.remove(typeIndex);
+            }    
         }
         else if(object instanceof XmlSchemaElement) { 
             XmlSchemaElement element = (XmlSchemaElement)object;
@@ -128,6 +150,14 @@ public class PathAllVisit implements IElementVisit {
             if(0 < mandatories.size()) {
                 mandatories.remove(mandatoryIndex);
             }
+            int annotationIndex = annotations.size()-1;
+            if(0 < annotations.size() && null != element.getName()) {
+                annotations.remove(annotationIndex);
+            }
+            int typeIndex = types.size()-1;
+            if(0 < types.size()) {
+                types.remove(typeIndex);
+            }       
             //System.out.println("\t" + this.getCurrentXPath());  // Debug
         }
     }
