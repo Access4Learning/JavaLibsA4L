@@ -22,6 +22,7 @@ import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.XmlSchemaAll;
 import org.apache.ws.commons.schema.XmlSchemaAnnotation;
 import org.apache.ws.commons.schema.XmlSchemaAnnotationItem;
+import org.apache.ws.commons.schema.XmlSchemaAny;
 import org.apache.ws.commons.schema.XmlSchemaAppInfo;
 import org.apache.ws.commons.schema.XmlSchemaAttribute;
 import org.apache.ws.commons.schema.XmlSchemaAttributeOrGroupRef;
@@ -206,7 +207,14 @@ public class SIFXmlSchemaUtil {
                     }
                 }
             }
-
+        }
+        else if (current instanceof XmlSchemaSimpleType) {
+            // Simple types handled elsewhere!
+        }
+        else {
+            // So we know when we run into something we cannot handle.
+            String msg = "Unsupported schema object type encountered: " + current.getClass().toString();
+            Logger.getLogger(SIFXmlSchemaUtil.class.getName()).log(Level.WARNING, msg);
         }
         
         // So we make the expected tail recursion call.
@@ -253,6 +261,14 @@ public class SIFXmlSchemaUtil {
             else if (item instanceof XmlSchemaAll) {
                 handleAll((XmlSchemaAll)item, visit);
             }
+            else if (item instanceof XmlSchemaAny) {
+                handleAny((XmlSchemaAny)item, visit);
+            }            
+            else {
+                // So we know when we run into something we cannot handle.
+                String msg = "Unsupported compositor or wildcard encountered: " + item.getClass().toString();
+                Logger.getLogger(SIFXmlSchemaUtil.class.getName()).log(Level.WARNING, msg);                
+            }
         }
     }
     
@@ -291,6 +307,12 @@ public class SIFXmlSchemaUtil {
         }
     }
 
+    private static void handleAny(XmlSchemaAny any, IElementVisit visit) {
+        // Since xs:any goes at the end let the head or tail handle.
+        visit.head(any);
+        visit.tail(any);
+    }
+    
     /* Non-traversal utililities */
     
     // So working with our numerous anotations is simplified.

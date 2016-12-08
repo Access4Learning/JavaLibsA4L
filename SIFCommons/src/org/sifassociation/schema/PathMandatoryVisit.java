@@ -12,6 +12,7 @@ import java.util.Map;
 import javax.xml.namespace.QName;
 import org.apache.ws.commons.schema.XmlSchemaAnnotation;
 import org.apache.ws.commons.schema.XmlSchemaAnnotationItem;
+import org.apache.ws.commons.schema.XmlSchemaAny;
 import org.apache.ws.commons.schema.XmlSchemaAppInfo;
 import org.apache.ws.commons.schema.XmlSchemaAttribute;
 import org.apache.ws.commons.schema.XmlSchemaDocumentation;
@@ -109,6 +110,35 @@ public class PathMandatoryVisit implements IElementVisit {
     
     @Override
     public void tail(XmlSchemaObject object) { 
+        // So we include wildcards.
+        if(object instanceof XmlSchemaAny) {
+            XmlSchemaAnnotation annotation = this.getCurrentAnnotation();
+            Map<String, String> appInfos = SIFXmlSchemaUtil.getAppInfos(annotation);
+            String documentation = SIFXmlSchemaUtil.getDocumentation(annotation);
+            XPathPlus current = new XPathPlus(
+                    getCurrentXPath(), isMandatory(), annotation);
+                        current.setAppInfos(appInfos);
+            current.setDocumentation(documentation);
+            current.setType(new QName("any"));
+            int index = mandatories.size() - 1;
+            if(0 <= index) {
+                current.setMandatory(mandatories.get(index));
+            }
+            if(object instanceof XmlSchemaElement) {
+                XmlSchemaElement element = (XmlSchemaElement)object; 
+                QName name = element.getQName();
+                if(null != name) {
+                    current.setNamespace(name.getNamespaceURI());
+                }                
+            }
+            // So restricted paths keep there outer most requirments.
+            int i = paths.indexOf(current);
+            if(-1 == i) {
+                paths.add(current);
+            }
+            //System.out.println("\t" + this.getCurrentXPath());  // Debug
+        }         
+
         // So we generate all our XPaths when we reach the bottom of the tree.
         if(object instanceof XmlSchemaSimpleType)
         {
@@ -235,7 +265,7 @@ public class PathMandatoryVisit implements IElementVisit {
             if(0 < types.size()) {
                 types.remove(typeIndex);
             }
-            //System.out.println("\t" + this.getCurrentXPath());  // Debug
+            //System.out.println("\t" + this.getCurrentXPath());  // Debug 
         }
     }
 
