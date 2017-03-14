@@ -21,8 +21,6 @@ import nu.xom.Elements;
 import nu.xom.Nodes;
 import nu.xom.ParsingException;
 import nu.xom.XPathContext;
-import org.apache.commons.codec.binary.Base64;
-import org.apache.http.Header;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpDelete;
@@ -31,7 +29,9 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.protocol.BasicHttpContext;
 
 /**
@@ -45,16 +45,21 @@ public class SIFEXistUtil {
     private String target;  // So we can confirm what collection we are targeting.
     String username;
     String password;
-    private DefaultHttpClient httpClient;  // This holds the single connection!
+    private PoolingHttpClientConnectionManager mgr;
+    private CloseableHttpClient httpClient;
     private BasicHttpContext sharedContext;
     
     public SIFEXistUtil(String target, String username, String password) {
         this.target = target;
         this.username = username;
         this.password = password;
-        this.httpClient = new DefaultHttpClient();
+        this.mgr = new PoolingHttpClientConnectionManager();
+        this.mgr.setMaxTotal(200);
+        this.mgr.setDefaultMaxPerRoute(20);
+        this.httpClient = HttpClients.custom()
+                .setConnectionManager(mgr)
+                .build();
         this.sharedContext = new BasicHttpContext();
-
     }
     
     public ResultPage readCollection(String relativePath) throws MalformedURLException, IOException, ParsingException {

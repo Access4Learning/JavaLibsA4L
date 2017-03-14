@@ -20,17 +20,15 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.script.ScriptException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import nu.xom.*;
-import org.sifassociation.goessner.XmlJson;
+import org.sifassociation.goessner.XmlJsonNative;
 import org.sifassociation.util.SIFAuthUtil;
 
 /**
@@ -416,12 +414,8 @@ public class LogEntry {
             doc = parser.build(httpBody, null);
         } catch (Exception ex) {
             String temp = "";
-            try {
-                // The HTTP body was not XML (this is okay), see if we can convert.
-                temp = XmlJson.getInstance().json2xml(httpBody);
-            } catch (ScriptException | NoSuchMethodException | ParsingException | IOException ex1) {
-                // Not JSON either, (this is okay) we just won't be able to search/format.
-            }
+            // The HTTP body was not XML (this is okay), see if we can convert.
+            temp = XmlJsonNative.getInstance().json2xml(httpBody);
             if(!temp.isEmpty()) {
                 try {
                     doc = parser.build(temp, null);

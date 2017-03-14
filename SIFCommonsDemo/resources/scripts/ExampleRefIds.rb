@@ -8,7 +8,7 @@ import org.sifassociation.messaging.SIFRefId
 class ExampleIds
     def run
         for i in 1..10 do
-            puts SIFRefId.new("192.168.1.135", i).toString()
+            puts SIFRefId.new("192.168.1.145", i).toString()
         end
     end
 end

@@ -8,9 +8,12 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import nu.xom.Builder;
 import nu.xom.Document;
 import nu.xom.XPathContext;
+import org.sifassociation.goessner.XmlJsonNative;
 import org.sifassociation.util.SIFXOMUtil;
 
 /**
@@ -18,7 +21,8 @@ import org.sifassociation.util.SIFXOMUtil;
  * @author jlovell
  */
 public class SIF3Message implements ISIFMessageXML {
-
+    public enum Format {XML, JSON, OTHER}
+    
     private XPathContext namespaces;  // So we can evaulate XPaths properly.
     private String transport;  // So we can support any desired transport.
     private SIFRefId messageId;  // So we have the GUID for the message.
@@ -26,9 +30,13 @@ public class SIF3Message implements ISIFMessageXML {
     
     private URL relatedURL;  // So we can know: object type & parameters.
     private Document payload;  // So we can wrap the the proper type.
+    private String unparsed;  // So we can support OTHER payload formats.
     
-    SIFHttpHeaders headers;  // So we can set headers not automatically handled.
+    private SIFHttpHeaders headers;  // So we can set headers not automatically handled.
 
+    private XmlJsonNative converter;
+    private Format format = null;
+    
     public SIF3Message() {
         namespaces = new XPathContext();
         addNamespace("in30", "http://www.sifassociation.org/infrastructure/3.0");
@@ -36,14 +44,20 @@ public class SIF3Message implements ISIFMessageXML {
         setTransport("REST");
         headers = new SIFHttpHeaders();
         setMessageId(new SIFRefId());
+        
+        payload = null;
+        unparsed = "";
+        
+        converter = XmlJsonNative.getInstance();
+        format = Format.XML;
     }
-    
     
     // To Do: Consider an abstract class.
     @Override
     public boolean checkPayload(String xPath) {
-        if (0 < payload.query(xPath, namespaces).size()) {return true;}
-        
+        if (null != payload && 0 < payload.query(xPath, namespaces).size()) {
+            return true;
+        }        
         return false;
     }
 
@@ -56,7 +70,24 @@ public class SIF3Message implements ISIFMessageXML {
     public void parse(String XML) throws Exception {
         // So we have a tree to inspect.
         Builder parser = new Builder();
-        payload = parser.build(XML, null);
+        if(Format.XML == this.format)  {
+            try {
+                payload = parser.build(XML, null);
+            } catch (Exception ex) {
+                this.format = Format.JSON;
+            }
+        }
+        if(Format.JSON == this.format) {
+            String converted = converter.json2xml(XML);
+            try {
+                payload = parser.build(converted, null);
+            } catch (Exception ex) {
+                this.format = Format.OTHER;
+            }
+        }
+        if(Format.OTHER == this.format) {
+            this.unparsed = XML;
+        }
     }
 
     @Override
@@ -163,12 +194,34 @@ public class SIF3Message implements ISIFMessageXML {
     
     @Override
     public String toString() {
-        try {
-            return SIFXOMUtil.pretty(payload.getRootElement());
-        } catch (Exception ex) {
-            return "<SerializationError>" + SIF3Message.class.getName() + ": "
-                    + ex + "</SerializationError>";
+        String result = "";
+        if(Format.OTHER == this.format) {
+            result = this.unparsed;
         }
+        else if(null != payload && null != payload.getRootElement()) {
+            try {
+                result = SIFXOMUtil.pretty(payload.getRootElement());
+            } catch (Exception ex) {
+                Logger.getLogger(SIF3Message.class.getName()).log(Level.SEVERE, null, ex);
+                result =  "<SerializationError>" + SIF3Message.class.getName() + ": "
+                        + ex + "</SerializationError>";
+            }
+            if(Format.JSON == format) {
+                result = converter.xml2json(result);
+                if(result.isEmpty()) {
+                    result =  "<ConversionError/>";
+                }
+            }
+        }
+        return result;
+    }
+
+    public Format getFormat() {
+        return format;
+    }
+
+    public void setFormat(Format format) {
+        this.format = format;
     }
 
 }

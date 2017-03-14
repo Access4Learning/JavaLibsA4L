@@ -83,10 +83,10 @@
         <copy file="resources/payloads/provider.xml" todir="${build.classes.dir}"/>
         <copy file="resources/payloads/alert.xml" todir="${build.classes.dir}"/>
         <copy file="resources/eXist/XQuery.xml" todir="${build.classes.dir}"/>
-        <!-- So we have access to Gosner's scripts.  -->
+        <!-- So we have access to Gosner's scripts. -->
         <copy todir="${build.classes.dir}">
           <fileset dir="resources/scripts"></fileset>
-        </copy>        
+        </copy>
     </target>
-    
+
 </project>

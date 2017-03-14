@@ -20,7 +20,10 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.protocol.BasicHttpContext;
 import org.sifassociation.util.SIFFileUtil;
 import org.sifassociation.util.SIFXOMUtil;
@@ -32,7 +35,8 @@ import org.sifassociation.util.SIFXOMUtil;
 public class EXistXQueryREST implements IXQuery {
 
     private String target;  // So we can confirm what collection we are targeting.
-    private DefaultHttpClient httpClient;
+    private PoolingHttpClientConnectionManager mgr;
+    private CloseableHttpClient httpClient;
     private BasicHttpContext sharedContext;
     private int currentIndex;
     private Element currentResult;
@@ -43,9 +47,13 @@ public class EXistXQueryREST implements IXQuery {
     public EXistXQueryREST(String target) {
         this.target = target;
         this.query = "";
-        this.httpClient = new DefaultHttpClient();
+        this.mgr = new PoolingHttpClientConnectionManager();
+        this.mgr.setMaxTotal(200);
+        this.mgr.setDefaultMaxPerRoute(20);
+        this.httpClient = HttpClients.custom()
+                .setConnectionManager(mgr)
+                .build();
         this.sharedContext = new BasicHttpContext();
-        
         this.reset();
     }
     
