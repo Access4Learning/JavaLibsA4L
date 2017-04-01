@@ -158,7 +158,7 @@ public class XMLMessageLog implements IMessageLog {
         // So we know where we left off.
         setLastIndex(webSessionID, end);
         
-        System.out.println(end);  // Debug
+        //System.out.println(end);  // Debug
 
         // So we have all the entries.
         Element root = new Element("listing");
@@ -201,7 +201,7 @@ public class XMLMessageLog implements IMessageLog {
     @Override
     public String getLatestListing(String webSessionID) {
         
-        System.out.println(last);  // Debug
+        //System.out.println(last);  // Debug
         
         int begin = getLastIndex(webSessionID);
         int end = this.listing.size();
