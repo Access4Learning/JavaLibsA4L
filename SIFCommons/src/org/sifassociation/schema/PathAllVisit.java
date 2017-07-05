@@ -12,6 +12,7 @@ import org.apache.ws.commons.schema.XmlSchemaAttribute;
 import org.apache.ws.commons.schema.XmlSchemaElement;
 import org.apache.ws.commons.schema.XmlSchemaEnumerationFacet;
 import org.apache.ws.commons.schema.XmlSchemaObject;
+import org.apache.ws.commons.schema.XmlSchemaParticle;
 import org.apache.ws.commons.schema.XmlSchemaSimpleType;
 import org.apache.ws.commons.schema.XmlSchemaUse;
 
@@ -71,9 +72,10 @@ public class PathAllVisit implements IElementVisit {
         int i = types.size()-1;
         return types.get(i);
     }
-    
+        
     @Override
     public void head(XmlSchemaObject object) {
+
         if(object instanceof XmlSchemaElement) { 
             XmlSchemaElement element = (XmlSchemaElement)object;
             // So we know who our parents are.
@@ -92,7 +94,6 @@ public class PathAllVisit implements IElementVisit {
             annotations.add(attribute.getAnnotation());
             types.add(attribute.getSchemaTypeName());
         }
-
     }
     
     @Override
@@ -113,13 +114,26 @@ public class PathAllVisit implements IElementVisit {
                 if(null != name) {
                     current.setNamespace(name.getNamespaceURI());
                 }
+                else {
+                    // So we don't let elements without names mess us up.
+                    // Instead add the parents stuff to the child.
+                    current = paths.get(paths.size()-1);
+                }
             }
-            // So restricted paths keep there outer most requirments.
+            if(object instanceof XmlSchemaParticle) {
+                XmlSchemaParticle particle = (XmlSchemaParticle)object;
+                if(particle.getMaxOccurs() != XmlSchemaParticle.DEFAULT_MAX_OCCURS) {
+                    current.setRepeatable(true);
+                    //System.out.println("Set Repeatable:  " + current.getPath());  // Debug
+                }
+            }
+            // So a single path can be built up from multiple schema elements.
             int i = paths.indexOf(current);
             if(-1 == i) {
                 paths.add(current);
             }
         }
+        
         // So we forget our parents other children.
         if(object instanceof XmlSchemaAttribute) {
             XmlSchemaAttribute attribute = (XmlSchemaAttribute)object;

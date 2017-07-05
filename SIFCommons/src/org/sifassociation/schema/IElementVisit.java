@@ -14,6 +14,7 @@ import org.apache.ws.commons.schema.XmlSchemaObject;
  * 
  * @author jlovell
  * @since 3.0
+ * @version 3.3
  */
 public interface IElementVisit {
     

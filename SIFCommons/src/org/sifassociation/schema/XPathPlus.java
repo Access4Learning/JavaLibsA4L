@@ -10,6 +10,7 @@ import org.apache.ws.commons.schema.XmlSchemaAnnotation;
 
 /**
  * So we can know both an XPath and its usage information.
+ * Note:  The the various visitors set different sets of these variables.
  * 
  * @author jlovell
  * @since 3.0
@@ -25,6 +26,7 @@ public class XPathPlus {
     private QName type;
     private String enumerations;
     private String patterns;
+    private boolean repeatable;
     
     public XPathPlus(
             String path, 
@@ -40,6 +42,7 @@ public class XPathPlus {
         this.type = new QName("", "", "");
         this.enumerations = "";
         this.patterns = "";
+        this.repeatable = false;
     }
 
     public String getPath() {
@@ -128,12 +131,26 @@ public class XPathPlus {
         this.enumerations = enumerations;
     }
 
+    /**
+     * So we know when a valid value is restricted by a regular expression
+     * Note:  This works, if set by the visitor.
+     * 
+     * @return The regular expression limiting this particular node.
+     */
     public String getPatterns() {
         return patterns;
     }
 
     public void setPatterns(String patterns) {
         this.patterns = patterns;
+    }
+
+    public boolean isRepeatable() {
+        return repeatable;
+    }
+
+    public void setRepeatable(boolean repeatable) {
+        this.repeatable = repeatable;
     }
     
     @Override

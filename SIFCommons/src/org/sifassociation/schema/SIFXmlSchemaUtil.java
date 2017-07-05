@@ -44,6 +44,7 @@ import org.apache.ws.commons.schema.XmlSchemaSimpleContentExtension;
 import org.apache.ws.commons.schema.XmlSchemaSimpleContentRestriction;
 import org.apache.ws.commons.schema.XmlSchemaSimpleType;
 import org.apache.ws.commons.schema.XmlSchemaType;
+import org.apache.ws.commons.schema.utils.XmlSchemaRef;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -51,7 +52,6 @@ import org.w3c.dom.NodeList;
  * So we can traverse Apache XmlSchema instances consistently.
  * Design:  Follow all parent types down to a simple type.
  * Assumes SIF style schemas (for now):
- * - No element references!
  * - No element groups.
  * - No element lists.
  * - No element unions.
@@ -64,20 +64,27 @@ import org.w3c.dom.NodeList;
  * @since 3.0
  */
 public class SIFXmlSchemaUtil {
-    
+        
     public static void traverse(XmlSchemaObject current, IElementVisit visit)  {
         // So we can call this liberally.
         if(null == current) {return;}
-        
+                
         // So we make the expected head recursion call.
         if(current instanceof XmlSchemaObject) {
             visit.head(current);
         }
         
         // So we walk the entire tree (from this point down).
-        if(current instanceof XmlSchemaElement) {
+        if(current instanceof XmlSchemaElement &&
+                null != ((XmlSchemaElement)current).getRef().getTarget()) {
+            // So we follow references.
+            //System.out.println(((XmlSchemaElement)current).getQName() + " is reference to " + ((XmlSchemaElement)current).getRef().getTarget().getQName());  // Debug
+            traverse(((XmlSchemaElement)current).getRef().getTarget() , visit);
+        }
+        else if(current instanceof XmlSchemaElement) {
             // So the tree "always" has its next type.
             if(null == ((XmlSchemaElement)current).getSchemaType()) {
+                //System.out.println(((XmlSchemaElement)current).getQName() + " has no type.");  // Debug
                 XmlSchemaType type = getNextType(
                         ((XmlSchemaElement)current).getSchemaTypeName(), 
                         ((XmlSchemaElement)current).getParent());
@@ -267,7 +274,7 @@ public class SIFXmlSchemaUtil {
             else {
                 // So we know when we run into something we cannot handle.
                 String msg = "Unsupported compositor or wildcard encountered: " + item.getClass().toString();
-                Logger.getLogger(SIFXmlSchemaUtil.class.getName()).log(Level.WARNING, msg);                
+                Logger.getLogger(SIFXmlSchemaUtil.class.getName()).log(Level.WARNING, msg);
             }
         }
     }
