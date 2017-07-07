@@ -89,7 +89,10 @@ public class PathAllVisit implements IElementVisit {
         }
         if(object instanceof XmlSchemaAttribute) {
             XmlSchemaAttribute attribute = (XmlSchemaAttribute)object;
-            crumbs.add("@" + attribute.getName());
+            String name = attribute.getName();
+            if(null != name) {
+                crumbs.add("@" + name);
+            }
             mandatories.add(XmlSchemaUse.REQUIRED == attribute.getUse());
             annotations.add(attribute.getAnnotation());
             types.add(attribute.getSchemaTypeName());
@@ -100,7 +103,7 @@ public class PathAllVisit implements IElementVisit {
     public void tail(XmlSchemaObject object) { 
         // So we generate all our XPaths.
         if( object instanceof XmlSchemaAttribute || object instanceof XmlSchemaElement)
-        {
+        {            
             XPathPlus current = new XPathPlus(
                     getCurrentXPath(), isMandatory(), this.getCurrentAnnotation());
             current.setType(this.getCurrentType());
@@ -117,6 +120,13 @@ public class PathAllVisit implements IElementVisit {
                 else {
                     // So we don't let elements without names mess us up.
                     // Instead add the parents stuff to the child.
+                    current = paths.get(paths.size()-1);
+                }
+            }
+            else if(object instanceof XmlSchemaAttribute) {
+                XmlSchemaAttribute attribute = (XmlSchemaAttribute)object;
+                String name = attribute.getName();
+                if(null == name) {
                     current = paths.get(paths.size()-1);
                 }
             }
@@ -138,21 +148,23 @@ public class PathAllVisit implements IElementVisit {
         if(object instanceof XmlSchemaAttribute) {
             XmlSchemaAttribute attribute = (XmlSchemaAttribute)object;
             int crumbIndex = crumbs.size()-1;
-            if(0 < crumbs.size() && null != attribute.getName()) {
-                crumbs.remove(crumbIndex);
+            if(null != attribute.getName()) {
+                if(0 < crumbs.size()) {
+                    crumbs.remove(crumbIndex);
+                }
+                int mandatoryIndex = mandatories.size()-1;
+                if(0 < mandatories.size()) {
+                    mandatories.remove(mandatoryIndex);
+                }
+                int annotationIndex = annotations.size()-1;
+                if(0 < annotations.size() && null != attribute.getName()) {
+                    annotations.remove(annotationIndex);
+                }
+                int typeIndex = types.size()-1;
+                if(0 < types.size()) {
+                    types.remove(typeIndex);
+                }
             }
-            int mandatoryIndex = mandatories.size()-1;
-            if(0 < mandatories.size()) {
-                mandatories.remove(mandatoryIndex);
-            }
-            int annotationIndex = annotations.size()-1;
-            if(0 < annotations.size() && null != attribute.getName()) {
-                annotations.remove(annotationIndex);
-            }
-            int typeIndex = types.size()-1;
-            if(0 < types.size()) {
-                types.remove(typeIndex);
-            }    
         }
         else if(object instanceof XmlSchemaElement) { 
             XmlSchemaElement element = (XmlSchemaElement)object;

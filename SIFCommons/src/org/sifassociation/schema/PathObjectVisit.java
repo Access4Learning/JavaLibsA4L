@@ -71,7 +71,10 @@ public class PathObjectVisit implements IElementVisit {
         }
         if(object instanceof XmlSchemaAttribute) {
             XmlSchemaAttribute attribute = (XmlSchemaAttribute)object;
-            crumbs.add("@" + attribute.getName());
+            String name = attribute.getName();
+            if(null != name) {
+                crumbs.add("@" + name);
+            }
             mandatories.add(XmlSchemaUse.REQUIRED == attribute.getUse());
         }
     }

@@ -100,7 +100,10 @@ public class PathMandatoryVisit implements IElementVisit {
         }
         if(object instanceof XmlSchemaAttribute) {
             XmlSchemaAttribute attribute = (XmlSchemaAttribute)object;
-            crumbs.add("@" + attribute.getName());
+            String name = attribute.getName();
+            if(null != name) {
+                crumbs.add("@" + name);
+            }
             mandatories.add(XmlSchemaUse.REQUIRED == attribute.getUse());
             annotations.add(attribute.getAnnotation());
             types.add(attribute.getSchemaTypeName());
