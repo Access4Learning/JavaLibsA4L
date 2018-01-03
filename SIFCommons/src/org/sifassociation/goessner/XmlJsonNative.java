@@ -250,7 +250,7 @@ public class XmlJsonNative implements IXmlJson{
                 // So we keep going inside the array.
                 ObjectNode jsonRoot = jsonMapper.createObjectNode();
                 xml2jsonTree(xmlCurrent, parentNamespace, 
-                    jsonRoot, jsonMapper, true);
+                    jsonRoot, jsonMapper, true);  // noLable = true
                 
                 // So array entries share its name (not each have their own).
                 ObjectNode keylessRoot = jsonMapper.createObjectNode();

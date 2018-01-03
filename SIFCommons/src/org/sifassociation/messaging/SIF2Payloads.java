@@ -195,6 +195,16 @@ public class SIF2Payloads {
         return body.toXML();
     }
     
+    /**
+     * Creates a SIF_Error XML snippet from the given parameters.
+     * 
+     * @param tag  The root of the error (DataModelError, ZoneServiceError, DeQueueError, and TransportError).
+     * @param category
+     * @param code
+     * @param description
+     * @param extended
+     * @return 
+     */
     public static String createError(
             String tag, 
             int category, 

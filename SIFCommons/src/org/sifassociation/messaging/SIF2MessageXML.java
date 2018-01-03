@@ -154,7 +154,7 @@ public final class SIF2MessageXML implements ISIFMessageXML {
         setMessageId(null);
         setAction("");
         setSourcedTo("");
-        setRelatesTo(null);
+        setRelatesTo((SIFRefId)null);
         setRelationshipType("");
         setReplyTo(null);
         setFaultTo(null);
@@ -234,7 +234,7 @@ public final class SIF2MessageXML implements ISIFMessageXML {
         
         current = header.getFirstChildElement("RelatesTo", wsa);
         if(null != current) {
-            this.setRelatesTo(new SIFRefId(current.getValue()));
+            this.setRelatesTo(current.getValue());
         }
         
         // So we can readily work with the SIF header.
@@ -340,7 +340,7 @@ public final class SIF2MessageXML implements ISIFMessageXML {
             if(null != current) {setOperation(current.getValue());}
             current = zoneService.getFirstChildElement("ServiceMsgId", t);
             // To Do:  This is more complicated than this.
-            setRelatesTo(new SIFRefId(current.getValue()));
+            setRelatesTo(current.getValue());
         }
         
         /* PAYLOADS!!! */
@@ -427,7 +427,7 @@ public final class SIF2MessageXML implements ISIFMessageXML {
         }
         current = wrapper.getFirstChildElement("SIF_OriginalMsgId", ns); 
         if(null != current) {
-            setRelatesTo(new SIFRefId(current.getValue()));
+            setRelatesTo(current.getValue());
         }
         
         // To Do:  Add other message specific understood payloads here!
@@ -450,12 +450,12 @@ public final class SIF2MessageXML implements ISIFMessageXML {
         // Supports SIF_ServiceInput, SIF_ServiceOutput and SIF_ServiceNotify.
         current = wrapper.getFirstChildElement("SIF_RequestMsgId", ns);
         if(null != current) {
-            setRelatesTo(new SIFRefId(current.getValue()));
+            setRelatesTo(current.getValue());
         }
         // To Do:  This is more complicated than this!
         current = wrapper.getFirstChildElement("SIF_ServiceMsgId", ns);
         if(null != current) {
-            setRelatesTo(new SIFRefId(current.getValue()));
+            setRelatesTo(current.getValue());
         }
         current = wrapper.getFirstChildElement("SIF_PacketNumber", ns);
         if(null != current) {
@@ -702,7 +702,14 @@ public final class SIF2MessageXML implements ISIFMessageXML {
                 "Response".equals(getType()) || 
                 "ServiceOutput".equals(getType())) {
             current = new Element("wsa:RelatesTo", wsa);
-            current.appendChild(getRelatesTo().toString());
+            // WS-Addressing 3.1
+            SIFRefId relatesId = getRelatesTo();
+            if(null == relatesId) {
+                // So we don't add an empty optional element.
+            }
+            else {
+                current.appendChild(relatesId.toString());
+            }
             Attribute rt = new Attribute("RelationshipType", 
                     "http://www.w3.org/2005/08/addressing/reply");
             current.addAttribute(rt);
@@ -835,7 +842,11 @@ public final class SIF2MessageXML implements ISIFMessageXML {
             }
             
             current = new Element("ServiceMsgId", t);
-            current.appendChild(getRelatesTo().toString());
+            // Only an empty element is allowed by the XSD/WSDL.
+            SIFRefId relatesId = getRelatesTo();
+            if(null != relatesId) {
+                current.appendChild(relatesId.toString());
+            }
             service.appendChild(current);
         }
         
@@ -908,8 +919,13 @@ public final class SIF2MessageXML implements ISIFMessageXML {
         // So we only retrieve the needed namespace once.
         String ns = getNamespace();
         
+        // So we can add xsi:nil="true" whenever we need it.
+        String xsi = "http://www.w3.org/2001/XMLSchema-instance";
+        Attribute nil = new Attribute("xsi:nil", xsi, "true");
+                
         // So we have all common componenets of a message.
         Element root = new Element("SIF_Message", ns);
+        root.addNamespaceDeclaration("xsi", xsi);
         Attribute version = new Attribute("Version",
                 infrastructureVersion.toString());
         root.addAttribute(version);
@@ -977,15 +993,35 @@ public final class SIF2MessageXML implements ISIFMessageXML {
         
         if("SIF_Ack".equals(getType())) {
             current = new Element("SIF_OriginalSourceId", ns);
-            current.appendChild(getSourcedTo());
+            // 4.2.2.1 If couldn't parse message, use empty with xsi:nil="true."
+            String sourcedTo = getSourcedTo();
+            if(null == sourcedTo || sourcedTo.isEmpty()) {
+                current.addAttribute((Attribute)nil.copy());
+            }
+            else {
+                current.appendChild(sourcedTo);
+            }
             wrapper.appendChild(current);
             current = new Element("SIF_OriginalMsgId", ns);
-            current.appendChild(getRelatesTo().toString());
+            SIFRefId relatesId = getRelatesTo();
+            if(null == relatesId) {
+                current.addAttribute((Attribute)nil.copy());
+            }
+            else {
+                current.appendChild(relatesId.toString());
+            }
             wrapper.appendChild(current);
         }
         if("SIF_Response".equals(getType())) {
             current = new Element("SIF_RequestMsgId", ns);
-            current.appendChild(getRelatesTo().toString());
+            // 4.2.2.1 If couldn't parse message, use empty with xsi:nil="true."
+            SIFRefId relatesId = getRelatesTo();
+            if(null == relatesId) {
+                current.addAttribute((Attribute)nil.copy());
+            }
+            else {
+                current.appendChild(relatesId.toString());
+            }
             wrapper.appendChild(current);
         }
         if("SIF_ServiceInput".equals(getType()) ||
@@ -1001,7 +1037,14 @@ public final class SIF2MessageXML implements ISIFMessageXML {
                 "SIF_ServiceOutput".equals(getType()) ||
                 "SIF_ServiceNotify".equals(getType())) {
             current = new Element("SIF_ServiceMsgId", ns);
-            current.appendChild(getRelatesTo().toString());
+            // 4.2.2.1 If couldn't parse message, use empty with xsi:nil="true."
+            SIFRefId relatesId = getRelatesTo();
+            if(null == relatesId) {
+                current.addAttribute((Attribute)nil.copy());
+            }
+            else {
+                current.appendChild(relatesId.toString());
+            }
             wrapper.appendChild(current);
         }
         if(! responseVersions.isEmpty()) {
@@ -1398,7 +1441,7 @@ public final class SIF2MessageXML implements ISIFMessageXML {
     public void setMessageId(SIFRefId messageId) {
         this.messageId = messageId;
     }
-
+    
     public boolean isMorePackets() {
         return morePackets;
     }
@@ -1446,7 +1489,9 @@ public final class SIF2MessageXML implements ISIFMessageXML {
      */
     public SIFRefId getRelatesTo() {
         // So this ID is always direclty compatible with the classic transport.
-        relatesTo.setGeneric(false);
+        if(null != relatesTo) {
+            relatesTo.setGeneric(false);
+        }
         
         return relatesTo;
     }
@@ -1454,7 +1499,23 @@ public final class SIF2MessageXML implements ISIFMessageXML {
     public void setRelatesTo(SIFRefId relatesTo) {
         this.relatesTo = relatesTo;
     }
-
+    
+    /**
+     * So we can handle blank IDs (that couldn't be parsed).
+     * 
+     * @param identifier 
+     * @since 3.2.1
+     */
+    public void setRelatesTo(String identifier) {
+        if(null == identifier || identifier.isEmpty()) {
+            this.relatesTo = null;
+        }
+        else {
+            //this.setRelatesTo(new SIFRefId(identifier));
+            this.relatesTo = new SIFRefId(identifier);
+        }
+    }    
+    
     public String getRelationshipType() {
         return relationshipType;
     }

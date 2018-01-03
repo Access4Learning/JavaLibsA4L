@@ -457,8 +457,18 @@ public class SIFEXistUtil {
         // So we have the response as an XML tree we can work with.
         Element responseRoot = null;
         Builder parser = new Builder();
-        Document doc = parser.build(responseBody, null);
-        responseRoot = doc.getRootElement();
+        Document doc = null;
+        try {
+            doc = parser.build(responseBody, null);
+        } catch (ParsingException ex) {
+            Logger.getLogger(SIFEXistUtil.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if(null != doc) {
+            responseRoot = doc.getRootElement();
+        }
+        else {
+            responseRoot = new Element("Matches");
+        }
         
         // So we know the results.
         int hits = 0;
