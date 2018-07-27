@@ -8,8 +8,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -202,7 +204,7 @@ public class SIFXOMUtil {
     
     /* Retrieve via XPath */
     
-    // Returns the string of the first matching XPath or null.
+    // Returns the value of the first matching XPath or null.
     // Note: To use the ns namespace use the prefix "ns" in your xpath.
     // Example: /ns:environment/ns:consumerName
     public static String getFirstXPath(String xpath, Element root, String ns) {
@@ -211,7 +213,7 @@ public class SIFXOMUtil {
         xpc.addNamespace("ns", ns);
 
         // So we execute the query.
-        Nodes results = root.query(xpath, xpc);
+        Nodes results = root.copy().query(xpath, xpc);
         if(0 < results.size()) {
             Node first = results.get(0);
             if(null != first) {
@@ -221,6 +223,64 @@ public class SIFXOMUtil {
         
         // So we know the difference between failure and a blank field.
         return null;
+    }
+
+
+    /**
+     * Returns the value of all matching XPath or an empty list.
+     * Note: To use the ns namespace use the prefix "ns" in your xpath.
+     * Example: /ns:environment/ns:consumerName
+     * 
+     * @param xpath
+     * @param root
+     * @param ns
+     * @return
+     * @see addGenericNamespace
+     * @since 3.2
+     */
+    public static List<String> getAllXPath(String xpath, Element root, String ns) {
+        // So we can return the results.
+        List<String> matches = new ArrayList();
+
+        // So we use the specified namespace.
+        XPathContext xpc = new XPathContext();
+        xpc.addNamespace("ns", ns);
+
+        // So we execute the query.        
+        Nodes results = root.copy().query(xpath, xpc);
+        for(int i = 0; i < results.size(); i++) {
+            Node current = results.get(i);
+            if(null != current) {
+                matches.add(current.getValue());
+            }
+        }
+        
+        // So we know the difference between failure and a blank field.
+        return matches;
+    }
+    
+    /**
+     * Convert a non-qualified XPath with one qualified with the "ns" prefix.
+     * 
+     * @param xpath  XPath to base the namespace qualified one on.
+     * @return 
+     * @since 3.2
+     */
+    public static String addGenericNamespace(String xpath) {
+        StringBuilder qualified = new StringBuilder();
+        String[] parts = xpath.split("/");
+        for(String part : parts) {
+            if(!part.isEmpty()) {
+                if(part.startsWith("@") || part.contains(":")) {
+                    qualified.append("/");
+                }
+                else {
+                    qualified.append("/ns:");
+                }
+                qualified.append(part);
+            }
+        }
+        return qualified.toString();
     }
     
     /* Supporting Partial Updates */
@@ -331,6 +391,493 @@ public class SIFXOMUtil {
             }
         }
         return "";
+    }
+    
+    /* Supporting query-by-example */
+
+    /**
+     * Takes the root of an XML example and turns it into an XQuery.
+     * 
+     * @param example
+     * @return 
+     * @since 3.2
+     */
+    public static String example2XQuery(Element example) {
+        // So we can build up our XQuery easily and efficently.
+        StringBuilder xquery = new StringBuilder();        
+        
+        // So we handle the default namespace.
+        xquery.append("declare default element namespace ");
+        String ns = example.getNamespaceURI();
+        xquery.append(ns);
+        xquery.append(";\n");
+        
+        // So we have the XPath.
+        xquery.append(example2XPath(example));
+        
+        return xquery.toString();
+    }
+    
+    /**
+     * Takes the root of an XML example and turns it into an XPath.
+     * 
+     * @param example
+     * @return 
+     * @since 3.2
+     */
+    public static String example2XPath(Element example) {
+        // So we can build up our XPath easily and efficently.
+        StringBuilder xpath = new StringBuilder();
+        
+        // So we retrieve the target object(s).
+        xpath.append("/");
+        xpath.append(example.getLocalName());
+        
+        // So we can easily remove the target object from its qualifiers.
+        String start = "/" + example.getLocalName() + "/";
+        
+        // So we match the data in the example.
+        Set<String> paths = null;
+        paths = SIFXOMUtil.getXPaths(example);
+        if(!paths.isEmpty()) {
+            // So we deliminate the qualifiers.
+            xpath.append("[");
+            
+            // So we have all the qualifiers.
+            StringBuilder qualifiers = new StringBuilder();
+            for(String path : paths) {
+                List<String> values = getAllXPath(
+                        addGenericNamespace(path), 
+                        example, 
+                        example.getNamespaceURI());
+                for(String value : values) {
+                    if(0 != qualifiers.length()) {
+                        qualifiers.append(" and ");
+                    }
+                    qualifiers.append(path.replaceFirst(start, ""));
+                    qualifiers.append("=");
+                    qualifiers.append("\"");
+                    qualifiers.append(value);
+                    qualifiers.append("\"");
+                }
+            }
+            xpath.append(qualifiers);
+            
+            xpath.append("]");
+        }
+        
+        return xpath.toString();
+    }
+    
+    /* Support SIF_Query */
+    
+    /**
+     * Turns a SIF_Query into an XQuery.
+     * 
+     * @param query
+     * @return 
+     */
+    public static String query2XQuery(Element query) {
+        // So we can build up our XQuery easily and efficently.
+        StringBuilder xquery = new StringBuilder();
+        
+        // So we handle the default namespace.
+        xquery.append("declare default element namespace ");
+        String ns = query.getNamespaceURI();
+        xquery.append(ns);
+        xquery.append(";\n");
+        
+        // So we are ready for the object or other simple XPath.
+        xquery.append("for $object in ");
+        
+        // So we know how to group all the conditions or what example to use.
+        Element conditionGroup = query.getFirstChildElement("SIF_ConditionGroup", ns);
+        Element exampleWrapper = query.getFirstChildElement("SIF_Example", ns);
+        if(null != conditionGroup) {
+            // So we target the correct object.
+            String objectName = getFirstXPath(
+                    addGenericNamespace("/SIF_Query/SIF_QueryObject/@ObjectName"), query, ns);
+            xquery.append("/");
+            xquery.append(objectName);
+            xquery.append("\n");
+            
+            // So we get the outer most (limited to one) logical opperator correct.
+            String outerLogic = conditionGroup.getAttributeValue("Type");
+            if(null != outerLogic) {
+                xquery.append("where ");
+                // So we open the outer logical block.
+                if(0 != "None".compareToIgnoreCase(outerLogic)) {
+                    xquery.append("(");
+                }
+                Elements conditions = conditionGroup.getChildElements("SIF_Conditions", ns);
+                for(int i = 0; i < conditions.size(); i++) {
+                    // So we honor the outer logic.
+                    if(0 < i) {
+                        logicalHelper(xquery, outerLogic);
+                    }
+                    // So we honor the inner (may be multiple) logical opperator.
+                    Element currentConditions = conditions.get(i);
+                    String innerLogic = currentConditions.getAttributeValue("Type");
+                    if(null != innerLogic) {
+                        // So we open this logical block.
+                        if(0 != "None".compareToIgnoreCase(innerLogic)) {
+                            xquery.append("(");
+                        }
+                        // So we include the actual condition (may be more than one).
+                        Elements condition = currentConditions.getChildElements(
+                                "SIF_Condition", ns);
+                        for(int j = 0; j < condition.size(); j++) {
+                            if(0 < j) {
+                                logicalHelper(xquery, innerLogic);
+                            }
+                            Element current = condition.get(j);
+                            Element element = current.getFirstChildElement("SIF_Element", ns);
+                            Element operator = current.getFirstChildElement("SIF_Operator", ns);
+                            Element value = current.getFirstChildElement("SIF_Value", ns);
+                            if(null != element && null != operator && null != value) {
+                                xquery.append(element.getValue());
+                                xquery.append(" ");
+                                xquery.append(operatorHelper(operator.getValue()));
+                                xquery.append(" ");
+                                xquery.append(value.getValue());
+                            }
+                        }
+                        // So we close this logical block.
+                        if(0 != "None".compareToIgnoreCase(outerLogic)) {
+                            xquery.append(")");
+                        }                        
+                    }
+                    // So we close the outer logical block.
+                    if(0 != "None".compareToIgnoreCase(innerLogic)) {
+                        xquery.append(")");
+                    }
+                    xquery.append("\n");
+                }
+            }
+        }
+        else if(null != exampleWrapper) {
+            Element example = (Element) exampleWrapper.getChild(0);
+            String xpath = example2XPath(example);
+            xquery.append(xpath);
+            xquery.append("\n");
+        }
+        
+        // So we return the matching objects.
+        // To Do:  Add support for SIF_QueryObject/SIF_Element!!!
+        xquery.append("return $object");
+        
+        return xquery.toString();
+    }
+
+    /**
+     * Creates an XQuery that retrieves the targeted objects as joined. 
+     * Note: Results from query will need to be massaged into 
+     * SIF_ExtendedQueryResults.
+     * 
+     * @param eQuery
+     * @return 
+     */
+    public static String extendedQuery2XQuery(Element eQuery) {
+        // So we can build up our XQuery easily and efficently.
+        StringBuilder xquery = new StringBuilder();
+        // So we handle the default namespace.
+        xquery.append("declare default element namespace \"");
+        String ns = eQuery.getNamespaceURI();
+        xquery.append(ns);
+        xquery.append("\";\n");        
+        // So we can always adjust the joined results (order by)
+        xquery.append("for $RESULT in (\n");
+        // So we know all the objects in play by name.
+        Set<String> objects;  // To Do: Consider inlcuding //@ObjectName instead, so we can support joins on unreturned objects.
+        objects = new LinkedHashSet<>();
+        Element select = eQuery.getFirstChildElement("SIF_Select", ns);
+        Elements selectElements = select.getChildElements();
+        for(int i = 0; i < selectElements.size(); i++) {
+            Element current = selectElements.get(i);
+            objects.add(current.getAttributeValue("ObjectName"));
+        }
+        // So we return all the objects in play.
+        char[] alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
+        Map<String, String> objectVariables = new HashMap<>();
+        // So we use the same variable for the same object throughout.
+        for(int i = 0; i < objects.size(); i++) {
+            char variable = alphabet[i];
+            String object = (String) objects.toArray()[i];
+            objectVariables.put(object, String.valueOf(variable));
+        }
+        // So we honor joins.
+        Element from = eQuery.getFirstChildElement("SIF_From", ns);
+        // With out join.
+        if(0 == from.getChildCount()) {
+            StringBuilder woFor = new StringBuilder();
+            StringBuilder woReturn = new StringBuilder();
+            String objectName = from.getAttributeValue("ObjectName");
+            String woVariable = objectVariables.get(objectName);
+            woFor.append("    for $");
+            woFor.append(woVariable);
+            woFor.append(" in /");
+            woFor.append(objectName);
+            woFor.append("\n");
+            woReturn.append("    return <JOINED>{$");
+            woReturn.append(woVariable);
+            woReturn.append("}</JOINED>\n");
+            xquery.append(woFor);
+            xquery.append(woReturn);
+        }
+        else {
+            Elements joins = from.getChildElements("SIF_Join", ns);
+            int aI = 0;  // Alphabet index.
+            for(int i = 0; i < joins.size(); i++) {
+                Element join = joins.get(i);
+                String joinType = join.getAttributeValue("Type");
+                Elements joinOns = join.getChildElements("SIF_JoinOn", ns);
+                for(int j = 0; j < joinOns.size(); j++) {
+                    // So we can build up the various parts seperately.
+                    // Inner
+                    StringBuilder iFor = new StringBuilder();
+                    StringBuilder iLet = new StringBuilder();
+                    StringBuilder iWhere = new StringBuilder();
+                    StringBuilder iReturn = new StringBuilder();
+                    // Left
+                    StringBuilder lFor = new StringBuilder();
+                    StringBuilder lWhere = new StringBuilder();
+                    StringBuilder lReturn = new StringBuilder();
+                    // Right
+                    StringBuilder rFor = new StringBuilder();
+                    StringBuilder rWhere = new StringBuilder();
+                    StringBuilder rReturn = new StringBuilder();                  
+                    Element joinOn = joinOns.get(j);
+                    // Inner Join (all XQuery joins include this).
+                    // So we can add each object returned by the inner join seperately.
+                    iReturn.append("    return <JOINED>");
+                    // Left ID
+                    Element left = joinOn.getFirstChildElement("SIF_LeftElement", ns);
+                    String leftId = "$" + alphabet[aI] + "ID";
+                    aI++;
+                    String leftName = left.getAttributeValue("ObjectName");
+                    String leftVariable = objectVariables.get(leftName);
+                    iFor.append("    for $");
+                    iFor.append(leftVariable);
+                    iFor.append(" in /");
+                    iFor.append(leftName);
+                    iFor.append("\n");                    
+                    iLet.append("    let ");
+                    iLet.append(leftId);
+                    iLet.append(" := $");
+                    iLet.append(leftVariable);
+                    iLet.append("/");
+                    iLet.append(left.getValue());
+                    iLet.append("\n");
+                    iReturn.append("{$");
+                    iReturn.append(leftVariable);
+                    iReturn.append("}");                    
+                    // Right ID
+                    Element right = joinOn.getFirstChildElement("SIF_RightElement", ns);
+                    String rightId = "$" + alphabet[aI] + "ID";
+                    aI++;
+                    String rightName = right.getAttributeValue("ObjectName");
+                    String rightVariable = objectVariables.get(rightName);
+                    iFor.append("    for $");
+                    iFor.append(rightVariable);
+                    iFor.append(" in /");
+                    iFor.append(rightName);
+                    iFor.append("\n");                    
+                    iLet.append("    let ");
+                    iLet.append(rightId);
+                    iLet.append(" := $");
+                    iLet.append(rightVariable);
+                    iLet.append("/");
+                    iLet.append(right.getValue());
+                    iLet.append("\n");
+                    iReturn.append("{$");
+                    iReturn.append(rightVariable);
+                    iReturn.append("}");                    
+                    // So we actually inner join.
+                    iWhere.append("    where ");
+                    iWhere.append(leftId);
+                    iWhere.append("=");
+                    iWhere.append(rightId);
+                    iWhere.append("\n");
+                    // So we close the inner join.
+                    iReturn.append("</JOINED>");                                        
+                    // Left Join (in addition to the data from the Inner Join).               
+                    if(0 == joinType.compareTo("LeftOuter") || 
+                            0 == joinType.compareTo("FullOuter")) {
+                        lFor.append("    for $");
+                        lFor.append(leftVariable);
+                        lFor.append(" in /");
+                        lFor.append(leftName);
+                        lFor.append("\n");
+                        lWhere.append("    where fn:empty(/");
+                        lWhere.append(rightName);
+                        lWhere.append("[");
+                        lWhere.append(right.getValue());
+                        lWhere.append(" = $");
+                        lWhere.append(leftVariable);
+                        lWhere.append("/");
+                        lWhere.append(left.getValue());
+                        lWhere.append("])\n");
+                        lReturn.append("    return <JOINED>{$");
+                        lReturn.append(leftVariable);
+                        lReturn.append("}</JOINED>");                    
+                    }
+                    // Right Join (in addition to the data from the Inner Join).               
+                    if(0 == joinType.compareTo("RightOuter") || 
+                            0 == joinType.compareTo("FullOuter")) {
+                        rFor.append("    for $");
+                        rFor.append(rightVariable);
+                        rFor.append(" in /");
+                        rFor.append(rightName);
+                        rFor.append("\n");
+                        rWhere.append("    where fn:empty(/");
+                        rWhere.append(leftName);
+                        rWhere.append("[");
+                        rWhere.append(left.getValue());
+                        rWhere.append(" = $");
+                        rWhere.append(rightVariable);
+                        rWhere.append("/");
+                        rWhere.append(right.getValue());
+                        rWhere.append("])\n");
+                        rReturn.append("    return <JOINED>{$");
+                        rReturn.append(rightVariable);
+                        rReturn.append("}</JOINED>");
+                    }
+                    // So we start a new FLWOR expression.
+                    if(0 != joinType.compareTo("Inner") ) {
+                        iReturn.append(",\n");
+                    }
+                    if(0 == joinType.compareTo("FullOuter") ) {
+                        lReturn.append(",\n");
+                    }                
+                    // So we pull the data portion of the query together.
+                    // Inner
+                    xquery.append(iFor);
+                    xquery.append(iLet);
+                    xquery.append(iWhere);
+                    xquery.append(iReturn);
+                    // Left
+                    xquery.append(lFor);
+                    xquery.append(lWhere);
+                    xquery.append(lReturn);
+                    // Right
+                    xquery.append(rFor);
+                    xquery.append(rWhere);
+                    xquery.append(rReturn);
+                }
+                // So we start a new FLWOR expression before the next join.
+                if(i < joins.size()-1) {
+                    xquery.append(",");
+                }
+                xquery.append("\n");
+            }
+        }
+        // To Do: So we honor condition (like in SIF_Query).
+        // So we can always adjust the joined results (order by)
+        xquery.append(")\n");
+        // To Do:  order by
+        // So we can always adjust the joined results (order by)
+        xquery.append("return $RESULT");        
+        return xquery.toString();
+    }
+    
+    /**
+     * So we can consistently and efficiently handle "and" and "or."
+     * 
+     * @param sb  Changed in place.
+     * @param logic 
+     */
+    private static void logicalHelper(StringBuilder sb, String logic) {
+        if(0 == "Or".compareToIgnoreCase(logic)) {
+            sb.append(" or ");
+        }
+        else {
+            sb.append(" and ");
+        }        
+    }
+    
+    /**
+     * Converts the SIF operator to an XQuery operator.
+     * 
+     * @param operator
+     * @return 
+     */
+    private static String operatorHelper(String operator) {
+        switch (operator) {
+            case "LT": return "<";
+            case "GT": return ">";
+            case "LE": return "<=";
+            case "GE": return ">=";
+            case "NE": return "!=";
+        }
+        // EQ & the default.
+        return "=";
+    }
+    
+    /**
+     * Filter's "root" until it only contains elements and attributes in "xpaths".
+     * Note:  Maintains document order.
+     * Note:  Keeps anything that matches regardless of namespace.
+     * 
+     * @param root  Changed in place.
+     * @param xpaths
+     * @return 
+     */
+    public static void greenList(Element root, List<String> xpaths) {
+        // To Do: So we know we have been given reasonable parameters.
+
+        // So we have crumbs.
+        List<String> crumbs = new ArrayList();
+        // So we have the first crumb.
+        crumbs.add(root.getLocalName());
+        // So we do something.
+        greenListHelper(root, xpaths, root, crumbs);
+    }
+    
+    private static void greenListHelper(Element root, List<String> xpaths, Element current, List<String> crumbs) {
+        // So we check for unwanted attributes ever step of the way.
+        for(int i = 0; i < current.getAttributeCount(); i++) {
+            Attribute attribute = current.getAttribute(i);
+            crumbs.add("@" + attribute.getLocalName());
+            if(!xpaths.contains(crumbs2XPath(crumbs))) {
+                current.removeAttribute(attribute);
+            }
+            crumbs.remove(crumbs.size()-1);
+        }
+        // Recurse:  So we visit every node in "root."
+        Elements children = current.getChildElements();
+        for(int i = children.size()-1; i >=0 ; i--) {  //  So we always remove the last leaf first.  Note: The usual for loop breaks badly.
+            Element child = (Element) current.getChild(i);
+            if(null != child) {
+                crumbs.add(child.getLocalName());
+                greenListHelper(root, xpaths, child, crumbs);
+                crumbs.remove(crumbs.size()-1);
+            }
+        }
+        // So we remove any leaves not present in "xpaths."
+        children = current.getChildElements();
+        if(0 == children.size()) {
+            // So we ownly get rid of nodes with no reference.
+            boolean remove = true;
+            String crumbXPath = crumbs2XPath(crumbs);
+            for(String xpath : xpaths) {
+                if(xpath.startsWith(crumbXPath)) {
+                    remove = false;
+                    break;
+                }
+            }
+            if(remove) {
+                current.detach();
+            }
+        }              
+    }
+    
+    private static String crumbs2XPath(List<String> crumbs)  {
+        StringBuilder xpath = new StringBuilder();
+        for(String current : crumbs) {
+            xpath.append('/');
+            xpath.append(current);
+        }
+        return xpath.toString();
     }
     
     /* SIFisms */

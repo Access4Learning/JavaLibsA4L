@@ -380,7 +380,7 @@ public class SIF2Payloads {
         Element body = new Element("Body", 
                 "http://schemas.xmlsoap.org/soap/envelope/");
         
-        body.appendChild(createProvisionObjectExtended(
+        body.appendChild(createACLObjectExtended(
                 "Provide",
                 objects,
                 extensions,
@@ -388,9 +388,7 @@ public class SIF2Payloads {
                 
         return body.toXML();
     }
-    
-    // Provide = Default Provider
-    // Subscribe = Processes Events
+
     public static String createProvision(
             List<String> provideObjects,
             List<Boolean> provideExtensions,
@@ -419,70 +417,133 @@ public class SIF2Payloads {
             List<String> subscribeServices,
             List<List<String>> subscribeServicesContexts,
             List<List<String>> subscribeServicesOperations) {
+        return createACL(
+                "Provision",
+                provideObjects,
+                provideExtensions,
+                provideContexts,
+                subscribeObjects,
+                subscribeContexts,
+                publishAddObjects,
+                publishAddContexts,
+                publishChangeObjects,
+                publishChangeContexts,
+                publishDeleteObjects,
+                publishDeleteContexts,
+                requestObjects,
+                requestExtensions,
+                requestContexts,            
+                respondObjects,
+                respondExtensions,
+                respondContexts,
+                provideServices,
+                provideServicesContexts,
+                respondServices,
+                respondServicesContexts,
+                requestServices,
+                requestServicesContexts,
+                requestServicesOperations,
+                subscribeServices,
+                subscribeServicesContexts,
+                subscribeServicesOperations,
+                "Objects");
+    }
+    
+    // Provide = Default Provider
+    // Subscribe = Processes Events
+    public static String createACL(
+            String name,
+            List<String> provideObjects,
+            List<Boolean> provideExtensions,
+            List<List<String>> provideContexts,
+            List<String> subscribeObjects,
+            List<List<String>> subscribeContexts,
+            List<String> publishAddObjects,
+            List<List<String>> publishAddContexts,
+            List<String> publishChangeObjects,
+            List<List<String>> publishChangeContexts,
+            List<String> publishDeleteObjects,
+            List<List<String>> publishDeleteContexts,
+            List<String> requestObjects,
+            List<Boolean> requestExtensions,
+            List<List<String>> requestContexts,            
+            List<String> respondObjects,
+            List<Boolean> respondExtensions,
+            List<List<String>> respondContexts,
+            List<String> provideServices,
+            List<List<String>> provideServicesContexts,
+            List<String> respondServices,
+            List<List<String>> respondServicesContexts,
+            List<String> requestServices,
+            List<List<String>> requestServicesContexts,
+            List<List<String>> requestServicesOperations,
+            List<String> subscribeServices,
+            List<List<String>> subscribeServicesContexts,
+            List<List<String>> subscribeServicesOperations,
+            String suffix) {
         // So we always have a top grouping tag to our payload.
         Element body = new Element("Body", 
                 "http://schemas.xmlsoap.org/soap/envelope/");
         
         // So we have the proper place to start this SOAP payload.
-        Element root = new Element("Provision", 
+        Element root = new Element(name, 
                 "http://www.sifassociation.org/message/soap/2.x");
         body.appendChild(root);
         
-        root.appendChild(createProvisionObjectExtended(
-                "ProvideObjects",
+        root.appendChild(createACLObjectExtended(
+                "Provide" + suffix,
                 provideObjects,
                 provideExtensions,
                 provideContexts));
         
-        root.appendChild(createProvisionObject(
-                "SubscribeObjects",
+        root.appendChild(createACLObject(
+                "Subscribe" + suffix,
                 subscribeObjects,
                 subscribeContexts));
         
-        root.appendChild(createProvisionObject(
-                "PublishAddObjects",
+        root.appendChild(createACLObject(
+                "PublishAdd" + suffix,
                 publishAddObjects,
                 publishAddContexts));
         
-        root.appendChild(createProvisionObject(
-                "PublishChangeObjects",
+        root.appendChild(createACLObject(
+                "PublishChange" + suffix,
                 publishChangeObjects,
                 publishChangeContexts));
 
-        root.appendChild(createProvisionObject(
-                "PublishDeleteObjects",
+        root.appendChild(createACLObject(
+                "PublishDelete" + suffix,
                 publishDeleteObjects,
                 publishDeleteContexts));
 
-        root.appendChild(createProvisionObjectExtended(
-                "RequestObjects",
+        root.appendChild(createACLObjectExtended(
+                "Request" + suffix,
                 requestObjects,
                 requestExtensions,
                 requestContexts));
         
-        root.appendChild(createProvisionObjectExtended(
-                "RespondObjects",
+        root.appendChild(createACLObjectExtended(
+                "Respond" + suffix,
                 respondObjects,
                 respondExtensions,
                 respondContexts));
         
-        // To Do:  More null checks?  A lot of this is optional!
         if(null != provideServices) {
-            root.appendChild(createProvisionService(
+            root.appendChild(createACLService(
                     "ProvideService",
                     provideServices,
                     provideServicesContexts));
         }
         
         if(null != respondServices) {
-            root.appendChild(createProvisionService(
+            root.appendChild(createACLService(
                     "RespondService",
                     respondServices,
                     respondServicesContexts));
         }
 
         if(null != requestServices) {
-            root.appendChild(createProvisionServiceOperational(
+            root.appendChild(createACLServiceOperational(
                     "RequestService",
                     requestServices,
                     requestServicesContexts,
@@ -490,7 +551,7 @@ public class SIF2Payloads {
         }
         
         if(null != subscribeServices) {
-            root.appendChild(createProvisionServiceOperational(
+            root.appendChild(createACLServiceOperational(
                     "SubscribeService",
                     subscribeServices,
                     subscribeServicesContexts,
@@ -523,7 +584,7 @@ public class SIF2Payloads {
         Element body = new Element("Body", 
                 "http://schemas.xmlsoap.org/soap/envelope/");
         
-        body.appendChild(createProvisionObject(
+        body.appendChild(createACLObject(
                 "Subscribe",
                 objects,
                 contexts));
@@ -538,7 +599,7 @@ public class SIF2Payloads {
         Element body = new Element("Body", 
                 "http://schemas.xmlsoap.org/soap/envelope/");
         
-        body.appendChild(createProvisionObject(
+        body.appendChild(createACLObject(
                 "Unprovide",
                 objects,
                 contexts));
@@ -568,7 +629,7 @@ public class SIF2Payloads {
         Element body = new Element("Body", 
                 "http://schemas.xmlsoap.org/soap/envelope/");
         
-        body.appendChild(createProvisionObject(
+        body.appendChild(createACLObject(
                 "Unsubscribe",
                 objects,
                 contexts));
@@ -605,39 +666,42 @@ public class SIF2Payloads {
      * @return  The root of this provisioning chunk.
      * @since 3.0
      */
-    private static Element createProvisionObject(
+    private static Element createACLObject(
             String name,
             List<String> objects,
             List<List<String>> contexts) {
-        // So we do not create invalid payloads.
-        if(objects.size() != contexts.size()) {
-            throw new IllegalArgumentException("Arguments must be the same size.");
-        }
         
         // So we have the proper namespace.
         String ns = "http://www.sifassociation.org/message/soap/2.x";
         
         // So we have the proper place to start this chunk.
         Element root = new Element(name, ns);
-        
-        // So we support all the objects desired in a single message.
-        Element current = null;
-        for(int i = 0; i < objects.size(); i++) {
-            // So we can exclude optional components.
-            if(null != objects.get(i)) {
-                current = new Element("Object", ns);
-                current.addAttribute(new Attribute("ObjectName", objects.get(i)));
-                root.appendChild(current);
 
+        if(null != objects) {
+            // So we do not create invalid payloads.
+            if(null == contexts || objects.size() != contexts.size()) {
+                throw new IllegalArgumentException("Arguments must be the same size.");
+            }
+
+            // So we support all the objects desired in a single message.
+            Element current = null;
+            for(int i = 0; i < objects.size(); i++) {
                 // So we can exclude optional components.
-                if(null != contexts.get(i)) {
-                    Element scopes = new Element("Contexts", ns);
-                    current.appendChild(scopes);
+                if(null != objects.get(i)) {
+                    current = new Element("Object", ns);
+                    current.addAttribute(new Attribute("ObjectName", objects.get(i)));
+                    root.appendChild(current);
 
-                    for(String context : contexts.get(i)) {
-                        current = new Element("Context", ns);
-                        current.appendChild(context);
-                        scopes.appendChild(current);
+                    // So we can exclude optional components.
+                    if(null != contexts.get(i)) {
+                        Element scopes = new Element("Contexts", ns);
+                        current.appendChild(scopes);
+
+                        for(String context : contexts.get(i)) {
+                            current = new Element("Context", ns);
+                            current.appendChild(context);
+                            scopes.appendChild(current);
+                        }
                     }
                 }
             }
@@ -646,16 +710,11 @@ public class SIF2Payloads {
         return root;
     }
     
-    private static Element createProvisionObjectExtended(
+    private static Element createACLObjectExtended(
             String name,
             List<String> objects,
             List<Boolean> extensions,
-            List<List<String>> contexts) {
-        // So we do not create invalid payloads.
-        if(objects.size() != extensions.size() || 
-                objects.size() != contexts.size()) {
-            throw new IllegalArgumentException("Arguments must be the same size.");
-        }    
+            List<List<String>> contexts) {   
         
         // So we have the proper namespace.
         String ns = "http://www.sifassociation.org/message/soap/2.x";
@@ -663,36 +722,44 @@ public class SIF2Payloads {
         // So we have the proper place to start this chunk.
         Element root = new Element(name, ns);
         
-        // So we support all the objects desired in a single message.
-        Element current = null;
-        for(int i = 0; i < objects.size(); i++) {
-            // So we can exclude optional components.
-            if(null != objects.get(i)) {
-                current = new Element("Object", ns);
-                current.addAttribute(new Attribute("ObjectName", objects.get(i)));
-                root.appendChild(current);
-
+        if(null != objects) {
+            // So we do not create invalid payloads.
+            if(null == extensions || null == contexts ||
+                    objects.size() != extensions.size() || 
+                    objects.size() != contexts.size()) {
+                throw new IllegalArgumentException("Arguments must be the same size.");
+            } 
+            // So we support all the objects desired in a single message.
+            Element current = null;
+            for(int i = 0; i < objects.size(); i++) {
                 // So we can exclude optional components.
-                if(null != extensions.get(i)) {                
-                    Element extended = new Element("ExtendedQuerySupport", ns);
-                    if(extensions.get(i)) {
-                        extended.appendChild("true");
-                    }
-                    else {
-                        extended.appendChild("false");
-                    }
-                    current.appendChild(extended);
-                }
+                if(null != objects.get(i)) {
+                    current = new Element("Object", ns);
+                    current.addAttribute(new Attribute("ObjectName", objects.get(i)));
+                    root.appendChild(current);
 
-                // So we can exclude optional components.
-                if(null != contexts.get(i)) {
-                    Element scopes = new Element("Contexts", ns);
-                    current.appendChild(scopes);
+                    // So we can exclude optional components.
+                    if(null != extensions.get(i)) {                
+                        Element extended = new Element("ExtendedQuerySupport", ns);
+                        if(extensions.get(i)) {
+                            extended.appendChild("true");
+                        }
+                        else {
+                            extended.appendChild("false");
+                        }
+                        current.appendChild(extended);
+                    }
 
-                    for(String context : contexts.get(i)) {
-                        current = new Element("Context", ns);
-                        current.appendChild(context);
-                        scopes.appendChild(current);
+                    // So we can exclude optional components.
+                    if(null != contexts.get(i)) {
+                        Element scopes = new Element("Contexts", ns);
+                        current.appendChild(scopes);
+
+                        for(String context : contexts.get(i)) {
+                            current = new Element("Context", ns);
+                            current.appendChild(context);
+                            scopes.appendChild(current);
+                        }
                     }
                 }
             }
@@ -701,7 +768,7 @@ public class SIF2Payloads {
         return root;
     }
     
-    private static Element createProvisionService(
+    private static Element createACLService(
             String name,
             List<String> services,
             List<List<String>> contexts) {
@@ -742,7 +809,7 @@ public class SIF2Payloads {
         return root;
     }
 
-    private static Element createProvisionServiceOperational(
+    private static Element createACLServiceOperational(
             String name,
             List<String> services,
             List<List<String>> contexts,

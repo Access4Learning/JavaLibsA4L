@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBElement;
 import javax.xml.parsers.SAXParser;
@@ -19,6 +20,7 @@ import nu.xom.ParsingException;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.sifassociation.messaging.SIF2Payloads;
 import org.sifassociation.messaging.SIF3Payloads;
 import org.sifassociation.messaging.SIFVersion;
 import org.sifassociation.querying.EXistXQueryREST;
@@ -53,7 +55,97 @@ public class SIFCommonsDemo {
         Logger.getLogger("org.springframework").setLevel(Level.WARN);
         Logger.getLogger("org.apache.http").setLevel(Level.WARN);
         
+        /*
+        
+        // So we know how to turn any example into an XQuery.
+        String xml = "<SIF_Query xmlns=\"http://www.sifinfo.org/infrastructure/2.x\"><SIF_QueryObject ObjectName=\"StudentPersonal\"/><SIF_Example><StudentPersonal><Name Type=\"04\"><LastName>Smith</LastName><FirstName>John</FirstName></Name></StudentPersonal></SIF_Example></SIF_Query>";
+        
+        Builder parser = new Builder();
+        Document doc = null;
+        doc = parser.build(xml, null);
+        Element example = doc.getRootElement();
+        
+        System.out.println(SIFXOMUtil.pretty(example));
+        System.out.println();
+        
+        System.out.println(SIFXOMUtil.query2XQuery(example));
+        
+        // So we know how to turn any non-example SIF_Query into an XQuery.
+
+        xml = "<SIF_Query xmlns=\"http://www.sifinfo.org/infrastructure/2.x\"><SIF_QueryObject ObjectName=\"LibraryPatronStatus\"/><SIF_ConditionGroup Type=\"None\"><SIF_Conditions Type=\"And\"><SIF_Condition><SIF_Element>@SIF_RefObject</SIF_Element><SIF_Operator>EQ</SIF_Operator><SIF_Value>StaffPersonal</SIF_Value></SIF_Condition><SIF_Condition><SIF_Element>@SIF_RefId</SIF_Element><SIF_Operator>EQ</SIF_Operator><SIF_Value>D3E34B359D75101A8C3D00AA001A1652</SIF_Value></SIF_Condition></SIF_Conditions></SIF_ConditionGroup></SIF_Query>";
+
+        doc = parser.build(xml, null);
+        Element query = doc.getRootElement();
+        
+        System.out.println(SIFXOMUtil.pretty(query));
+        System.out.println();
+
+        System.out.println(SIFXOMUtil.query2XQuery(query));
+        
+        //*/
+        /*
+        
+        // So we know how to only include the desired results (green list).
+        String xml = "<user refId=\"fc7dd9d6-80ce-11e8-adc0-fa7ae01bbebc\" xmlns=\"http://www.sifinfo.org/infrastructure/2.x\"><name login=\"jsmith\"><first>John</first><last>Smith</last></name></user>";
+        
+        Builder parser = new Builder();
+        Document doc = parser.build(xml, null);
+        Element user = doc.getRootElement();
+        
+        System.out.println(SIFXOMUtil.pretty(user));
+        
+        List<String> xpaths = new ArrayList();
+        xpaths.add("/user/name/last");
+        xpaths.add("/user/name/@login");
+        
+        for(String xpath : xpaths) {
+            System.out.println(xpath);
+        }
+        
+        SIFXOMUtil.greenList(user, xpaths);
+        System.out.println(SIFXOMUtil.pretty(user));
+        
+        //*/
         ///*
+        
+        // So we know how to turn any SIF_ExtendedQuery into an XQuery.
+        String xml = "<SIF_ExtendedQuery xmlns=\"http://www.sifinfo.org/infrastructure/2.x\"><SIF_Select Distinct=\"false\" RowCount=\"All\"><SIF_Element ObjectName=\"StudentPersonal\"/></SIF_Select><SIF_From ObjectName=\"StudentPersonal\"/></SIF_ExtendedQuery>";
+        
+        Builder parser = new Builder();
+        Document doc = parser.build(xml, null);
+        Element extendedQuery = doc.getRootElement();
+        
+        System.out.println(SIFXOMUtil.pretty(extendedQuery));
+        System.out.println();
+        
+        System.out.println(SIFXOMUtil.extendedQuery2XQuery(extendedQuery));
+        
+        // Extended with a join.
+        xml = "<SIF_ExtendedQuery xmlns=\"http://www.sifassociation.org/datamodel/na/3.3\">\n" +
+              "  <SIF_Select Distinct=\"false\" RowCount=\"All\">\n" +
+              "    <SIF_Element ObjectName=\"xCourse\"/>\n" +
+              "    <SIF_Element ObjectName=\"xRoster\"/>\n" +
+              "  </SIF_Select>\n" +
+              "  <SIF_From ObjectName=\"xCourse\">\n" +
+              "    <SIF_Join Type=\"FullOuter\">\n" +
+              "      <SIF_JoinOn>\n" +
+              "        <SIF_LeftElement ObjectName=\"xCourse\">@refId</SIF_LeftElement>\n" +
+              "        <SIF_RightElement ObjectName=\"xRoster\">courseRefId</SIF_RightElement>\n" +
+              "      </SIF_JoinOn>\n" +
+              "    </SIF_Join>\n" +
+              "  </SIF_From>\n" +
+              "</SIF_ExtendedQuery>";
+        
+        doc = parser.build(xml, null);
+        extendedQuery = doc.getRootElement();
+
+        System.out.println(SIFXOMUtil.pretty(extendedQuery));
+        System.out.println();
+        
+        System.out.println(SIFXOMUtil.extendedQuery2XQuery(extendedQuery));
+        
+        //*/
+        /*
         // So we know how to create SIF 3 payloads.
         System.out.println(SIF3Payloads.createEnvironment(
                 null,
@@ -208,7 +300,7 @@ public class SIFCommonsDemo {
         //*/
         
         /* Demonstraights how to dynamically load and execute JRuby scripts! */
-        ///*
+        /*
         // So we can load all the scripts defined in the XML configuration file.
         Builder parser = new Builder();
         String XML = null;
@@ -250,8 +342,9 @@ public class SIFCommonsDemo {
             hooks.run();
         }
         System.out.println("All JRuby Spring Beans have been run!!!");
-        //*/
+        */
 
+        /*
         String url = "http://localhost/sif/requests/addresss/address;zone=temp;context=trial";
         System.out.println("");
         System.out.println(url);
@@ -263,6 +356,7 @@ public class SIFCommonsDemo {
         System.out.println(url);
         System.out.println("Resource: " + SIFURLUtil.getResource(url));
         System.out.println("Collection: " + SIFURLUtil.getCollection(url));
+        */
     }
 
 }

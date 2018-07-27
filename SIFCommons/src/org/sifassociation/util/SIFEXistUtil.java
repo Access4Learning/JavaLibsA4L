@@ -318,6 +318,7 @@ public class SIFEXistUtil {
             }
         }
         // To Do:  Explicitly find and utilize an unused prefix throughout.
+       
         root.addNamespaceDeclaration("d", original.getNamespaceURI());
         root.addAttribute(new Attribute("version", "1.0"));
         
@@ -515,5 +516,19 @@ public class SIFEXistUtil {
 
     public String getBasicEncoded() {
         return "Basic " + SIFAuthUtil.getBasicHash(this.username, this.password);
+    }
+    
+    /**
+     * Takes a string and escapes it for use within an XQuery.
+     * 
+     * Note:  Limited to known cases.
+     * Case: & -> &amp;
+     * 
+     * @param escape
+     * @return 
+     */
+    public static String escapeXQuery(String escape) {
+        escape = escape.replaceAll("&", "&amp;");
+        return escape;
     }
 }

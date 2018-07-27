@@ -120,8 +120,8 @@ public final class SIFRefId {
             identifier = id.toString();
         }
         else if ('1' != v) {
-            throw new IllegalArgumentException(v + " is not a valid version (1 "
-                    + "or 4).");
+            throw new IllegalArgumentException("SIFRefID: " + v +
+                    " is not a valid version (1 or 4) expected.");
         }
         else {
             // So we keep that this was a time-based UUID.
@@ -146,13 +146,13 @@ public final class SIFRefId {
     public void setHardware(String hardwareAddress) {
         // So the hardware address is not too long.
         if(12 < hardwareAddress.length()) {
-            throw new IllegalArgumentException(hardwareAddress + " is not a "
-                    + "valid hardware address (too long).");
+            throw new IllegalArgumentException("SIFRefID: " + hardwareAddress + 
+                    " is not a valid hardware address (too long).");
         }
         // So the hardware address is really hexadecimal.
         if(!hardwareAddress.matches("[0-9a-fA-F]*")) {
-            throw new IllegalArgumentException(hardwareAddress + " is not a "
-                    + "valid hardware address (not a hex string).");
+            throw new IllegalArgumentException("SIFRefID: " + hardwareAddress + 
+                    " is not a valid hardware address (not a hex string).");
         }
         // So we keep the specified valid address.
         hardware = hardwareAddress.toLowerCase();
@@ -179,8 +179,8 @@ public final class SIFRefId {
     public void setVersion(int v) {
         // So only supported version are valid.
         if(1 != v && 4 != v) {
-            throw new IllegalArgumentException(v + " is not a valid version (1 "
-                    + "or 4).");
+            throw new IllegalArgumentException("SIFRefID: " + v + 
+                    " is not a valid version (1 or 4).");
         }
         // So we keep the specified valid version.
         version = v;
@@ -206,8 +206,9 @@ public final class SIFRefId {
     public void setSequence(int clockSequence) {
         // So only supported clock sequences are valid.
         if(0 > clockSequence || 0x3FFF < clockSequence) {
-            throw new IllegalArgumentException(Integer.toHexString(clockSequence)
-                    + " is not a valid clock sequence (0 - 0x3FFF).");
+            throw new IllegalArgumentException("SIFRefID: " + 
+                    Integer.toHexString(clockSequence) +
+                    " is not a valid clock sequence (0 - 0x3FFF).");
         }
         // So we keep the specified valid clock sequence.
         sequence = clockSequence;
@@ -233,8 +234,9 @@ public final class SIFRefId {
     public void setTimestamp(long time) {
         // So only supported timestamps are valid.
         if(0 > time || 0xFFFFFFFFFFFFFFFL < time) {
-            throw new IllegalArgumentException(Long.toHexString(time)
-                    + " is not a valid timestamp (0 - 0xFFFFFFFFFFFFFFF).");
+            throw new IllegalArgumentException("SIFRefID: " + 
+                    Long.toHexString(time) +
+                    " is not a valid timestamp (0 - 0xFFFFFFFFFFFFFFF).");
         }
         
         // So we keep the specified valid clock sequence.

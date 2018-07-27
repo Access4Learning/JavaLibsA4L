@@ -126,8 +126,8 @@ public final class SIF2MessageXML implements ISIFMessageXML {
         setNamespace("http://www.sifinfo.org/infrastructure/2.x");  // sif
         original = "";
         missing = new ArrayList<String>();
-        setInfrastructureVersion(new SIFVersion("2.5"));
-        setPayloadVersion(new SIFVersion("2.5"));
+        setInfrastructureVersion(new SIFVersion("2.7"));
+        setPayloadVersion(new SIFVersion("2.7"));
         setZoneId("urn:sif:zone:PRODUCT.TestHarness3.SIF");
         setSecurity(false);
         setAuthenticationLevel(0);
@@ -299,7 +299,6 @@ public final class SIF2MessageXML implements ISIFMessageXML {
         if(null != current) {
             setDestinationId(current.getValue());
         }
-        
         
         // So we can readily work with the context information.
         Element parent = sifHeader.getFirstChildElement("Contexts", t);
@@ -1157,6 +1156,15 @@ public final class SIF2MessageXML implements ISIFMessageXML {
     }
 
     /**
+     * So our payload is protected from external edits.
+     * 
+     * @return A copy of the messages payload. 
+     */
+    public Document getPayloadCopy() {
+        return new Document(payload);
+    }
+    
+    /**
      * Sets the primary payload based on the XML of the passed object.
      * 
      * Note:  If XOM Documents or Element are passed they are not parsed again.
@@ -1317,6 +1325,15 @@ public final class SIF2MessageXML implements ISIFMessageXML {
         namespaces.addNamespace(prefix, namespace);
     }
 
+    /**
+     * So we can honor the contexts in the message elsewhere.
+     * 
+     * @return A shallow copy of the messages context.
+     */
+    public List<String> getContexts() {
+        return new ArrayList(contexts);
+    }
+    
     /**
      * Add a context to the message.
      * 
