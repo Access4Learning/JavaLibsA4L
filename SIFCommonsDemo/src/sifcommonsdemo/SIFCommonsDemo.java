@@ -134,6 +134,17 @@ public class SIFCommonsDemo {
               "      </SIF_JoinOn>\n" +
               "    </SIF_Join>\n" +
               "  </SIF_From>\n" +
+              "  <SIF_Where>\n" +
+              "    <SIF_ConditionGroup Type=\"None\">\n" +
+              "      <SIF_Conditions Type=\"And\">\n" +
+              "        <SIF_Condition>\n" +
+              "          <SIF_Element ObjectName=\"xCourse\">applicableEducationLevels/applicableEducationLevel</SIF_Element>\n" +
+              "          <SIF_Operator>EQ</SIF_Operator>\n" +
+              "          <SIF_Value>07</SIF_Value>\n" +
+              "        </SIF_Condition>\n" +
+              "      </SIF_Conditions>\n" +
+              "    </SIF_ConditionGroup>\n" +
+              "  </SIF_Where>\n" +
               "</SIF_ExtendedQuery>";
         
         doc = parser.build(xml, null);

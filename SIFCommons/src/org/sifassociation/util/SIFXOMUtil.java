@@ -501,59 +501,7 @@ public class SIFXOMUtil {
             xquery.append(objectName);
             xquery.append("\n");
             
-            // So we get the outer most (limited to one) logical opperator correct.
-            String outerLogic = conditionGroup.getAttributeValue("Type");
-            if(null != outerLogic) {
-                xquery.append("where ");
-                // So we open the outer logical block.
-                if(0 != "None".compareToIgnoreCase(outerLogic)) {
-                    xquery.append("(");
-                }
-                Elements conditions = conditionGroup.getChildElements("SIF_Conditions", ns);
-                for(int i = 0; i < conditions.size(); i++) {
-                    // So we honor the outer logic.
-                    if(0 < i) {
-                        logicalHelper(xquery, outerLogic);
-                    }
-                    // So we honor the inner (may be multiple) logical opperator.
-                    Element currentConditions = conditions.get(i);
-                    String innerLogic = currentConditions.getAttributeValue("Type");
-                    if(null != innerLogic) {
-                        // So we open this logical block.
-                        if(0 != "None".compareToIgnoreCase(innerLogic)) {
-                            xquery.append("(");
-                        }
-                        // So we include the actual condition (may be more than one).
-                        Elements condition = currentConditions.getChildElements(
-                                "SIF_Condition", ns);
-                        for(int j = 0; j < condition.size(); j++) {
-                            if(0 < j) {
-                                logicalHelper(xquery, innerLogic);
-                            }
-                            Element current = condition.get(j);
-                            Element element = current.getFirstChildElement("SIF_Element", ns);
-                            Element operator = current.getFirstChildElement("SIF_Operator", ns);
-                            Element value = current.getFirstChildElement("SIF_Value", ns);
-                            if(null != element && null != operator && null != value) {
-                                xquery.append(element.getValue());
-                                xquery.append(" ");
-                                xquery.append(operatorHelper(operator.getValue()));
-                                xquery.append(" ");
-                                xquery.append(value.getValue());
-                            }
-                        }
-                        // So we close this logical block.
-                        if(0 != "None".compareToIgnoreCase(outerLogic)) {
-                            xquery.append(")");
-                        }                        
-                    }
-                    // So we close the outer logical block.
-                    if(0 != "None".compareToIgnoreCase(innerLogic)) {
-                        xquery.append(")");
-                    }
-                    xquery.append("\n");
-                }
-            }
+            conditionGroup2Where(conditionGroup, ns, xquery);
         }
         else if(null != exampleWrapper) {
             Element example = (Element) exampleWrapper.getChild(0);
@@ -569,6 +517,81 @@ public class SIFXOMUtil {
         return xquery.toString();
     }
 
+    /**
+     * Adds a where clause to the current end of the xquery based on the SIF 2
+     * condition group.
+     * 
+     * @param conditionGroup
+     * @param ns
+     * @param xquery 
+     */
+    private static void conditionGroup2Where(Element conditionGroup, String ns, StringBuilder xquery) {
+        // So we get the outer most (limited to one) logical opperator correct.
+        String outerLogic = conditionGroup.getAttributeValue("Type");
+        if(null != outerLogic) {
+            xquery.append("where ");
+            // So we open the outer logical block.
+            if(0 != "None".compareToIgnoreCase(outerLogic)) {
+                xquery.append("(");
+            }
+            Elements conditions = conditionGroup.getChildElements("SIF_Conditions", ns);
+            for(int i = 0; i < conditions.size(); i++) {
+                // So we honor the outer logic.
+                if(0 < i) {
+                    logicalHelper(xquery, outerLogic);
+                }
+                // So we honor the inner (may be multiple) logical opperator.
+                Element currentConditions = conditions.get(i);
+                String innerLogic = currentConditions.getAttributeValue("Type");
+                if(null != innerLogic) {
+                    // So we open this logical block.
+                    if(0 != "None".compareToIgnoreCase(innerLogic)) {
+                        xquery.append("(");
+                    }
+                    // So we include the actual condition (may be more than one).
+                    Elements condition = currentConditions.getChildElements(
+                            "SIF_Condition", ns);
+                    for(int j = 0; j < condition.size(); j++) {
+                        if(0 < j) {
+                            logicalHelper(xquery, innerLogic);
+                        }
+                        Element current = condition.get(j);
+                        Element element = current.getFirstChildElement("SIF_Element", ns);
+                        List<String> crumbs = new ArrayList<>();
+                        // So we have the join wrapper and object name for SIF_ExtendedQuery.
+                        String objectName = "";
+                        if(null != element) {
+                            objectName = element.getAttributeValue("ObjectName");
+                            if(null != objectName && !objectName.isEmpty()) {
+                                crumbs.add("$RESULT");
+                                crumbs.add(objectName);
+                            }
+                            crumbs.add(element.getValue());
+                        }
+                        Element operator = current.getFirstChildElement("SIF_Operator", ns);
+                        Element value = current.getFirstChildElement("SIF_Value", ns);
+                        if(null != element && null != operator && null != value) {
+                            xquery.append(crumbs2XPath(crumbs));
+                            xquery.append(" ");
+                            xquery.append(operatorHelper(operator.getValue()));
+                            xquery.append(" ");
+                            xquery.append(value.getValue());
+                        }
+                    }
+                    // So we close this logical block.
+                    if(0 != "None".compareToIgnoreCase(outerLogic)) {
+                        xquery.append(")");
+                    }                        
+                }
+                // So we close the outer logical block.
+                if(0 != "None".compareToIgnoreCase(innerLogic)) {
+                    xquery.append(")");
+                }
+                xquery.append("\n");
+            }
+        }        
+    }
+    
     /**
      * Creates an XQuery that retrieves the targeted objects as joined. 
      * Note: Results from query will need to be massaged into 
@@ -771,9 +794,14 @@ public class SIFXOMUtil {
                 xquery.append("\n");
             }
         }
-        // To Do: So we honor condition (like in SIF_Query).
         // So we can always adjust the joined results (order by)
         xquery.append(")\n");
+        // So we honor conditions (like in SIF_Query).
+        Element where = eQuery.getFirstChildElement("SIF_Where", ns);
+        if(null != where) {
+            Element conditionGroup = where.getFirstChildElement("SIF_ConditionGroup", ns);
+            conditionGroup2Where(conditionGroup, ns, xquery);
+        }
         // To Do:  order by
         // So we can always adjust the joined results (order by)
         xquery.append("return $RESULT");        
