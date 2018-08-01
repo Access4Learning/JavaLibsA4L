@@ -145,6 +145,9 @@ public class SIFCommonsDemo {
               "      </SIF_Conditions>\n" +
               "    </SIF_ConditionGroup>\n" +
               "  </SIF_Where>\n" +
+              "<SIF_OrderBy>" +
+              "<SIF_Element ObjectName=\"xRoster\" Ordering=\"Descending\">schoolSectionId</SIF_Element>" +
+              "</SIF_OrderBy>" +
               "</SIF_ExtendedQuery>";
         
         doc = parser.build(xml, null);

@@ -611,13 +611,12 @@ public class SIFXOMUtil {
         // So we can always adjust the joined results (order by)
         xquery.append("for $RESULT in (\n");
         // So we know all the objects in play by name.
-        Set<String> objects;  // To Do: Consider inlcuding //@ObjectName instead, so we can support joins on unreturned objects.
+        Set<String> objects;
         objects = new LinkedHashSet<>();
-        Element select = eQuery.getFirstChildElement("SIF_Select", ns);
-        Elements selectElements = select.getChildElements();
-        for(int i = 0; i < selectElements.size(); i++) {
-            Element current = selectElements.get(i);
-            objects.add(current.getAttributeValue("ObjectName"));
+        Nodes matches = eQuery.query("//@ObjectName");
+        for(int i = 0; i < matches.size(); i++) {
+            Node match = matches.get(i);
+            objects.add(match.getValue());
         }
         // So we return all the objects in play.
         char[] alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
@@ -802,7 +801,22 @@ public class SIFXOMUtil {
             Element conditionGroup = where.getFirstChildElement("SIF_ConditionGroup", ns);
             conditionGroup2Where(conditionGroup, ns, xquery);
         }
-        // To Do:  order by
+        // So we honor order by requirements.
+        Element orderBy = eQuery.getFirstChildElement("SIF_OrderBy", ns);
+        if(null != orderBy) {
+            Elements elements = orderBy.getChildElements("SIF_Element", ns);
+            for(int i = 0; i < elements.size(); i++) {
+                Element element = elements.get(i);
+                List<String> crumbs = new ArrayList<>();
+                crumbs.add("$RESULT");
+                crumbs.add(element.getAttributeValue("ObjectName"));
+                crumbs.add(element.getValue());
+                String xpath = crumbs2XPath(crumbs);
+                xquery.append("order by ");
+                xquery.append(xpath);
+                orderHelper(xquery, element.getAttributeValue("Ordering"));
+            }
+        }
         // So we can always adjust the joined results (order by)
         xquery.append("return $RESULT");        
         return xquery.toString();
@@ -840,6 +854,15 @@ public class SIFXOMUtil {
         // EQ & the default.
         return "=";
     }
+    
+    private static void orderHelper(StringBuilder sb, String direction) {
+        if(0 == "Descending".compareToIgnoreCase(direction)) {
+            sb.append(" descending\n");
+        }
+        else {
+            sb.append("\n");
+        }        
+    }    
     
     /**
      * Filter's "root" until it only contains elements and attributes in "xpaths".
