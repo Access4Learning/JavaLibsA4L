@@ -123,8 +123,10 @@ public class SIFCommonsDemo {
         // Extended with a join.
         xml = "<SIF_ExtendedQuery xmlns=\"http://www.sifassociation.org/datamodel/na/3.3\">\n" +
               "  <SIF_Select Distinct=\"false\" RowCount=\"All\">\n" +
-              "    <SIF_Element ObjectName=\"xCourse\"/>\n" +
-              "    <SIF_Element ObjectName=\"xRoster\"/>\n" +
+              "    <SIF_Element ObjectName=\"xCourse\"></SIF_Element>\n" +
+              "    <SIF_Element ObjectName=\"xCourse\">*</SIF_Element>\n" +
+              "    <SIF_Element ObjectName=\"xRoster\">@refId</SIF_Element>\n" +
+              "    <SIF_Element ObjectName=\"xRoster\">schoolSectionId</SIF_Element>\n" +
               "  </SIF_Select>\n" +
               "  <SIF_From ObjectName=\"xCourse\">\n" +
               "    <SIF_Join Type=\"FullOuter\">\n" +
@@ -157,6 +159,19 @@ public class SIFCommonsDemo {
         System.out.println();
         
         System.out.println(SIFXOMUtil.extendedQuery2XQuery(extendedQuery));
+               
+        // So we know how to turn data from an extended query into SIF_ExtendedQueryResults.
+        // Note:  In production "RESULTS" root tag will have to be added to use 
+        //        the code here unchanged.
+        String xmlResults = SIFFileUtil.readFile("resources/examples/joined.xml");
+        //System.out.println(xml);  // Debug
+        
+        doc = parser.build(xmlResults, null);
+        Element resultsJoined = doc.getRootElement();
+        
+        //System.out.println(SIFXOMUtil.pretty(resultsJoined));  // Debug
+        
+        System.out.println(SIFXOMUtil.pretty(SIFXOMUtil.resultsJoined2extendedResults(extendedQuery, resultsJoined)));
         
         //*/
         /*

@@ -225,9 +225,29 @@ public class SIFXOMUtil {
         return null;
     }
 
+    // Returns the node of the first matching XPath or null.
+    // Note: To use the ns namespace use the prefix "ns" in your xpath.
+    // Example: /ns:environment/ns:consumerName
+    public static Node getFirstXPathNode(String xpath, Element root, String ns) {
+        // So we use the specified namespace.
+        XPathContext xpc = new XPathContext();
+        xpc.addNamespace("ns", ns);
 
+        // So we execute the query.
+        Nodes results = root.copy().query(xpath, xpc);
+        if(0 < results.size()) {
+            Node first = results.get(0);
+            if(null != first) {
+                return first;
+            }
+        }
+        
+        // So we know the difference between failure and a blank field.
+        return null;
+    }
+    
     /**
-     * Returns the value of all matching XPath or an empty list.
+     * Returns the values for all  nodes matching the XPath or an empty list.
      * Note: To use the ns namespace use the prefix "ns" in your xpath.
      * Example: /ns:environment/ns:consumerName
      * 
@@ -252,6 +272,39 @@ public class SIFXOMUtil {
             Node current = results.get(i);
             if(null != current) {
                 matches.add(current.getValue());
+            }
+        }
+        
+        // So we know the difference between failure and a blank field.
+        return matches;
+    }
+
+    /**
+     * Returns all matching nodes for the XPath or an empty list.
+     * Note: To use the ns namespace use the prefix "ns" in your xpath.
+     * Example: /ns:environment/ns:consumerName
+     * 
+     * @param xpath
+     * @param root
+     * @param ns
+     * @return
+     * @see addGenericNamespace
+     * @since 3.2
+     */
+    public static List<Node> getAllXPathNodes(String xpath, Element root, String ns) {
+        // So we can return the results.
+        List<Node> matches = new ArrayList();
+
+        // So we use the specified namespace.
+        XPathContext xpc = new XPathContext();
+        xpc.addNamespace("ns", ns);
+
+        // So we execute the query.        
+        Nodes results = root.copy().query(xpath, xpc);
+        for(int i = 0; i < results.size(); i++) {
+            Node current = results.get(i);
+            if(null != current) {
+                matches.add(current);
             }
         }
         
@@ -922,6 +975,77 @@ public class SIFXOMUtil {
         }              
     }
     
+    /**
+     * So our XQuery results for extended queries take the expected form.
+     * 
+     * @param eQuery
+     * @param rJoined
+     * @return 
+     * @since 3.2
+     */
+    public static Element resultsJoined2extendedResults(Element eQuery, Element rJoined) {
+        String ns = eQuery.getNamespaceURI();
+        Element eResults = new Element("SIF_ExtendedQueryResults", ns);
+        Element eColumnHeaders = new Element("SIF_ColumnHeaders", ns);
+        eResults.appendChild(eColumnHeaders);
+        Element eRows = new Element("SIF_Rows", ns);
+        eResults.appendChild(eRows);
+        Element select = eQuery.getFirstChildElement("SIF_Select", ns);
+        Elements elements = select.getChildElements("SIF_Element", ns);
+        // So we have all the column headers.
+        for(int i = 0; i < elements.size(); i++) {
+            Element element = elements.get(i);
+            Element header = detatchedCopy(element);
+            eColumnHeaders.appendChild(header);
+        }
+        // So we have all the data as requested.
+        Elements joins = rJoined.getChildElements("JOINED", ns);
+        for(int i = 0; i < joins.size(); i++) {
+            // So we have a new row.
+            Element row = new Element("R", ns);
+            eRows.appendChild(row);
+            // So we can work with each returned join.
+            Element join = joins.get(i);
+            // So we can pluck out (and included) the same data everytime.
+            for(int j = 0; j < elements.size(); j++) {
+                // So we have our column wrapper.
+                Element column = new Element("C", ns);
+                row.appendChild(column);
+                // So we get the requested data.
+                Element element = elements.get(j);
+                List<String> crumbs = new ArrayList<>();
+                String objectName = element.getAttributeValue("ObjectName");
+                if(null != objectName && !objectName.isEmpty()) {
+                    crumbs.add(objectName);
+                }
+                String value = element.getValue();
+                if(null != value && !value.isEmpty()) {
+                    crumbs.add(value);
+                }
+                if(!crumbs.isEmpty()) {
+                    String xpath = crumbs2XPath(crumbs);
+                    xpath = "/JOINED" + xpath;
+                    xpath = addGenericNamespace(xpath);
+                    List<Node> matches = getAllXPathNodes(xpath, join, ns);
+                    for(Node match : matches) {
+                        if(match instanceof Attribute) {
+                            String aValue = ((Attribute) match).getValue();
+                            column.appendChild(aValue);
+                        }
+                        else if(match instanceof Element) {
+                            Element copy = detatchedCopy((Element) match);
+                            if(!value.isEmpty()) {
+                                SIFXOMUtil.detatchedChildren(copy);
+                            }
+                            column.appendChild(copy);
+                        }
+                    }
+                }
+            }
+        }
+        return eResults;
+    }
+        
     private static String crumbs2XPath(List<String> crumbs)  {
         StringBuilder xpath = new StringBuilder();
         for(String current : crumbs) {
@@ -929,6 +1053,34 @@ public class SIFXOMUtil {
             xpath.append(current);
         }
         return xpath.toString();
+    }
+    
+    /**
+     * So we can pluck out elements without impacting the tree.
+     * 
+     * @param original
+     * @return 
+     * @since 3.2
+     */
+    public static Element detatchedCopy(Element original) {
+        Element copy = new Element(original);
+        copy.detach();
+        return copy;
+    }
+    
+    /**
+     * So an element can be displayed without its children as desired.
+     * Note:  Modifies the element in place so you probably want to make a copy.
+     * 
+     * @param withChildren 
+     * @see detatchedCopy
+     * @since 3.2
+     */
+    public static void detatchedChildren(Element withChildren) {
+        Elements children = withChildren.getChildElements();
+        for(int i = 0; i < children.size(); i++) {
+            children.get(i).detach();
+        }
     }
     
     /* SIFisms */
