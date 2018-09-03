@@ -355,7 +355,7 @@ public class SIF2Payloads {
         return body.toXML();
     }
     
-
+    
     public static String createPing() {
         // So we always have a top grouping tag to our payload.
         Element body = new Element("Body", 
@@ -710,6 +710,16 @@ public class SIF2Payloads {
         return root;
     }
     
+    public static Element createObjectList(
+            List<String> objects,
+            List<List<String>> contexts) {   
+        
+        // So we have consistent ACLs.
+        Element root = createACLObject("ObjectList", objects, contexts);
+                
+        return root;
+    }
+    
     private static Element createACLObjectExtended(
             String name,
             List<String> objects,
@@ -765,6 +775,17 @@ public class SIF2Payloads {
             }
         }
         
+        return root;
+    }
+    
+    public static Element createObjectListExtended(
+            List<String> objects,
+            List<Boolean> extensions,
+            List<List<String>> contexts) {   
+        
+        // So we have consistent ACLs.
+        Element root = createACLObjectExtended("ObjectList", objects, extensions, contexts);
+                
         return root;
     }
     

@@ -3,11 +3,14 @@ package sifcommonsdemo;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBElement;
+import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.Source;
@@ -20,8 +23,10 @@ import nu.xom.ParsingException;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.sifassociation.messaging.SIF2MessageXML;
 import org.sifassociation.messaging.SIF2Payloads;
 import org.sifassociation.messaging.SIF3Payloads;
+import org.sifassociation.messaging.SIFRefId;
 import org.sifassociation.messaging.SIFVersion;
 import org.sifassociation.querying.EXistXQueryREST;
 import org.sifassociation.querying.IXQuery;
@@ -169,11 +174,35 @@ public class SIFCommonsDemo {
         doc = parser.build(xmlResults, null);
         Element resultsJoined = doc.getRootElement();
         
-        //System.out.println(SIFXOMUtil.pretty(resultsJoined));  // Debug
+        System.out.println(SIFXOMUtil.pretty(resultsJoined));  // Debug
         
         System.out.println(SIFXOMUtil.pretty(SIFXOMUtil.resultsJoined2extendedResults(extendedQuery, resultsJoined)));
         
         //*/
+
+        // So we create clean SIF_Response messages.
+        String ns = "http://www.sifinfo.org/infrastructure/2.x";
+        SIF2MessageXML response = null;
+        response = new SIF2MessageXML();
+        if(null != response) {
+            response.setType("Response");
+            response.setTransport("HTTP");
+            String hostname = "192.168.1.103";
+            String sequence = "127";
+            SIFRefId refId = null;
+            refId = new SIFRefId(hostname, Integer.parseInt(sequence));
+            if(null != refId) {
+                response.setMessageId(refId);
+            }
+            response.setRelatesTo("43B9E0A001651000007F0C4DE9CBABBA");
+            response.setMorePackets("Yes");
+            Element payload = new Element("SIF_Response", ns);
+            payload.appendChild(new Element("SIF_ObjectData", ns));
+            response.setPayload(payload);
+            System.out.println(response.toString());
+            System.out.println(response.toString().getBytes("UTF-8").length);
+        }
+
         /*
         // So we know how to create SIF 3 payloads.
         System.out.println(SIF3Payloads.createEnvironment(
