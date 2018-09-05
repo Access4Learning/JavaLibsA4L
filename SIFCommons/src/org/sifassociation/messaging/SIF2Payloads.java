@@ -172,7 +172,7 @@ public class SIF2Payloads {
         return body.toXML();
     }
     
-    public static String createStatus(int code, String description) {
+    public static String createStatus(int code, String description, Element data) {
         // So we always have a top grouping tag to our payload.
         Element body = new Element("Body", 
                 "http://schemas.xmlsoap.org/soap/envelope/");
@@ -188,9 +188,18 @@ public class SIF2Payloads {
         current.appendChild(Integer.toString(code));
         root.appendChild(current);
 
-        current = new Element("Desc", ns);
-        current.appendChild(description);
-        root.appendChild(current);
+        if(null != description) {
+            current = new Element("Desc", ns);
+            current.appendChild(description);
+            root.appendChild(current);
+        }
+        
+        if(null != data) {
+            Element dataCopy = new Element(data);
+            current = new Element("Data", ns);
+            current.appendChild(dataCopy);
+            root.appendChild(current);
+        }
         
         return body.toXML();
     }

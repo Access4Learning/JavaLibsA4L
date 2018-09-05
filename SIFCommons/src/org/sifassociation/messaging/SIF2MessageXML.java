@@ -1163,6 +1163,20 @@ public final class SIF2MessageXML implements ISIFMessageXML {
     public Document getPayloadCopy() {
         return new Document(payload);
     }
+
+    /**
+     * So we can get the current form of the message as a XOM Document.
+     * 
+     * @return The built-up message.
+     */
+    public Element getRootElement() {
+        if("HTTP".equals(this.getTransport())) {
+            return this.getHTTP().getRootElement();
+        }
+        else {
+            return this.getSOAP().getRootElement();
+        }
+    }
     
     /**
      * Sets the primary payload based on the XML of the passed object.
