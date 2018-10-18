@@ -4,11 +4,7 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/Users/jlovell/NetBeansProjects/JavaLibsA4L/SIFCommons/src/org/sifassociation/messaging/SIF2MessageXML.java</file>
-            <file>file:/Users/jlovell/NetBeansProjects/JavaLibsA4L/SIFCommons/src/org/sifassociation/schema/PathObjectVisit.java</file>
             <file>file:/Users/jlovell/NetBeansProjects/JavaLibsA4L/SIFCommons/src/org/sifassociation/messaging/SIF2Payloads.java</file>
-            <file>file:/Users/jlovell/NetBeansProjects/JavaLibsA4L/SIFCommons/src/org/sifassociation/util/SIFEXistUtil.java</file>
-            <file>file:/Users/jlovell/NetBeansProjects/JavaLibsA4L/SIFCommons/src/org/sifassociation/util/SIFXOMUtil.java</file>
         </group>
     </open-files>
 </project-private>
