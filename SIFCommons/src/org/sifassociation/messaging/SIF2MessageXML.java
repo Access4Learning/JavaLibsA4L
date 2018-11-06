@@ -1082,61 +1082,68 @@ public final class SIF2MessageXML implements ISIFMessageXML {
         // So we do not modify the parsed in payload.
         Element body = new Element(getPayload().getRootElement());
         
-        // So we know what types to convert.
-        List<String> converts = Collections.unmodifiableList(Arrays.asList(
-        "Ack", "Register", "Provide", "Provision", "Query", "ExtendedQuery", 
-        "Response", "Subscribe", "SystemControl", "Unprovide", "Unsubscribe"));
-        
-        // So we know where to stop our conversions.
-        List<Element> limits = new ArrayList<Element>();
-        if("Response".equals(type)) {
-            limits.add(new Element("Rows", 
-                    "http://www.sifassociation.org/message/soap/2.x"));
-        }
-        
-        // So the payload reflects the transport.
-        if(converts.contains(type)) {
-            if(! body.getLocalName().startsWith("SIF_")) {
-                SIFXOMUtil.prepend(body, "SIF_", limits);
-            }            
-            if(! ns.equalsIgnoreCase(body.getNamespaceURI())) {
-                SIFXOMUtil.renamespace(body, ns, limits);
+        if(!"http://www.sifinfo.org/infrastructure/2.x".equalsIgnoreCase(body.getNamespaceURI()))  {
+            // So we know what types to convert. 
+            List<String> converts = Collections.unmodifiableList(Arrays.asList(
+            "Ack", "Register", "Provide", "Provision", "Request", "Response", 
+                    "Subscribe", "SystemControl", "Unprovide", "Unsubscribe"));
+
+            // So we know where to stop our conversions.
+            List<Element> limits = new ArrayList<Element>();
+            if("Response".equals(type)) {
+                limits.add(new Element("Rows", 
+                        "http://www.sifassociation.org/message/soap/2.x"));
             }
-            
-            // So we add the extra SystemControl tag for this transport.
-            if(type.equals("SystemControl") &&
-                null == body.getFirstChildElement("SIF_SystemControlData", ns)) {
-                Element temp = new Element("SIF_SystemControlData", ns);
-                Elements children = body.getChildElements();
-                for(int i = 0; i < children.size(); i++) {
-                    Element child = children.get(i);
-                    child.detach();
-                    temp.appendChild(child);
+            // So we don't convert bodies that have already been converted (other messages wrapped in an Ack).
+            XPathContext context = new XPathContext("sif", "http://www.sifinfo.org/infrastructure/2.x");
+            if("Ack".equals(type) && 0 < body.query("//sif:SIF_Message", context).size()) {
+                limits.add(new Element("Data", 
+                        "http://www.sifassociation.org/message/soap/2.x"));
+            }
+
+            // So the payload reflects the transport.
+            if(converts.contains(type)) {
+                if(! body.getLocalName().startsWith("SIF_")) {
+                    SIFXOMUtil.prepend(body, "SIF_", limits);
+                }            
+                if(! ns.equalsIgnoreCase(body.getNamespaceURI())) {
+                    SIFXOMUtil.renamespace(body, ns, limits);
                 }
-                body.removeChildren();
-                body.appendChild(temp);
-            }
-        }
-        
-        
-        if(type.equals("Register")) {
-            // So we drop the inner body Register tag for this transport.
-            if(null != body.getFirstChildElement("SIF_Register", ns)) {
-                body = body.getFirstChildElement("SIF_Register", ns);
-            }
-            
-            // So we communicate the proper Push protocol.
-            Element edit = body.getFirstChildElement("SIF_Protocol", ns);
-            if(null != edit) {
-                Attribute pt = edit.getAttribute("Type");
-                if(pt.getValue().startsWith("HTTPS")) {
-                    pt.setValue("HTTPS");
-                }
-                else {
-                    pt.setValue("HTTP");
+
+                // So we add the extra SystemControl tag for this transport.
+                if(type.equals("SystemControl") &&
+                    null == body.getFirstChildElement("SIF_SystemControlData", ns)) {
+                    Element temp = new Element("SIF_SystemControlData", ns);
+                    Elements children = body.getChildElements();
+                    for(int i = 0; i < children.size(); i++) {
+                        Element child = children.get(i);
+                        child.detach();
+                        temp.appendChild(child);
+                    }
+                    body.removeChildren();
+                    body.appendChild(temp);
                 }
             }
-            
+
+            if(type.equals("Register")) {
+                // So we drop the inner body Register tag for this transport.
+                if(null != body.getFirstChildElement("SIF_Register", ns)) {
+                    body = body.getFirstChildElement("SIF_Register", ns);
+                }
+
+                // So we communicate the proper Push protocol.
+                Element edit = body.getFirstChildElement("SIF_Protocol", ns);
+                if(null != edit) {
+                    Attribute pt = edit.getAttribute("Type");
+                    if(pt.getValue().startsWith("HTTPS")) {
+                        pt.setValue("HTTPS");
+                    }
+                    else {
+                        pt.setValue("HTTP");
+                    }
+                }
+
+            }
         }
         
         // So we include the (possibly converted) payload.

@@ -713,6 +713,26 @@ public class SIF2Payloads {
     }
     
     
+    public static String createQuery(String objectName) {
+        // So we always have a top grouping tag to our payload.
+        Element body = new Element("Body", 
+                "http://schemas.xmlsoap.org/soap/envelope/");        
+        
+        // So we have the proper namespace.
+        String ns = "http://www.sifassociation.org/message/soap/2.x";
+        
+        // So we have the proper place to start this SOAP payload.
+        Element root = new Element("Query", ns);
+        body.appendChild(root);
+        
+        // So we know what objects we are interested in.
+        Element queryObject = new Element("QueryObject", ns);
+        root.appendChild(queryObject);
+        queryObject.addAttribute(new Attribute("ObjectName", objectName));
+        
+        return body.toXML();        
+    }
+    
     /* HELPERS */
     
     /**
