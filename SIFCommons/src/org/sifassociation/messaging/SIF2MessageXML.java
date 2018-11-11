@@ -1101,6 +1101,8 @@ public final class SIF2MessageXML implements ISIFMessageXML {
                         "http://www.sifassociation.org/message/soap/2.x"));
             }
 
+            //System.out.println(SIFXOMUtil.pretty(body));  // Debug
+            
             // So the payload reflects the transport.
             if(converts.contains(type)) {
                 if(! body.getLocalName().startsWith("SIF_")) {
@@ -1146,12 +1148,25 @@ public final class SIF2MessageXML implements ISIFMessageXML {
             }
         }
         
-        // So we include the (possibly converted) payload.
-        Elements children = body.getChildElements();
-        for(int i = 0; i < children.size(); i++) {
-            Element child = children.get(i);
-            child.detach();
-            wrapper.appendChild(child);
+        if(type.equals("Event")) {
+            Element objectData = new Element("SIF_ObjectData", ns);
+            Element eventObject = new Element("SIF_EventObject", ns);
+            Attribute objectName = new Attribute("ObjectName", this.getTopicName());
+            eventObject.addAttribute(objectName);
+            Attribute localAction = new Attribute("Action", this.getEventAction()); 
+            eventObject.addAttribute(localAction);
+            objectData.appendChild(eventObject);
+            eventObject.appendChild(body);
+            wrapper.appendChild(objectData);
+        }
+        else {
+            // So we include the (possibly converted) payload.
+            Elements children = body.getChildElements();
+            for(int i = 0; i < children.size(); i++) {
+                Element child = children.get(i);
+                child.detach();
+                wrapper.appendChild(child);
+            }
         }
         
         return new Document(root);
@@ -1705,10 +1720,20 @@ public final class SIF2MessageXML implements ISIFMessageXML {
         this.eventAction = eventAction;
     }
 
+    /**
+     * So we know name of the object we are working with.
+     * 
+     * @return 
+     */
     public String getTopicName() {
         return topicName;
     }
 
+    /**
+     * So we know name of the object we are working with.
+     * 
+     * @param topicName 
+     */
     public void setTopicName(String topicName) {
         this.topicName = topicName;
     }

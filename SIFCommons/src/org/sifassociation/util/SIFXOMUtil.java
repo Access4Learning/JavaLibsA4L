@@ -68,6 +68,24 @@ public class SIFXOMUtil {
     /* Edit */
     
     /**
+     * So we can make reasonable Change & Delete requests (out of full examples).
+     * 
+     * @param payload  The payload to modify in place.
+     * @param keep  The number of children to keep.
+     */
+    public static void keepTopChildren(Document payload, int keep) {
+        Element root = payload.getRootElement();
+        Elements children = root.getChildElements();
+        int lastIndex = children.size()-1;
+        if(0 <= lastIndex) {
+            for(int i = lastIndex; i >= keep; i--) {
+                Element child = children.get(i);
+                child.detach();
+            }
+        }
+    }
+    
+    /**
      * Strips remove from the front of the root's and its children's names.
      * 
      * @param root  Where to start.  This is what gets modified!
