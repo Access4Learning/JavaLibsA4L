@@ -58,6 +58,7 @@ public class LogEntry {
     protected String cipher = "";
     protected String protocol = "";
     protected List<SIFCertificateInfo> certificates = null;
+    protected String keySize = "";
     
     public LogEntry() {
         // So we have the current date and time
@@ -120,6 +121,9 @@ public class LogEntry {
         
         // Cipher
         setCipher(root.getFirstChildElement("cipher").getValue());
+        
+        // Key Size
+        setKeySize(root.getFirstChildElement("keySize").getValue());
         
         // Certificates
         Element certificatesRoot = root.getFirstChildElement("certificates");
@@ -270,6 +274,11 @@ public class LogEntry {
             Element suite = new Element("cipher");
             root.appendChild(suite);
             suite.appendChild(cipher);
+            
+            // So we know the key length (when not with the certificates).            
+            Element size = new Element("keySize");
+            root.appendChild(size);
+            size.appendChild(keySize);
             
             // So we know about the certificates received.
             Element certs = new Element("certificates");
@@ -518,6 +527,26 @@ public class LogEntry {
         this.protocol = protocol;
     }
 
+    /**
+     * So we can know the key sized used when we don't have access to the certificates.
+     * 
+     * @return 
+     * @since 3.2.1
+     */
+    public String getKeySize() {
+        return keySize;
+    }
+
+    /**
+     * So we can know the key sized used when we don't have access to the certificates.
+     * 
+     * @param keySize 
+     * @since 3.2.1
+     */
+    public void setKeySize(String keySize) {
+        this.keySize = keySize;
+    }
+    
     /**
      * So we can support query parameters.
      * 
