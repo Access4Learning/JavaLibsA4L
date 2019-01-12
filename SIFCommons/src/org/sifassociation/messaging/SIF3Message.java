@@ -25,7 +25,7 @@ public class SIF3Message implements ISIFMessageXML {
     
     private XPathContext namespaces;  // So we can evaulate XPaths properly.
     private String transport;  // So we can support any desired transport.
-    private SIFRefId messageId;  // So we have the GUID for the message.
+    private String messageId;  // So we have the GUID for the message.
     private String type;  // The type of the SIF message (i.e. POST).
     
     private URL relatedURL;  // So we can know: object type & parameters.
@@ -43,7 +43,7 @@ public class SIF3Message implements ISIFMessageXML {
         addNamespace("us30", "http://www.sifassociation.org/datamodel/us/3.0");
         setTransport("REST");
         headers = new SIFHttpHeaders();
-        setMessageId(new SIFRefId());
+        setMessageId(new SIFRefId().toString());
         
         payload = null;
         unparsed = "";
@@ -107,12 +107,12 @@ public class SIF3Message implements ISIFMessageXML {
     }
 
     @Override
-    public SIFRefId getMessageId() {      
+    public String getMessageId() {      
         return messageId;
     }
 
     // To Do: Consider an abstract class.
-    public void setMessageId(SIFRefId messageId) {
+    public void setMessageId(String messageId) {
         this.messageId = messageId;
         this.getHttpHeaders().addHttpHeader("messageId", messageId.toString());
     }

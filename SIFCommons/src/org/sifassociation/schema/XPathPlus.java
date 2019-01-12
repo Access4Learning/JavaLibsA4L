@@ -24,9 +24,27 @@ public class XPathPlus {
     private boolean mandatory;
     private String namespace;
     private QName type;
+    private String typeDocumentation;
     private String enumerations;
     private String patterns;
     private boolean repeatable;
+    private boolean complexExtension;
+
+    XPathPlus() {
+        this.path = "";
+        this.compleatlyMandatory = true;
+        this.annotation = null;
+        this.appInfos = null;
+        this.documentation = "";
+        this.mandatory = false;
+        this.namespace = "";
+        this.type = new QName("", "", "");
+        this.typeDocumentation = "";
+        this.enumerations = "";
+        this.patterns = "";
+        this.repeatable = false;
+        this.complexExtension = false;
+    }
     
     public XPathPlus(
             String path, 
@@ -40,6 +58,7 @@ public class XPathPlus {
         this.mandatory = false;
         this.namespace = "";
         this.type = new QName("", "", "");
+        this.typeDocumentation = "";
         this.enumerations = "";
         this.patterns = "";
         this.repeatable = false;
@@ -49,6 +68,10 @@ public class XPathPlus {
         return path;
     }
 
+    public void setPath(String xPath) {
+        path = xPath;
+    }
+    
     public String getName() {
         String name = "";
         int last = path.lastIndexOf('/');
@@ -90,6 +113,10 @@ public class XPathPlus {
     public XmlSchemaAnnotation getAnnotation() {
         return annotation;
     }
+
+    public void setAnnotation(XmlSchemaAnnotation annotation) {
+        this.annotation = annotation;
+    }
     
     /* So we can work with the documentation in the annotations without messing up the XML tree. */
     
@@ -123,6 +150,14 @@ public class XPathPlus {
         this.type = type;
     }
 
+    public String getTypeDocumentation() {
+        return typeDocumentation;
+    }
+
+    public void setTypeDocumentation(String typeDocumentation) {
+        this.typeDocumentation = typeDocumentation;
+    }
+
     public String getEnumerations() {
         return enumerations;
     }
@@ -151,6 +186,14 @@ public class XPathPlus {
 
     public void setRepeatable(boolean repeatable) {
         this.repeatable = repeatable;
+    }
+
+    public boolean isComplexExtension() {
+        return complexExtension;
+    }
+
+    public void setComplexExtension() {
+        this.complexExtension = true;
     }
     
     @Override

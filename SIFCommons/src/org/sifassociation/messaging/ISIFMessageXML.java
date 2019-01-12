@@ -59,12 +59,12 @@ public interface ISIFMessageXML {
     void setTransport(String indicator);
 
     /**
-     * Retrieves the message ID (form is based on the messages transport).
+     * Retrieves the message ID (form varies based on the messages transport).
      * 
-     * @return SIFRefId  Based on what has been parsed or set.
+     * @return "Unique" String on what has been parsed or set.
      * @since 3.0
      */
-    public SIFRefId getMessageId();
+    public String getMessageId();
     
     /**
      * Retrieves the type in the form for the current transport.

@@ -16,7 +16,7 @@
       </SIF_Contexts>
     </SIF_Header>
     <!-- The below is all questionable, compare to SOAP! -->
-    <SIF_RequestMsgId>000001363b604876000a96b668b0a012</SIF_RequestMsgId>
+    <SIF_RequestMsgId>000001363B604876000A96B668B0A012</SIF_RequestMsgId>
     <SIF_PacketNumber>1</SIF_PacketNumber>
     <SIF_MorePackets>No</SIF_MorePackets>
     <SIF_ObjectData>

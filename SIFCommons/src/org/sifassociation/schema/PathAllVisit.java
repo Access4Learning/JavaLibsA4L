@@ -6,15 +6,25 @@ package org.sifassociation.schema;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import javax.xml.namespace.QName;
 import org.apache.ws.commons.schema.XmlSchemaAnnotation;
 import org.apache.ws.commons.schema.XmlSchemaAttribute;
+import org.apache.ws.commons.schema.XmlSchemaComplexContentExtension;
+import org.apache.ws.commons.schema.XmlSchemaComplexType;
+import org.apache.ws.commons.schema.XmlSchemaContent;
+import org.apache.ws.commons.schema.XmlSchemaContentModel;
 import org.apache.ws.commons.schema.XmlSchemaElement;
 import org.apache.ws.commons.schema.XmlSchemaEnumerationFacet;
+import org.apache.ws.commons.schema.XmlSchemaFacet;
 import org.apache.ws.commons.schema.XmlSchemaObject;
 import org.apache.ws.commons.schema.XmlSchemaParticle;
+import org.apache.ws.commons.schema.XmlSchemaPatternFacet;
 import org.apache.ws.commons.schema.XmlSchemaSimpleType;
+import org.apache.ws.commons.schema.XmlSchemaSimpleTypeContent;
+import org.apache.ws.commons.schema.XmlSchemaSimpleTypeRestriction;
 import org.apache.ws.commons.schema.XmlSchemaUse;
+import static org.sifassociation.schema.PathMandatoryVisit.formatList;
 
 /**
  * Builds ALL XPaths and whether they are mandatory.
@@ -101,12 +111,71 @@ public class PathAllVisit implements IElementVisit {
     
     @Override
     public void tail(XmlSchemaObject object) { 
+        // So we can include the description of complex types.
+        int pathsSize = paths.size();
+        if(0 < pathsSize) {
+            XPathPlus last = paths.get(pathsSize-1);
+            if(object instanceof XmlSchemaComplexType) {
+                XmlSchemaComplexType type =
+                        ((XmlSchemaComplexType)object);
+                last.setTypeDocumentation(SIFXmlSchemaUtil.getDocumentation(type.getAnnotation()));
+                XmlSchemaContentModel contentModel = type.getContentModel();
+                if(null != contentModel) {
+                    XmlSchemaContent content = contentModel.getContent();
+                    if(content instanceof XmlSchemaComplexContentExtension) {
+                        last.setComplexExtension();
+                    }
+                }
+            }
+        }
+        
         // So we generate all our XPaths.
         if( object instanceof XmlSchemaAttribute || object instanceof XmlSchemaElement)
-        {            
+        {   
+            XmlSchemaAnnotation annotation = this.getCurrentAnnotation();
+            Map<String, String> appInfos = SIFXmlSchemaUtil.getAppInfos(annotation);
+            String documentation = SIFXmlSchemaUtil.getDocumentation(annotation);            
             XPathPlus current = new XPathPlus(
-                    getCurrentXPath(), isMandatory(), this.getCurrentAnnotation());
+                    getCurrentXPath(), isMandatory(), annotation);
+            current.setAppInfos(appInfos);
+            current.setDocumentation(documentation);            
             current.setType(this.getCurrentType());
+            
+            if(object instanceof XmlSchemaSimpleType)
+            {
+                // So we can share enumerations & patterns in the documentation.
+                try {
+                    XmlSchemaSimpleTypeContent content = 
+                            ((XmlSchemaSimpleType)object).getContent();
+                    current.setTypeDocumentation(SIFXmlSchemaUtil.getDocumentation(content.getAnnotation()));
+                    XmlSchemaSimpleTypeRestriction restriction = null;
+                    if(content instanceof XmlSchemaSimpleTypeRestriction) {
+                        restriction = (XmlSchemaSimpleTypeRestriction)content;
+                    }
+                    List<XmlSchemaFacet> facets = restriction.getFacets();
+                    List<String> enums = new ArrayList<>();
+                    List<String> patts = new ArrayList<>();
+                    for (XmlSchemaFacet facet : facets) {
+                        // Enumerations
+                        if(facet instanceof XmlSchemaEnumerationFacet) {
+                            XmlSchemaEnumerationFacet enumFacet = 
+                                    (XmlSchemaEnumerationFacet)facet;
+                            enums.add(enumFacet.getValue().toString());
+                        }
+                        // Patterns
+                        if(facet instanceof XmlSchemaPatternFacet) {
+                            XmlSchemaPatternFacet pattFacet = 
+                                    (XmlSchemaPatternFacet)facet;
+                            patts.add(pattFacet.getValue().toString());
+                        }                    
+                    }
+                    current.setEnumerations(formatList(enums));
+                    current.setPatterns(formatList(patts));
+                } catch (NullPointerException ex) {
+                    // It is okay if there are no facets.
+                }            
+            }
+            
             int index = mandatories.size() - 1;
             if(0 <= index) {
                 current.setMandatory(mandatories.get(index));

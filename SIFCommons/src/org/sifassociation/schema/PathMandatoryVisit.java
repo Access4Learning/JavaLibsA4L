@@ -120,7 +120,7 @@ public class PathMandatoryVisit implements IElementVisit {
             String documentation = SIFXmlSchemaUtil.getDocumentation(annotation);
             XPathPlus current = new XPathPlus(
                     getCurrentXPath(), isMandatory(), annotation);
-                        current.setAppInfos(appInfos);
+            current.setAppInfos(appInfos);
             current.setDocumentation(documentation);
             current.setType(new QName("any"));
             int index = mandatories.size() - 1;

@@ -82,10 +82,10 @@ public final class SIF2MessageXML implements ISIFMessageXML {
     // WSAddressing
     private URL to;  // So we know where the message is to be sent.
     private URL from;  // So we know where the message came from.
-    private SIFRefId messageId;  // So we have the GUID for the message.
+    private String messageId;  // So we have the GUID for the message.
     private String action;  // So we know what the message instigates.
     private String sourcedTo;  // So we know what sent the related message. 
-    private SIFRefId relatesTo;  // So we know what other message...
+    private String relatesTo;  // So we know what other message...
     private String relationshipType;  // So we know how the other message...
     private URL replyTo;  // RESERVED
     private URL faultTo;  // RESERVED
@@ -154,7 +154,7 @@ public final class SIF2MessageXML implements ISIFMessageXML {
         setMessageId(null);
         setAction("");
         setSourcedTo("");
-        setRelatesTo((SIFRefId)null);
+        setRelatesTo(null);
         setRelationshipType("");
         setReplyTo(null);
         setFaultTo(null);
@@ -225,7 +225,7 @@ public final class SIF2MessageXML implements ISIFMessageXML {
         // To Do:  Is this really optional.
         current = header.getFirstChildElement("MessageID", wsa);
         if(null != current) {
-            setMessageId(new SIFRefId(current.getValue()));
+            setMessageId(current.getValue());
         }
         
         current = header.getFirstChildElement("Action", wsa);
@@ -343,9 +343,22 @@ public final class SIF2MessageXML implements ISIFMessageXML {
         }
         
         /* PAYLOADS!!! */
-                
+        
+        // So we know what is going on.
+        String type = this.getActionSimplified();
+        
+        Element body = root.getFirstChildElement("Body", soap);
+        
+        // So we can just have data as the payload (when it makes sense).
+        if(null != body && "Event".equals(type)) {
+            Element child = (Element)body.getChildElements().get(0);
+            if(null != child) {
+                body = new Element(child);
+            }
+        }
+        
         // So we keep the message payload.
-        setPayload(root.getFirstChildElement("Body", soap));
+        setPayload(body);
     }
     
     /**
@@ -376,8 +389,7 @@ public final class SIF2MessageXML implements ISIFMessageXML {
         header = current.getFirstChildElement("SIF_Header", ns); 
         
         // So we know the message's identifier.
-        setMessageId(new SIFRefId(header.getFirstChildElement("SIF_MsgId", ns).
-                getValue()));
+        setMessageId(header.getFirstChildElement("SIF_MsgId", ns).getValue());
         
         // So we keep the message's timestamp.
         setTimestamp(header.getFirstChildElement("SIF_Timestamp", ns).
@@ -530,13 +542,26 @@ public final class SIF2MessageXML implements ISIFMessageXML {
         
         // So we have the corrisponding SOAP action.
         String wsaAction = SIFActionUtil.TypeToAction(getType(), extension);
-        setAction(wsaAction);     
+        setAction(wsaAction);
         
         // So we get other needed information from the body.
         if("Event".equals(type)) {
             current = (Element)body.getChild(0);
             current = current.getFirstChildElement("SIF_EventObject", ns);
-            setEventAction(current.getAttributeValue("Action"));
+            setEventAction(current.getAttributeValue("Action"));            
+            String objectName = current.getAttributeValue("ObjectName");
+            setTopicName(objectName);
+            // So we keep the object payload.
+            Element object = current.getFirstChildElement(objectName, ns);
+            body = object;
+        }
+                
+        // So we keep things consistently in SOAP terms.
+        if("Request".equals(type)) {
+            List<Element> limits = new ArrayList();
+            SIFXOMUtil.lStrip(body, "SIF_", limits);
+            SIFXOMUtil.renamespace(body, 
+                    "http://www.sifassociation.org/message/soap/2.x", limits);
         }
         
         setPayload(body);
@@ -685,7 +710,7 @@ public final class SIF2MessageXML implements ISIFMessageXML {
             soapHeader.appendChild(current);
         }
         
-        SIFRefId id = getMessageId();
+        String id = getMessageId();
         if(null != id) {
             current = new Element("wsa:MessageID", wsa);
             current.appendChild(id.toString());
@@ -702,7 +727,7 @@ public final class SIF2MessageXML implements ISIFMessageXML {
                 "ServiceOutput".equals(getType())) {
             current = new Element("wsa:RelatesTo", wsa);
             // WS-Addressing 3.1
-            SIFRefId relatesId = getRelatesTo();
+            String relatesId = getRelatesTo();
             if(null == relatesId) {
                 // So we don't add an empty optional element.
             }
@@ -842,7 +867,7 @@ public final class SIF2MessageXML implements ISIFMessageXML {
             
             current = new Element("ServiceMsgId", t);
             // Only an empty element is allowed by the XSD/WSDL.
-            SIFRefId relatesId = getRelatesTo();
+            String relatesId = getRelatesTo();
             if(null != relatesId) {
                 current.appendChild(relatesId.toString());
             }
@@ -855,7 +880,15 @@ public final class SIF2MessageXML implements ISIFMessageXML {
         String m = getNamespace("m");
         
         // So we do not modify the parsed in payload.
-        Element body = new Element(getPayload().getRootElement());
+        Element body;
+        if("Event".equals(type)) {
+            body = new Element("body", soap);
+            Element object = new Element(getPayload().getRootElement());
+            body.appendChild(object);
+        }
+        else {
+            body = new Element(getPayload().getRootElement());
+        }
         
         // So we know what types to convert.
         List<String> converts = Collections.unmodifiableList(Arrays.asList(
@@ -1002,7 +1035,7 @@ public final class SIF2MessageXML implements ISIFMessageXML {
             }
             wrapper.appendChild(current);
             current = new Element("SIF_OriginalMsgId", ns);
-            SIFRefId relatesId = getRelatesTo();
+            String relatesId = getRelatesTo();
             if(null == relatesId) {
                 current.addAttribute((Attribute)nil.copy());
             }
@@ -1014,7 +1047,7 @@ public final class SIF2MessageXML implements ISIFMessageXML {
         if("SIF_Response".equals(getType())) {
             current = new Element("SIF_RequestMsgId", ns);
             // 4.2.2.1 If couldn't parse message, use empty with xsi:nil="true."
-            SIFRefId relatesId = getRelatesTo();
+            String relatesId = getRelatesTo();
             if(null == relatesId) {
                 current.addAttribute((Attribute)nil.copy());
             }
@@ -1037,7 +1070,7 @@ public final class SIF2MessageXML implements ISIFMessageXML {
                 "SIF_ServiceNotify".equals(getType())) {
             current = new Element("SIF_ServiceMsgId", ns);
             // 4.2.2.1 If couldn't parse message, use empty with xsi:nil="true."
-            SIFRefId relatesId = getRelatesTo();
+            String relatesId = getRelatesTo();
             if(null == relatesId) {
                 current.addAttribute((Attribute)nil.copy());
             }
@@ -1102,6 +1135,8 @@ public final class SIF2MessageXML implements ISIFMessageXML {
             }
 
             //System.out.println(SIFXOMUtil.pretty(body));  // Debug
+            //System.out.println(type);  // Debug
+            //System.out.println(this.getAction());  // Debug
             
             // So the payload reflects the transport.
             if(converts.contains(type)) {
@@ -1412,10 +1447,36 @@ public final class SIF2MessageXML implements ISIFMessageXML {
         return responseVersions.remove(responseVersion);
     }
     
+    /**
+     * So we can have the full SOAP action.
+     * 
+     * @return The SOAP action.
+     * @since 3.0
+     */
     public String getAction() {
         return action;
     }
 
+    /**
+     * So we can more easily identify the current action.
+     * 
+     * @return The action without the SOAP prefix.
+     * @since 3.2.1
+     */
+    public String getActionSimplified() {
+        String action = this.getAction();
+        int index = action.lastIndexOf('/');
+        String type;
+        if(-1 != index) {
+            type = action.substring(index+1);
+        }
+        else {
+            type = action;
+        }
+        
+        return type;
+    }
+    
     public void setAction(String action) {
         this.action = action;
     }
@@ -1469,30 +1530,28 @@ public final class SIF2MessageXML implements ISIFMessageXML {
     }
 
     /**
-     * Retrieves the message ID (form is based on the messages transport).
+     * Retrieves the message ID (form varies based on the messages transport).
      * 
-     * @return SIFRefId  Based on what has been parsed or set.
+     * @return "Unique" String based on what has been parsed or set.
      * @since 3.0
      */
-    public SIFRefId getMessageId() {
-        // So simple retrieval does not cause an exception.
-        if(null == messageId) {
-            return null;
-        }
-        
-        // So we get the ID in the form that matches the transport.
-        if("SOAP".equals(getTransport())) {
-            messageId.setGeneric(true);
-        }
-        else {
-            messageId.setGeneric(false);
-        }
-        
+    public String getMessageId() {
         return messageId;
     }
 
-    public void setMessageId(SIFRefId messageId) {
-        this.messageId = messageId;
+    /**
+     * So we can handle blank IDs (that couldn't be parsed).
+     * 
+     * @param messageId 
+     * @since 3.0
+     */
+    public void setMessageId(String messageId) {
+        if(null == messageId || messageId.isEmpty()) {
+            this.messageId = null;
+        }
+        else {
+            this.messageId = messageId;
+        }
     }
     
     public boolean isMorePackets() {
@@ -1535,22 +1594,13 @@ public final class SIF2MessageXML implements ISIFMessageXML {
     }
     
     /**
-     * Retrieves the related ID (form is based on the messages transport).
+     * Retrieves the related ID (form varies based on the messages transport).
      * 
-     * @return SIFRefId  Based on what has been parsed or set.
+     * @return "Unique" String based on what has been parsed or set.
      * @since 3.0
      */
-    public SIFRefId getRelatesTo() {
-        // So this ID is always direclty compatible with the classic transport.
-        if(null != relatesTo) {
-            relatesTo.setGeneric(false);
-        }
-        
+    public String getRelatesTo() {        
         return relatesTo;
-    }
-
-    public void setRelatesTo(SIFRefId relatesTo) {
-        this.relatesTo = relatesTo;
     }
     
     /**
@@ -1564,8 +1614,7 @@ public final class SIF2MessageXML implements ISIFMessageXML {
             this.relatesTo = null;
         }
         else {
-            //this.setRelatesTo(new SIFRefId(identifier));
-            this.relatesTo = new SIFRefId(identifier);
+            this.relatesTo = identifier;
         }
     }    
     

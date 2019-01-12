@@ -567,4 +567,36 @@ public class SIFXmlSchemaUtil {
         }
         return fields;
     }
+    
+    // So we can work with the invisilbe types.
+    public static List<XPathPlus> getAdditionalTypes(String filePath, QName service) {
+        Map<QName, XmlSchemaElement> elements = getRootElements(filePath);
+        return getAdditionalTypes(elements, service);
+    }
+
+    // So we can work with the invisilbe types.    
+    public static List<XPathPlus> getAdditionalTypes(
+            InputStream is, String basePath, QName service) {
+        Map<QName, XmlSchemaElement> elements = getRootElements(is, basePath);
+        return getAdditionalTypes(elements, service);
+    }
+    
+    // So we can work with the invisilbe types.
+    public static List<XPathPlus> getAdditionalTypes(
+            Map<QName, XmlSchemaElement> elements, QName service) {
+        Set<QName> services = SIFXmlSchemaUtil.getSIFServices(elements);
+        AdditionalTypeVisit visitor = new AdditionalTypeVisit();
+
+        for(QName key : services) {
+            if(key.equals(service)) {
+                XmlSchemaElement element = elements.get(key);
+                SIFXmlSchemaUtil.traverse(element, visitor);
+            }
+        }
+        List<XPathPlus> fields = new ArrayList<XPathPlus>();
+        for(XPathPlus field : visitor.getTypes()) {
+            fields.add(field);
+        }
+        return fields;
+    }    
 }

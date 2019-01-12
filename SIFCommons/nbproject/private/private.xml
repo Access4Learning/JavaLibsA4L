@@ -6,6 +6,8 @@
         <group>
             <file>file:/Users/jlovell/NetBeansProjects/JavaLibsA4L/SIFCommons/src/org/sifassociation/schema/XPathPlus.java</file>
             <file>file:/Users/jlovell/NetBeansProjects/JavaLibsA4L/SIFCommons/src/org/sifassociation/schema/PathAllVisit.java</file>
+            <file>file:/Users/jlovell/NetBeansProjects/JavaLibsA4L/SIFCommons/src/org/sifassociation/schema/AdditionalTypeVisit.java</file>
+            <file>file:/Users/jlovell/NetBeansProjects/JavaLibsA4L/SIFCommons/src/org/sifassociation/util/SIFXOMUtil.java</file>
             <file>file:/Users/jlovell/NetBeansProjects/JavaLibsA4L/SIFCommons/src/org/sifassociation/schema/SIFXmlSchemaUtil.java</file>
         </group>
     </open-files>
