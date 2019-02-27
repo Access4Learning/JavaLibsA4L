@@ -19,6 +19,9 @@ import org.apache.ws.commons.schema.XmlSchemaDocumentation;
 import org.apache.ws.commons.schema.XmlSchemaElement;
 import org.apache.ws.commons.schema.XmlSchemaEnumerationFacet;
 import org.apache.ws.commons.schema.XmlSchemaFacet;
+import org.apache.ws.commons.schema.XmlSchemaLengthFacet;
+import org.apache.ws.commons.schema.XmlSchemaMaxLengthFacet;
+import org.apache.ws.commons.schema.XmlSchemaMinLengthFacet;
 import org.apache.ws.commons.schema.XmlSchemaObject;
 import org.apache.ws.commons.schema.XmlSchemaPatternFacet;
 import org.apache.ws.commons.schema.XmlSchemaSimpleType;
@@ -201,11 +204,27 @@ public class PathMandatoryVisit implements IElementVisit {
                         enums.add(enumFacet.getValue().toString());
                     }
                     // Patterns
-                    if(facet instanceof XmlSchemaPatternFacet) {
+                    else if(facet instanceof XmlSchemaPatternFacet) {
                         XmlSchemaPatternFacet pattFacet = 
                                 (XmlSchemaPatternFacet)facet;
                         patts.add(pattFacet.getValue().toString());
-                    }                    
+                    }
+                    // Lengths
+                    else if(facet instanceof XmlSchemaLengthFacet) {
+                        XmlSchemaLengthFacet length = 
+                                (XmlSchemaLengthFacet)facet;
+                        current.setLength(length.getValue().toString());
+                    }
+                    else if(facet instanceof XmlSchemaMaxLengthFacet) {
+                        XmlSchemaMaxLengthFacet maxLength = 
+                                (XmlSchemaMaxLengthFacet)facet;
+                        current.setMaxLength(maxLength.getValue().toString());
+                    }
+                    else if(facet instanceof XmlSchemaMinLengthFacet) {
+                        XmlSchemaMinLengthFacet minLength = 
+                                (XmlSchemaMinLengthFacet)facet;
+                        current.setMinLength(minLength.getValue().toString());
+                    }                     
                 }
                 current.setEnumerations(formatList(enums));
                 current.setPatterns(formatList(patts));

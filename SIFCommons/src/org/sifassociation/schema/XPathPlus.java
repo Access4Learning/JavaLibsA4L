@@ -29,6 +29,9 @@ public class XPathPlus {
     private String patterns;
     private boolean repeatable;
     private boolean complexExtension;
+    private String length;
+    private String maxLength;
+    private String minLength;
 
     XPathPlus() {
         this.path = "";
@@ -44,6 +47,9 @@ public class XPathPlus {
         this.patterns = "";
         this.repeatable = false;
         this.complexExtension = false;
+        this.length = "";
+        this.maxLength = "";
+        this.minLength = "";
     }
     
     public XPathPlus(
@@ -62,6 +68,10 @@ public class XPathPlus {
         this.enumerations = "";
         this.patterns = "";
         this.repeatable = false;
+        this.complexExtension = false;
+        this.length = "";
+        this.maxLength = "";
+        this.minLength = "";        
     }
 
     public String getPath() {
@@ -194,6 +204,30 @@ public class XPathPlus {
 
     public void setComplexExtension() {
         this.complexExtension = true;
+    }
+
+    public String getLength() {
+        return length;
+    }
+
+    public void setLength(String length) {
+        this.length = length;
+    }
+
+    public String getMaxLength() {
+        return maxLength;
+    }
+
+    public void setMaxLength(String maxLength) {
+        this.maxLength = maxLength;
+    }
+
+    public String getMinLength() {
+        return minLength;
+    }
+
+    public void setMinLength(String minLength) {
+        this.minLength = minLength;
     }
     
     @Override

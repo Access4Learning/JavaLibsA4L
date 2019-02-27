@@ -585,7 +585,7 @@ public class SIFXmlSchemaUtil {
     public static List<XPathPlus> getAdditionalTypes(
             Map<QName, XmlSchemaElement> elements, QName service) {
         Set<QName> services = SIFXmlSchemaUtil.getSIFServices(elements);
-        AdditionalTypeVisit visitor = new AdditionalTypeVisit();
+        PathAllVisit visitor = new PathAllVisit();
 
         for(QName key : services) {
             if(key.equals(service)) {

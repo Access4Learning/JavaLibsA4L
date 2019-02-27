@@ -17,12 +17,16 @@ import org.apache.ws.commons.schema.XmlSchemaContentModel;
 import org.apache.ws.commons.schema.XmlSchemaElement;
 import org.apache.ws.commons.schema.XmlSchemaEnumerationFacet;
 import org.apache.ws.commons.schema.XmlSchemaFacet;
+import org.apache.ws.commons.schema.XmlSchemaLengthFacet;
+import org.apache.ws.commons.schema.XmlSchemaMaxLengthFacet;
+import org.apache.ws.commons.schema.XmlSchemaMinLengthFacet;
 import org.apache.ws.commons.schema.XmlSchemaObject;
 import org.apache.ws.commons.schema.XmlSchemaParticle;
 import org.apache.ws.commons.schema.XmlSchemaPatternFacet;
 import org.apache.ws.commons.schema.XmlSchemaSimpleType;
 import org.apache.ws.commons.schema.XmlSchemaSimpleTypeContent;
 import org.apache.ws.commons.schema.XmlSchemaSimpleTypeRestriction;
+import org.apache.ws.commons.schema.XmlSchemaSimpleTypeUnion;
 import org.apache.ws.commons.schema.XmlSchemaUse;
 import static org.sifassociation.schema.PathMandatoryVisit.formatList;
 
@@ -41,13 +45,24 @@ public class PathAllVisit implements IElementVisit {
     private List<XmlSchemaAnnotation> annotations;
     private List<XPathPlus> paths;
     private List<QName> types;
+    private List<XPathPlus> commons;  // Common Types
+    private List<String> knownNS;
+    private String targetNS;
     
     public PathAllVisit() {
-        crumbs = new ArrayList<String>();
-        mandatories = new ArrayList<Boolean>();
-        annotations = new ArrayList<XmlSchemaAnnotation>();
-        paths = new ArrayList<XPathPlus>();
-        types = new ArrayList<QName>();
+        crumbs = new ArrayList<>();
+        mandatories = new ArrayList<>();
+        annotations = new ArrayList<>();
+        paths = new ArrayList<>();
+        types = new ArrayList<>();
+        commons = new ArrayList<>();
+        knownNS = new ArrayList<>();
+        knownNS.add("http://www.w3.org/2001/XMLSchema");
+        knownNS.add("http://www.w3.org/2001/XMLSchema-instance");
+        knownNS.add("http://www.w3.org/2001/XInclude");
+        knownNS.add("http://www.w3.org/1999/xhtml");
+        knownNS.add("http://json.org/");   
+        targetNS = null;
     } 
     
     private String getCurrentXPath()  {
@@ -58,7 +73,7 @@ public class PathAllVisit implements IElementVisit {
         }
         return xpath.toString();
     }
-    
+        
     // So we can know if ANY OBJECT part of the XPath allows for the element or 
     // attribute to be optional.
     private boolean isMandatory() {
@@ -96,6 +111,11 @@ public class PathAllVisit implements IElementVisit {
             mandatories.add(0 < element.getMinOccurs());
             annotations.add(element.getAnnotation());
             types.add(element.getSchemaTypeName());
+            // So we grab what we are building, once.
+            if(null == this.targetNS && null != element.getQName()) {
+                String ns = element.getQName().getNamespaceURI();
+                this.targetNS = ns;
+            }
         }
         if(object instanceof XmlSchemaAttribute) {
             XmlSchemaAttribute attribute = (XmlSchemaAttribute)object;
@@ -129,29 +149,49 @@ public class PathAllVisit implements IElementVisit {
             }
         }
         
-        // So we generate all our XPaths.
-        if( object instanceof XmlSchemaAttribute || object instanceof XmlSchemaElement)
-        {   
-            XmlSchemaAnnotation annotation = this.getCurrentAnnotation();
+        // So we give unnamed simple types (a common venetian blind mistake) a name.
+        if(object instanceof XmlSchemaSimpleType) {
+            XmlSchemaSimpleType simple = (XmlSchemaSimpleType)object;
+            // So we define unnamed simple types!
+            QName qName = simple.getQName();
+            // So we don't redefine known simple types.
+            if(null != knownNS && null != qName &&
+                    knownNS.contains(qName.getNamespaceURI())) {
+                return;
+            }
+            // So simple types without names are named and kept.
+            if(null == qName) {
+                String path = getCurrentXPath();
+                String[] splitPath = path.split("/");
+                if(0 < splitPath.length) {
+                    String lastPath = splitPath[splitPath.length-1];
+                    if(lastPath.startsWith("@")) {
+                        lastPath = lastPath.substring(1);
+                    }
+                    String named = lastPath + "Type";
+                    // Keep this as a named type refered to by Element or Attribute.
+                    simple.setName(named);
+                    simple.setSourceURI(targetNS);
+                }
+            }
+            XmlSchemaAnnotation annotation = simple.getAnnotation();
             Map<String, String> appInfos = SIFXmlSchemaUtil.getAppInfos(annotation);
             String documentation = SIFXmlSchemaUtil.getDocumentation(annotation);            
-            XPathPlus current = new XPathPlus(
-                    getCurrentXPath(), isMandatory(), annotation);
+            XPathPlus current = new XPathPlus("/" + simple.getName(), false, 
+                    annotation);
             current.setAppInfos(appInfos);
-            current.setDocumentation(documentation);            
-            current.setType(this.getCurrentType());
-            
-            if(object instanceof XmlSchemaSimpleType)
-            {
-                // So we can share enumerations & patterns in the documentation.
-                try {
-                    XmlSchemaSimpleTypeContent content = 
-                            ((XmlSchemaSimpleType)object).getContent();
-                    current.setTypeDocumentation(SIFXmlSchemaUtil.getDocumentation(content.getAnnotation()));
-                    XmlSchemaSimpleTypeRestriction restriction = null;
-                    if(content instanceof XmlSchemaSimpleTypeRestriction) {
-                        restriction = (XmlSchemaSimpleTypeRestriction)content;
-                    }
+            current.setDocumentation(documentation);                            
+            try {
+                XmlSchemaSimpleTypeContent content = 
+                        ((XmlSchemaSimpleType)object).getContent();
+                current.setTypeDocumentation(
+                        SIFXmlSchemaUtil.getDocumentation(
+                                content.getAnnotation()));
+                XmlSchemaSimpleTypeRestriction restriction = null;
+                if(content instanceof XmlSchemaSimpleTypeRestriction) {
+                    restriction = (XmlSchemaSimpleTypeRestriction)content;
+                }
+                if(null != restriction) {
                     List<XmlSchemaFacet> facets = restriction.getFacets();
                     List<String> enums = new ArrayList<>();
                     List<String> patts = new ArrayList<>();
@@ -163,19 +203,61 @@ public class PathAllVisit implements IElementVisit {
                             enums.add(enumFacet.getValue().toString());
                         }
                         // Patterns
-                        if(facet instanceof XmlSchemaPatternFacet) {
+                        else if(facet instanceof XmlSchemaPatternFacet) {
                             XmlSchemaPatternFacet pattFacet = 
                                     (XmlSchemaPatternFacet)facet;
                             patts.add(pattFacet.getValue().toString());
-                        }                    
+                        }
+                        // Lengths
+                        else if(facet instanceof XmlSchemaLengthFacet) {
+                            XmlSchemaLengthFacet length = 
+                                    (XmlSchemaLengthFacet)facet;
+                            //System.out.println("Length: " + length.getValue().toString());  // Debug
+                            current.setLength(length.getValue().toString());
+                        }
+                        else if(facet instanceof XmlSchemaMaxLengthFacet) {
+                            XmlSchemaMaxLengthFacet maxLength = 
+                                    (XmlSchemaMaxLengthFacet)facet;
+                            //System.out.println("Max: " + maxLength.getValue().toString());  // Debug
+                            current.setMaxLength(maxLength.getValue().toString());                                
+                        }
+                        else if(facet instanceof XmlSchemaMinLengthFacet) {
+                            XmlSchemaMinLengthFacet minLength = 
+                                    (XmlSchemaMinLengthFacet)facet;
+                            //System.out.println("Min: " + minLength.getValue().toString());  // Debug
+                            current.setMinLength(minLength.getValue().toString());
+                        }                             
                     }
                     current.setEnumerations(formatList(enums));
                     current.setPatterns(formatList(patts));
-                } catch (NullPointerException ex) {
-                    // It is okay if there are no facets.
-                }            
+                    current.setType(restriction.getBaseTypeName());
+                }
+                XmlSchemaSimpleTypeUnion union = null;
+                if(union instanceof XmlSchemaSimpleTypeUnion) {
+                    union = (XmlSchemaSimpleTypeUnion)content;
+                }
+                if(null != union) {
+                    System.out.println("Error: Unsupported union detected (by AdditinalTypeVisit).");
+                }                    
+            } catch (NullPointerException ex) {
+                // It is okay if there are no facets.
             }
-            
+            commons.add(current);
+            types.add(simple.getQName());
+        }        
+        
+        // So we generate all our XPaths.
+        if( object instanceof XmlSchemaAttribute || object instanceof XmlSchemaElement)
+        {   
+            XmlSchemaAnnotation annotation = this.getCurrentAnnotation();
+            Map<String, String> appInfos = SIFXmlSchemaUtil.getAppInfos(annotation);
+            String documentation = SIFXmlSchemaUtil.getDocumentation(annotation);            
+            XPathPlus current = new XPathPlus(
+                    getCurrentXPath(), isMandatory(), annotation);
+            current.setAppInfos(appInfos);
+            current.setDocumentation(documentation);            
+            current.setType(this.getCurrentType());
+                        
             int index = mandatories.size() - 1;
             if(0 <= index) {
                 current.setMandatory(mandatories.get(index));
@@ -212,7 +294,7 @@ public class PathAllVisit implements IElementVisit {
                 paths.add(current);
             }
         }
-        
+
         // So we forget our parents other children.
         if(object instanceof XmlSchemaAttribute) {
             XmlSchemaAttribute attribute = (XmlSchemaAttribute)object;
@@ -260,6 +342,11 @@ public class PathAllVisit implements IElementVisit {
     // So we can get the results.
     public List<XPathPlus> getPaths() {
         return paths;
+    }
+    
+    // So we can get the resulting common types.
+    public List<XPathPlus> getTypes() {
+        return commons;
     }
     
 }
