@@ -154,11 +154,6 @@ public class PathAllVisit implements IElementVisit {
             XmlSchemaSimpleType simple = (XmlSchemaSimpleType)object;
             // So we define unnamed simple types!
             QName qName = simple.getQName();
-            // So we don't redefine known simple types.
-            if(null != knownNS && null != qName &&
-                    knownNS.contains(qName.getNamespaceURI())) {
-                return;
-            }
             // So simple types without names are named and kept.
             if(null == qName) {
                 String path = getCurrentXPath();
@@ -168,11 +163,19 @@ public class PathAllVisit implements IElementVisit {
                     if(lastPath.startsWith("@")) {
                         lastPath = lastPath.substring(1);
                     }
-                    String named = lastPath + "Type";
+                    String named = lastPath + "SimpleType";
                     // Keep this as a named type refered to by Element or Attribute.
                     simple.setName(named);
                     simple.setSourceURI(targetNS);
+                    // So the new parent knows about its new simple type.
+                    XPathPlus parent = paths.get(paths.size()-1);
+                    parent.setType(new QName(targetNS, named)); 
                 }
+            }
+            // So we don't redefine known simple types.
+            if(null != knownNS && null != qName &&
+                    knownNS.contains(qName.getNamespaceURI())) {
+                return;
             }
             XmlSchemaAnnotation annotation = simple.getAnnotation();
             Map<String, String> appInfos = SIFXmlSchemaUtil.getAppInfos(annotation);
@@ -237,15 +240,14 @@ public class PathAllVisit implements IElementVisit {
                     union = (XmlSchemaSimpleTypeUnion)content;
                 }
                 if(null != union) {
-                    System.out.println("Error: Unsupported union detected (by AdditinalTypeVisit).");
+                    System.out.println("Error: Unsupported union detected (by PathAllVisit).");
                 }                    
             } catch (NullPointerException ex) {
                 // It is okay if there are no facets.
             }
             commons.add(current);
-            types.add(simple.getQName());
         }        
-        
+
         // So we generate all our XPaths.
         if( object instanceof XmlSchemaAttribute || object instanceof XmlSchemaElement)
         {   
