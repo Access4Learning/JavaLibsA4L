@@ -48,6 +48,7 @@ public class PathAllVisit implements IElementVisit {
     private List<XPathPlus> commons;  // Common Types
     private List<String> knownNS;
     private String targetNS;
+    private QName namedST;  // Named Simple Type
     
     public PathAllVisit() {
         crumbs = new ArrayList<>();
@@ -63,6 +64,7 @@ public class PathAllVisit implements IElementVisit {
         knownNS.add("http://www.w3.org/1999/xhtml");
         knownNS.add("http://json.org/");   
         targetNS = null;
+        namedST = null;
     } 
     
     private String getCurrentXPath()  {
@@ -167,9 +169,7 @@ public class PathAllVisit implements IElementVisit {
                     // Keep this as a named type refered to by Element or Attribute.
                     simple.setName(named);
                     simple.setSourceURI(targetNS);
-                    // So the new parent knows about its new simple type.
-                    XPathPlus parent = paths.get(paths.size()-1);
-                    parent.setType(new QName(targetNS, named)); 
+                    namedST = new QName(targetNS, named); 
                 }
             }
             // So we don't redefine known simple types.
@@ -257,8 +257,17 @@ public class PathAllVisit implements IElementVisit {
             XPathPlus current = new XPathPlus(
                     getCurrentXPath(), isMandatory(), annotation);
             current.setAppInfos(appInfos);
-            current.setDocumentation(documentation);            
-            current.setType(this.getCurrentType());
+            current.setDocumentation(documentation);
+            if(null != namedST) {
+                // So if a Simple Type was given a name we use it.
+                current.setType(namedST); 
+                // So we don't do this again util told to.
+                namedST = null;
+            }
+            else {
+                // So we keep our existing type.
+                current.setType(this.getCurrentType());
+            }
                         
             int index = mandatories.size() - 1;
             if(0 <= index) {
