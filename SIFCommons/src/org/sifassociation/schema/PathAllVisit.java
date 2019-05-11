@@ -258,17 +258,19 @@ public class PathAllVisit implements IElementVisit {
                     getCurrentXPath(), isMandatory(), annotation);
             current.setAppInfos(appInfos);
             current.setDocumentation(documentation);
-            if(null != namedST) {
-                // So if a Simple Type was given a name we use it.
+            QName currentType = this.getCurrentType();
+            // So if a Simple Type was given a name we use it, unless
+            // another type was explicitely specified.
+            if(null != namedST && null == currentType) {
                 current.setType(namedST); 
-                // So we don't do this again util told to.
-                namedST = null;
             }
             else {
                 // So we keep our existing type.
                 current.setType(this.getCurrentType());
             }
-                        
+            // So we don't do this again util told to.
+            namedST = null;
+            
             int index = mandatories.size() - 1;
             if(0 <= index) {
                 current.setMandatory(mandatories.get(index));
