@@ -183,7 +183,7 @@ public class PathAllVisit implements IElementVisit {
             XPathPlus current = new XPathPlus("/" + simple.getName(), false, 
                     annotation);
             current.setAppInfos(appInfos);
-            current.setDocumentation(documentation);                            
+            current.setDocumentation(documentation);
             try {
                 XmlSchemaSimpleTypeContent content = 
                         ((XmlSchemaSimpleType)object).getContent();

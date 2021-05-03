@@ -553,10 +553,10 @@ public class SIFXOMUtil {
         StringBuilder xquery = new StringBuilder();
         
         // So we handle the default namespace.
-        xquery.append("declare default element namespace ");
+        xquery.append("declare default element namespace \"");
         String ns = query.getNamespaceURI();
         xquery.append(ns);
-        xquery.append(";\n");
+        xquery.append("\";\n");
         
         // So we are ready for the object or other simple XPath.
         xquery.append("for $object in ");
@@ -579,6 +579,14 @@ public class SIFXOMUtil {
             String xpath = example2XPath(example);
             xquery.append(xpath);
             xquery.append("\n");
+        }
+        else {
+            // So we target the correct object.
+            String objectName = getFirstXPath(
+                    addGenericNamespace("/SIF_Query/SIF_QueryObject/@ObjectName"), query, ns);
+            xquery.append("/");
+            xquery.append(objectName);
+            xquery.append("\n");            
         }
         
         // So we return the matching objects.
