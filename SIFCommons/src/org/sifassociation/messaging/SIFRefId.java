@@ -31,7 +31,7 @@ public final class SIFRefId {
     private String hardware = "";  // Hardware address.
     private int version = 1;  // UUID version (1 or 4).
     private int sequence = 0;  // Ensure supplied sequence is 0 - 0x3FFF
-    private long timestamp = 0;  // UTC milliseconds from the epoch.
+    private static long timestamp = 0;  // UTC milliseconds from the epoch.
     
     private boolean generic = true;  // RFC 4122 compliant UUID or with SIFisms
     

@@ -62,8 +62,9 @@ public class XMLMessageLog implements IMessageLog {
     @Override
     public void addEntry(LogEntry current) {
         synchronized(sync) {
-            listing.add(current.getIdentification());
-            String path = this.getRelativePath(current.getIdentification());
+            String identification = current.getIdentification();
+            listing.add(identification);
+            String path = this.getRelativePath(identification);
             try {
                 this.rest.createResource(path, current.toString());
             } catch (MalformedURLException ex) {

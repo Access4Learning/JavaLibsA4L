@@ -550,10 +550,9 @@ public class SIF2Payloads {
                 "http://www.sifassociation.org/message/soap/2.x");
         //body.appendChild(root);
         
-        root.appendChild(createACLObjectExtended(
+        root.appendChild(createACLObject(
                 "Provide" + suffix,
                 provideObjects,
-                provideExtensions,
                 provideContexts));
         
         root.appendChild(createACLObject(
@@ -576,16 +575,14 @@ public class SIF2Payloads {
                 publishDeleteObjects,
                 publishDeleteContexts));
 
-        root.appendChild(createACLObjectExtended(
+        root.appendChild(createACLObject(
                 "Request" + suffix,
                 requestObjects,
-                requestExtensions,
                 requestContexts));
         
-        root.appendChild(createACLObjectExtended(
+        root.appendChild(createACLObject(
                 "Respond" + suffix,
                 respondObjects,
-                respondExtensions,
                 respondContexts));
         
 //        if(null != provideServices) {
