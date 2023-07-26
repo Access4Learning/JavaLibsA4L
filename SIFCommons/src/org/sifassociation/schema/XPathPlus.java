@@ -91,6 +91,21 @@ public class XPathPlus {
         return name;
     }
     
+    // Removes collection and object root before return the xpath.
+    public String getSIF2Name() {
+        String name = "";
+        String[] split = path.split("/");
+        if(null != split && split.length > 2) {
+            for(int i = 3; i < split.length; i++) {
+                if(!name.isEmpty()) {
+                    name = name + "/";
+                }
+                name = name + split[i];
+            }
+        }
+        return name;
+    }
+    
     public String getParentPath() {
         String parent = "";
         int last = path.lastIndexOf('/');

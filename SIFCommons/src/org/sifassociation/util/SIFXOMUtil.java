@@ -278,7 +278,7 @@ public class SIFXOMUtil {
      */
     public static List<String> getAllXPath(String xpath, Element root, String ns) {
         // So we can return the results.
-        List<String> matches = new ArrayList();
+        List<String> matches = new ArrayList<>();
 
         // So we use the specified namespace.
         XPathContext xpc = new XPathContext();
@@ -311,7 +311,7 @@ public class SIFXOMUtil {
      */
     public static List<Node> getAllXPathNodes(String xpath, Element root, String ns) {
         // So we can return the results.
-        List<Node> matches = new ArrayList();
+        List<Node> matches = new ArrayList<>();
 
         // So we use the specified namespace.
         XPathContext xpc = new XPathContext();
@@ -956,7 +956,7 @@ public class SIFXOMUtil {
         // To Do: So we know we have been given reasonable parameters.
 
         // So we have crumbs.
-        List<String> crumbs = new ArrayList();
+        List<String> crumbs = new ArrayList<>();
         // So we have the first crumb.
         crumbs.add(root.getLocalName());
         // So we do something.

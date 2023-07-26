@@ -6,7 +6,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
-import javax.xml.bind.DatatypeConverter;
+import jakarta.xml.bind.DatatypeConverter;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -558,7 +558,7 @@ public final class SIF2MessageXML implements ISIFMessageXML {
                 
         // So we keep things consistently in SOAP terms.
         if("Request".equals(type)) {
-            List<Element> limits = new ArrayList();
+            List<Element> limits = new ArrayList<>();
             SIFXOMUtil.lStrip(body, "SIF_", limits);
             SIFXOMUtil.renamespace(body, 
                     "http://www.sifassociation.org/message/soap/2.x", limits);
@@ -1207,8 +1207,27 @@ public final class SIF2MessageXML implements ISIFMessageXML {
         return new Document(root);
     }
 
-    // To Do: Change back to private!!!
-    private Document getPayload() {
+    /**
+     * So we can change the message.
+     * Note:  Only use this before the message is sent!
+     * 
+     * @return The messages payload.
+     */
+    public Document getPayload() {
+        // So we can warn future programmers of potential abuse.
+        // So we only warn them if called from outside of this class.
+        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+        if (stackTrace.length > 2) {
+            StackTraceElement caller = stackTrace[2];
+            String callerClassName = caller.getClassName();
+            String className = getClass().getName();
+            if (!callerClassName.equals(className)) {
+                System.out.println("Warning: " + className + " getPayload called from "
+                        + callerClassName + 
+                        " ensure message isn't being modified after it has been sent." );
+            }
+        }
+        
         return payload;
     }
 
@@ -1402,7 +1421,7 @@ public final class SIF2MessageXML implements ISIFMessageXML {
      * @return A shallow copy of the messages context.
      */
     public List<String> getContexts() {
-        return new ArrayList(contexts);
+        return new ArrayList<>(contexts);
     }
     
     /**

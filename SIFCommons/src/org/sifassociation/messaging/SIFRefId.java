@@ -12,7 +12,7 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.Calendar;
-import javax.xml.bind.DatatypeConverter;
+import jakarta.xml.bind.DatatypeConverter;
 
 import java.lang.StringBuffer;
 

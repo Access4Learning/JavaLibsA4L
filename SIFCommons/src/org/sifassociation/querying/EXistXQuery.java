@@ -4,6 +4,7 @@
  */
 package org.sifassociation.querying;
 
+import java.lang.reflect.InvocationTargetException;
 import org.xmldb.api.base.*;
 import org.xmldb.api.modules.*;
 import org.xmldb.api.*;
@@ -32,15 +33,17 @@ public class EXistXQuery implements IXQuery {
      * @throws InstantiationException (when the DB instance cannot be created).
      * @throws IllegalAccessException (if you are not allowed to create the DB).
      * @throws XMLDBException (anytime a database operation fails).
+     * @throws java.lang.NoSuchMethodException
+     * @throws java.lang.reflect.InvocationTargetException
      * @since 3.0
      */
-    public EXistXQuery(String target) throws ClassNotFoundException, InstantiationException, IllegalAccessException, XMLDBException {
+    public EXistXQuery(String target) throws ClassNotFoundException, InstantiationException, IllegalAccessException, XMLDBException, NoSuchMethodException, IllegalArgumentException, InvocationTargetException {
         // So we can confirm what collection we are targeting.
         this.target = target;
         
         // So we have an eXist database connection to the target.
         Class driver = Class.forName("org.exist.xmldb.DatabaseImpl");
-        Database database = (Database) driver.newInstance();
+        Database database = Database.class.getDeclaredConstructor(driver).newInstance();  // To Do:  Test and see if I have this right!
         database.setProperty("create-database", "true");
         DatabaseManager.registerDatabase(database);
         Collection collection = DatabaseManager.getCollection(
