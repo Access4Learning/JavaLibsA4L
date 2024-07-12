@@ -14,6 +14,8 @@ import static org.junit.Assert.*;
 
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.sifassociation.messaging.SIFRefId;
 
 /**
@@ -32,7 +34,10 @@ public class SIFRefIdTest {
     SIFRefId maximum = null;
     SIFRefId random = null;
     
+    private final String hostname;
+    
     public SIFRefIdTest() {
+        this.hostname = "192.168.4.84";
     }
 
     @BeforeClass
@@ -47,7 +52,7 @@ public class SIFRefIdTest {
     public void setUp() throws UnknownHostException, SocketException {
         parsed = new SIFRefId("uuid:fe886483-0132-1000-0003-002500f11f4e");
         sif    = new SIFRefId("FE886483F132100F00F3002500F11F4E");
-        created = new SIFRefId(InetAddress.getLocalHost().getHostAddress(), 127);
+        created = new SIFRefId(this.hostname, 127);
         minimum = new SIFRefId("urn:uuid:00000000-0000-1000-0000-000000000000");
         maximum = new SIFRefId("urn:uuid:ffffffff-ffff-1fff-3fff-ffffffffffff");
         random  = new SIFRefId("urn:uuid:ffffffff-ffff-4fff-3fff-ffffffffffff");
@@ -303,7 +308,7 @@ public class SIFRefIdTest {
         }
        
         // Should always be diffrent!
-        again = new SIFRefId(InetAddress.getLocalHost().getHostAddress(), 127);        
+        again = new SIFRefId(this.hostname, 127);        
         if(again.equals(created)) {
             fail("Generating two unique objects were tested equal.");
         }        
@@ -314,7 +319,7 @@ public class SIFRefIdTest {
      */
     @Test
     public void testHashCode() throws UnknownHostException, SocketException {
-        System.out.println("hashCode");
+//        System.out.println("hashCode");
         
         // Should be equal.
         SIFRefId again = new SIFRefId(
@@ -340,7 +345,7 @@ public class SIFRefIdTest {
         }
         
         // Should always be diffrent!
-        again = new SIFRefId(InetAddress.getLocalHost().getHostAddress(), 127);
+        again = new SIFRefId(this.hostname, 127);
         if(again.hashCode() == created.hashCode()) {
             fail("Generating two unique objects had the same hash.");
         }      
@@ -351,8 +356,6 @@ public class SIFRefIdTest {
      */
     @Test
     public void testToString() throws UnknownHostException, SocketException {
-        System.out.println("toString");
-        
         // Should be equal.
         if(!parsed.toString().equals(
                 "fe886483-0132-1000-0003-002500f11f4e")) {
@@ -375,8 +378,7 @@ public class SIFRefIdTest {
         }
 
         // Should always be diffrent!
-        SIFRefId again = new SIFRefId(InetAddress.getLocalHost()
-                .getHostAddress(), 127);
+        SIFRefId again = new SIFRefId(this.hostname, 127);
         if(again.toString().equals(created.toString())) {
             fail("Generating two unique objects produced the same string.");
         }

@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 import nu.xom.Builder;
 import nu.xom.Document;
 import nu.xom.XPathContext;
-import org.sifassociation.goessner.XmlJsonNative;
+import org.sifassociation.XMLJSON.GoessnerNative;
 import org.sifassociation.util.SIFXOMUtil;
 
 /**
@@ -34,7 +34,7 @@ public class SIF3Message implements ISIFMessageXML {
     
     private SIFHttpHeaders headers;  // So we can set headers not automatically handled.
 
-    private XmlJsonNative converter;
+    private GoessnerNative converter;
     private Format format = null;
     
     public SIF3Message() {
@@ -48,7 +48,7 @@ public class SIF3Message implements ISIFMessageXML {
         payload = null;
         unparsed = "";
         
-        converter = XmlJsonNative.getInstance();
+        converter = GoessnerNative.getInstance();
         format = Format.XML;
     }
     

@@ -8,8 +8,8 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import javax.xml.bind.JAXB;
-import javax.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXB;
+import jakarta.xml.bind.JAXBElement;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -187,12 +187,12 @@ public class SIFCommonsDemo {
         if(null != response) {
             response.setType("Response");
             response.setTransport("HTTP");
-            String hostname = "192.168.1.103";
+            String hostname = "192.168.4.84";
             String sequence = "127";
             SIFRefId refId = null;
             refId = new SIFRefId(hostname, Integer.parseInt(sequence));
             if(null != refId) {
-                response.setMessageId(refId);
+                response.setMessageId(refId.toString());
             }
             response.setRelatesTo("43B9E0A001651000007F0C4DE9CBABBA");
             response.setMorePackets("Yes");

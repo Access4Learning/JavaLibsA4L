@@ -22,7 +22,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.List;
-import org.sifassociation.goessner.XmlJsonNative;
+import org.sifassociation.XMLJSON.GoessnerNative;
 
 /**
  * Screen scrapping library for CEDS.
@@ -225,7 +225,7 @@ public class SIFCEDSUtil {
         try {
             jsonRoot = jsonMapper.readTree(json);
         } catch (IOException ex) {
-            Logger.getLogger(XmlJsonNative.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(GoessnerNative.class.getName()).log(Level.SEVERE, null, ex);
             return "";
         }
         /* Start Debug
@@ -233,7 +233,7 @@ public class SIFCEDSUtil {
         try {
             json = jsonMapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonRoot);
         } catch (JsonProcessingException ex) {
-            Logger.getLogger(XmlJsonNative.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(GoessnerNative.class.getName()).log(Level.SEVERE, null, ex);
             return "";
         }        
         System.out.println(json);

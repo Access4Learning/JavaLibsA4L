@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.sifassociation.goessner;
+package org.sifassociation.XMLJSON;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -28,44 +28,44 @@ import org.sifassociation.util.SIFXOMUtil;
  * @author jlovell
  * @see http://goessner.net/
  */
-public class XmlJsonReference implements IXmlJson {
+public class GoessnerReference implements IXmlJson {
     ScriptEngine engine = null;
-    private static final XmlJsonReference INSTANCE = new XmlJsonReference();
+    private static final GoessnerReference INSTANCE = new GoessnerReference();
 
     /**
      *  Used internally to initialize a working instance!
      */
-    private XmlJsonReference() {        
+    private GoessnerReference() {        
         ScriptEngineManager factory = new ScriptEngineManager();
         engine = factory.getEngineByName("JavaScript");
         try {
             addToEngine("xml2json.js");
         } catch (ClassNotFoundException | IOException | ScriptException ex) {
-            Logger.getLogger(XmlJsonReference.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(GoessnerReference.class.getName()).log(Level.SEVERE, null, ex);
         }
         try {
             addToEngine("parse2json.js");
         } catch (ClassNotFoundException | IOException | ScriptException ex) {
-            Logger.getLogger(XmlJsonReference.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(GoessnerReference.class.getName()).log(Level.SEVERE, null, ex);
         }
         try {
             addToEngine("json2xml.js");
         } catch (ClassNotFoundException | IOException | ScriptException ex) {
-            Logger.getLogger(XmlJsonReference.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(GoessnerReference.class.getName()).log(Level.SEVERE, null, ex);
         }
         try {
             addToEngine("parse2xml.js");
         } catch (ClassNotFoundException | IOException | ScriptException ex) {
-            Logger.getLogger(XmlJsonReference.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(GoessnerReference.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
     /**
      * So we can convert;
      * 
-     * @return The one and only true XmlJsonReference instance.
+     * @return The one and only true GoessnerReference instance.
      */
-    public static XmlJsonReference getInstance() {
+    public static GoessnerReference getInstance() {
         return INSTANCE;
     }
     
@@ -83,7 +83,7 @@ public class XmlJsonReference implements IXmlJson {
         try {
             json = (String) inv.invokeFunction("parse2json", stream, "  ");
         } catch (ScriptException | NoSuchMethodException ex) {
-            Logger.getLogger(XmlJsonReference.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(GoessnerReference.class.getName()).log(Level.SEVERE, null, ex);
         }
         return json;
     }
@@ -101,7 +101,7 @@ public class XmlJsonReference implements IXmlJson {
         try {
             xml = (String) inv.invokeFunction("parse2xml", json, "  ");
         } catch (ScriptException | NoSuchMethodException ex) {
-            Logger.getLogger(XmlJsonReference.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(GoessnerReference.class.getName()).log(Level.SEVERE, null, ex);
             return "";
         }
         // So we can work with the converted XML.
@@ -110,7 +110,7 @@ public class XmlJsonReference implements IXmlJson {
         try {
             doc = parser.build(xml, null);
         } catch (ParsingException | IOException ex) {
-            Logger.getLogger(XmlJsonReference.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(GoessnerReference.class.getName()).log(Level.SEVERE, null, ex);
             return "";
         }
         Element root = doc.getRootElement();

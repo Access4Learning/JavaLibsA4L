@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.sifassociation.goessner;
+package org.sifassociation.XMLJSON;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -32,18 +32,18 @@ import org.sifassociation.util.SIFXOMUtil;
  * @author jlovell
  * @see http://goessner.net/
  */
-public class XmlJsonNative implements IXmlJson{
-    private static final XmlJsonNative INSTANCE = new XmlJsonNative();
+public class GoessnerNative implements IXmlJson{
+    private static final GoessnerNative INSTANCE = new GoessnerNative();
     
-    private XmlJsonNative() {
+    private GoessnerNative() {
     }
 
     /**
      * So we can convert;
      * 
-     * @return The one and only true XmlJsonNative instance.
+     * @return The one and only true GoessnerNative instance.
      */
-    public static XmlJsonNative getInstance() {
+    public static GoessnerNative getInstance() {
         return INSTANCE;
     }    
     
@@ -58,7 +58,7 @@ public class XmlJsonNative implements IXmlJson{
         try {
             jsonRoot = jsonMapper.readTree(json);
         } catch (IOException ex) {
-            Logger.getLogger(XmlJsonNative.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(GoessnerNative.class.getName()).log(Level.SEVERE, null, ex);
             return "";
         }
         
@@ -104,7 +104,7 @@ public class XmlJsonNative implements IXmlJson{
             next = fields.next();
         }
         if(null != next) {
-            return XmlJsonNative.this.json2xmlTree(next.getKey(), next.getValue(), "");
+            return GoessnerNative.this.json2xmlTree(next.getKey(), next.getValue(), "");
         }
         return null;
     }
@@ -182,7 +182,7 @@ public class XmlJsonNative implements IXmlJson{
         try {
             xmlTree = parser.build(xml, null);
         } catch (IOException | ParsingException ex) {
-            Logger.getLogger(XmlJsonNative.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(GoessnerNative.class.getName()).log(Level.SEVERE, null, ex);
             return "";
         }
         Element xmlRoot = xmlTree.getRootElement();
@@ -210,7 +210,7 @@ public class XmlJsonNative implements IXmlJson{
         try {
             json = jsonMapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonRoot);
         } catch (JsonProcessingException ex) {
-            Logger.getLogger(XmlJsonNative.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(GoessnerNative.class.getName()).log(Level.SEVERE, null, ex);
             return "";
         }
         return json;

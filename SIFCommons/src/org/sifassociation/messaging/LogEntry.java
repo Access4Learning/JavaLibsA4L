@@ -28,7 +28,7 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import nu.xom.*;
-import org.sifassociation.goessner.XmlJsonNative;
+import org.sifassociation.XMLJSON.GoessnerNative;
 import org.sifassociation.util.SIFAuthUtil;
 
 /**
@@ -424,7 +424,7 @@ public class LogEntry {
         } catch (Exception ex) {
             String temp = "";
             // The HTTP body was not XML (this is okay), see if we can convert.
-            temp = XmlJsonNative.getInstance().json2xml(httpBody);
+            temp = GoessnerNative.getInstance().json2xml(httpBody);
             if(!temp.isEmpty()) {
                 try {
                     doc = parser.build(temp, null);

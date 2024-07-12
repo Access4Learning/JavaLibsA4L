@@ -31,7 +31,7 @@ public final class SIFRefId {
     private String hardware = "";  // Hardware address.
     private int version = 1;  // UUID version (1 or 4).
     private int sequence = 0;  // Ensure supplied sequence is 0 - 0x3FFF
-    private static long timestamp = 0;  // UTC milliseconds from the epoch.
+    private long timestamp = 0;  // UTC milliseconds from the epoch.
     
     private boolean generic = true;  // RFC 4122 compliant UUID or with SIFisms
     
@@ -94,6 +94,9 @@ public final class SIFRefId {
      * @since 3.0
      */
     public void parse(String identifier) {
+        // So we work with the actual identifier.
+        identifier = identifier.substring(identifier.lastIndexOf(':') + 1);
+        
         // If classic SIF RefId instead of standard UUID, convert!
         if(32 == identifier.length()) {
             // So we can serialize the RefId in its given form.
@@ -106,9 +109,6 @@ public final class SIFRefId {
             id.insert(23, "-");
             identifier = id.toString();
         }
-        
-        // So we work with the actual identifier.
-        identifier = identifier.substring(identifier.lastIndexOf(':') + 1);
         
         char v = identifier.charAt(14);
         if('4' == v) {

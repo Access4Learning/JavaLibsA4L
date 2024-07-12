@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.sifassociation.goessner;
+package org.sifassociation.XMLJSON;
 
 /**
  * Interface for various implementations of conversions using Goessner Notation.
