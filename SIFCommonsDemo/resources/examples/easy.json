@@ -1,0 +1,551 @@
+    {
+      "taxId": {
+        "value": "12-3456789",
+        "schemeId": "US-Federal-Tax-ID",
+        "agencyUri": "https://www.irs.gov/",
+        "schemeLink": "https://www.irs.gov/",
+        "description": "Company Federal Tax ID",
+        "schemeAgencyId": "IRS",
+        "schemeVersionId": "1.0"
+      },
+      "status": {
+        "reasonCode": "NewHire",
+        "statusCode": "Active",
+        "statusDate": "2025-01-08",
+        "description": {
+          "value": "Organization is actively hiring",
+          "languageCode": "en"
+        }
+      },
+      "legalId": {
+        "value": "ABC-12345",
+        "schemeId": "State-Incorporation-ID",
+        "agencyUri": "https://www.sos.ca.gov/",
+        "schemeLink": "https://www.sos.ca.gov/",
+        "description": "State Incorporation ID",
+        "schemeAgencyId": "CA-SecretaryOfState",
+        "schemeVersionId": "1.0"
+      },
+      "revenue": {
+        "value": 5000000.0,
+        "currency": "USD"
+      },
+      "contacts": [
+        {
+          "roleCode": "HRManager",
+          "id": {
+            "value": "EMP-001",
+            "schemeId": "EmployeeID",
+            "agencyUri": "https://mycompany.com/hr",
+            "schemeLink": "https://mycompany.com/hr",
+            "description": "Internal Employee ID",
+            "schemeAgencyId": "MyCompanyHR",
+            "schemeVersionId": "2.1"
+          },
+          "name": {
+            "alias": "JD",
+            "given": "John",
+            "legal": "John A. Doe",
+            "family": "Doe",
+            "middle": "Adam",
+            "script": "Latn",
+            "initials": "JAD",
+            "preferred": "John",
+            "familyPrefix": "",
+            "formerFamily": "",
+            "formattedName": "John A. Doe",
+            "titleAffixCode": "Mr.",
+            "formerFamilyPrefix": "",
+            "generationAffixCode": "",
+            "qualificationAffixCode": "",
+            "preferredSalutationCode": "Mr.",
+            "language": "en"
+          },
+          "communication": {
+            "web": [
+              {
+                "url": "https://linkedin.com/in/johndoe",
+                "name": "LinkedIn",
+                "useCode": "Business",
+                "preference": 1,
+                "availablePeriod": {
+                  "end": "2025-12-31T17:00:00.0",
+                  "start": "2025-01-01T08:00:00.0"
+                }
+              }
+            ],
+            "email": [
+              {
+                "address": "john.doe@mycompany.com",
+                "name": "Work Email",
+                "useCode": "Business",
+                "preference": 1,
+                "availablePeriod": {
+                  "end": "2025-12-31T17:00:00.0",
+                  "start": "2025-01-01T08:00:00.0"
+                }
+              }
+            ],
+            "phone": [
+              {
+                "access": "OfficePhone",
+                "dialNumber": "555-123-4567",
+                "phoneExtension": "101",
+                "areaDialingCode": "555",
+                "formattedNumber": "(555) 123-4567 x101",
+                "countryDialingCode": "1",
+                "name": "Work Phone",
+                "useCode": "Business",
+                "preference": 1,
+                "availablePeriod": {
+                  "end": "2025-12-31T17:00:00.0",
+                  "start": "2025-01-01T08:00:00.0"
+                }
+              }
+            ],
+            "social": [
+              {
+                "url": "https://twitter.com/JohnDoeHR",
+                "handle": "@JohnDoeHR",
+                "name": "Twitter",
+                "useCode": "Business",
+                "preference": 1,
+                "availablePeriod": {
+                  "end": "2025-12-31T17:00:00.0",
+                  "start": "2025-01-01T08:00:00.0"
+                }
+              }
+            ],
+            "address": [
+              {
+                "city": "San Francisco",
+                "line": "100 HR Parkway",
+                "typeCode": "OfficeAddress",
+                "postalCode": "94105",
+                "countryCode": "US",
+                "geoLocation": {
+                  "name": "HQ Office",
+                  "altitude": {
+                    "value": 10.0,
+                    "unitCode": "FT"
+                  },
+                  "latitude": 37.7749,
+                  "longitude": -122.4194
+                },
+                "extendedLines": [
+                  {
+                    "type": "Suite",
+                    "value": "Suite 300"
+                  }
+                ],
+                "postOfficeBox": "",
+                "formattedAddress": "100 HR Parkway, Suite 300, San Francisco, CA 94105",
+                "countrySubDivisions": [
+                  {
+                    "type": "State",
+                    "value": "CA"
+                  }
+                ],
+                "name": "Headquarters Address",
+                "useCode": "Business",
+                "preference": 1,
+                "availablePeriod": {
+                  "end": "2025-12-31T17:00:00.0",
+                  "start": "2025-01-01T08:00:00.0"
+                }
+              }
+            ]
+          },
+          "primaryLanguage": "en"
+        }
+      ],
+      "typeCode": "PrivateCompany",
+      "addresses": [
+        {
+          "typeCode": "Headquarters",
+          "line": "100 HR Parkway",
+          "extendedLines": [
+            {
+              "type": "Floor",
+              "value": "3rd Floor"
+            }
+          ],
+          "countryCode": "US",
+          "countrySubDivisions": [
+            {
+              "type": "State",
+              "value": "CA"
+            }
+          ],
+          "city": "San Francisco",
+          "postalCode": "94105",
+          "postOfficeBox": "",
+          "geoLocation": {
+            "latitude": 37.7749,
+            "longitude": -122.4194,
+            "altitude": {
+              "value": 10.0,
+              "unitCode": "FT"
+            },
+            "name": "Main HQ"
+          },
+          "formattedAddress": "100 HR Parkway, 3rd Floor, San Francisco, CA 94105"
+        }
+      ],
+      "headCount": 250.0,
+      "tradeName": "MyCompany HR Services",
+      "documentId": {
+        "value": "DOC-2025-XYZ",
+        "schemeId": "InternalDocumentScheme",
+        "agencyUri": "https://mycompany.com/docs",
+        "schemeLink": "https://mycompany.com/docs",
+        "description": "Official HR Document",
+        "schemeAgencyId": "MyCompanyHR",
+        "schemeVersionId": "1.0"
+      },
+      "domainName": "https://mycompany.com/",
+      "description": {
+        "value": "Leading provider of HR solutions and consulting",
+        "languageCode": "en"
+      },
+      "formerTaxId": {
+        "value": "",
+        "schemeId": "",
+        "agencyUri": "",
+        "schemeLink": "",
+        "description": "",
+        "schemeAgencyId": "",
+        "schemeVersionId": ""
+      },
+      "stockSymbol": "",
+      "alternateIds": [
+        {
+          "value": "HR-Alt-001",
+          "schemeId": "AlternateHRIdentifier",
+          "schemeVersionId": "1.0",
+          "schemeAgencyId": "MyCompanyHR",
+          "description": "Legacy HR Reference",
+          "schemeLink": "https://mycompany.com/hr",
+          "agencyUri": "https://mycompany.com/hr"
+        }
+      ],
+      "communication": {
+        "web": [
+          {
+            "url": "https://mycompany.com/careers",
+            "name": "Careers Page",
+            "useCode": "HR",
+            "preference": 1,
+            "availablePeriod": {
+              "end": "2025-12-31T17:00:00.0",
+              "start": "2025-01-01T08:00:00.0"
+            }
+          }
+        ],
+        "email": [
+          {
+            "address": "hr@mycompany.com",
+            "name": "HR Department",
+            "useCode": "HR",
+            "preference": 1,
+            "availablePeriod": {
+              "end": "2025-12-31T17:00:00.0",
+              "start": "2025-01-01T08:00:00.0"
+            }
+          }
+        ],
+        "phone": [
+          {
+            "access": "HR Hotline",
+            "dialNumber": "555-987-6543",
+            "phoneExtension": "0",
+            "areaDialingCode": "555",
+            "formattedNumber": "(555) 987-6543",
+            "countryDialingCode": "1",
+            "name": "Main HR Line",
+            "useCode": "HR",
+            "preference": 1,
+            "availablePeriod": {
+              "end": "2025-12-31T17:00:00.0",
+              "start": "2025-01-01T08:00:00.0"
+            }
+          }
+        ],
+        "social": [
+          {
+            "url": "https://twitter.com/MyCompanyHR",
+            "handle": "@MyCompanyHR",
+            "name": "Twitter",
+            "useCode": "HR",
+            "preference": 1,
+            "availablePeriod": {
+              "end": "2025-12-31T17:00:00.0",
+              "start": "2025-01-01T08:00:00.0"
+            }
+          }
+        ],
+        "address": [
+          {
+            "city": "San Francisco",
+            "line": "100 HR Parkway",
+            "typeCode": "BusinessAddress",
+            "postalCode": "94105",
+            "countryCode": "US",
+            "geoLocation": {
+              "name": "Main HQ",
+              "altitude": {
+                "value": 10.0,
+                "unitCode": "FT"
+              },
+              "latitude": 37.7749,
+              "longitude": -122.4194
+            },
+            "extendedLines": [
+              {
+                "type": "Floor",
+                "value": "3rd Floor"
+              }
+            ],
+            "postOfficeBox": "",
+            "formattedAddress": "100 HR Parkway, 3rd Floor, San Francisco, CA 94105",
+            "countrySubDivisions": [
+              {
+                "type": "State",
+                "value": "CA"
+              }
+            ],
+            "name": "Headquarters Address",
+            "useCode": "Business",
+            "preference": 1,
+            "availablePeriod": {
+              "end": "2025-12-31T17:00:00.0",
+              "start": "2025-01-01T08:00:00.0"
+            }
+          }
+        ]
+      },
+      "industryCodes": {
+      },
+      "ownershipType": "Private",
+      "statusHistory": [
+        {
+          "statusCode": "Active",
+          "statusDate": "2024-12-31",
+          "description": {
+            "value": "Previous year status",
+            "languageCode": "en"
+          },
+          "reasonCode": "YearlyReview"
+        }
+      ],
+      "parentCompanyName": "MyCompany International",
+      "parentCompanyTaxId": {
+        "value": "98-7654321",
+        "schemeId": "US-Federal-Tax-ID",
+        "agencyUri": "https://www.irs.gov/",
+        "schemeLink": "https://www.irs.gov/",
+        "description": "Parent Company Tax ID",
+        "schemeAgencyId": "IRS",
+        "schemeVersionId": "1.0"
+      },
+      "parentOrganization": {
+        "taxId": {
+          "value": "98-7654321",
+          "schemeId": "US-Federal-Tax-ID",
+          "agencyUri": "https://www.irs.gov/",
+          "schemeLink": "https://www.irs.gov/",
+          "description": "Parent Company Tax ID",
+          "schemeAgencyId": "IRS",
+          "schemeVersionId": "1.0"
+        },
+        "legalId": {
+          "value": "XYZ-98765",
+          "schemeId": "State-Incorporation-ID",
+          "agencyUri": "https://www.sos.ca.gov/",
+          "schemeLink": "https://www.sos.ca.gov/",
+          "description": "Parent Incorporation ID",
+          "schemeAgencyId": "CA-SecretaryOfState",
+          "schemeVersionId": "1.0"
+        },
+        "typeCode": "HoldingCompany",
+        "addresses": [
+          {
+            "typeCode": "CorporateHeadquarters",
+            "line": "500 Corporate Way",
+            "extendedLines": [
+              {
+                "type": "Office",
+                "value": "Suite 2000"
+              }
+            ],
+            "countryCode": "US",
+            "countrySubDivisions": [
+              {
+                "type": "State",
+                "value": "CA"
+              }
+            ],
+            "city": "Los Angeles",
+            "postalCode": "90001",
+            "postOfficeBox": "",
+            "geoLocation": {
+              "latitude": 34.0522,
+              "longitude": -118.2437,
+              "altitude": {
+                "value": 250.0,
+                "unitCode": "FT"
+              },
+              "name": "Corporate HQ"
+            },
+            "formattedAddress": "500 Corporate Way, Suite 2000, Los Angeles, CA 90001"
+          }
+        ],
+        "communication": {
+          "web": [
+            {
+              "url": "https://mycompanyinternational.com/",
+              "name": "Parent Company Website",
+              "useCode": "Corporate",
+              "preference": 1,
+              "availablePeriod": {
+                "end": "2025-12-31T17:00:00.0",
+                "start": "2025-01-01T08:00:00.0"
+              }
+            }
+          ],
+          "email": [
+            {
+              "address": "info@mycompanyinternational.com",
+              "name": "Parent Info",
+              "useCode": "Corporate",
+              "preference": 1,
+              "availablePeriod": {
+                "end": "2025-12-31T17:00:00.0",
+                "start": "2025-01-01T08:00:00.0"
+              }
+            }
+          ],
+          "phone": [
+            {
+              "access": "MainLine",
+              "dialNumber": "555-222-3333",
+              "phoneExtension": "0",
+              "areaDialingCode": "555",
+              "formattedNumber": "(555) 222-3333",
+              "countryDialingCode": "1",
+              "name": "Parent Company",
+              "useCode": "Corporate",
+              "preference": 1,
+              "availablePeriod": {
+                "end": "2025-12-31T17:00:00.0",
+                "start": "2025-01-01T08:00:00.0"
+              }
+            }
+          ],
+          "social": [
+            {
+              "url": "https://linkedin.com/company/mycompanyinternational",
+              "handle": "mycompanyintl",
+              "name": "LinkedIn",
+              "useCode": "Corporate",
+              "preference": 1,
+              "availablePeriod": {
+                "end": "2025-12-31T17:00:00.0",
+                "start": "2025-01-01T08:00:00.0"
+              }
+            }
+          ],
+          "address": [
+            {
+              "city": "Los Angeles",
+              "line": "500 Corporate Way",
+              "typeCode": "CorporateAddress",
+              "postalCode": "90001",
+              "countryCode": "US",
+              "geoLocation": {
+                "name": "Corporate HQ",
+                "altitude": {
+                  "value": 250.0,
+                  "unitCode": "FT"
+                },
+                "latitude": 34.0522,
+                "longitude": -118.2437
+              },
+              "extendedLines": [
+                {
+                  "type": "Office",
+                  "value": "Suite 2000"
+                }
+              ],
+              "postOfficeBox": "",
+              "formattedAddress": "500 Corporate Way, Suite 2000, Los Angeles, CA 90001",
+              "countrySubDivisions": [
+                {
+                  "type": "State",
+                  "value": "CA"
+                }
+              ],
+              "name": "Parent Company HQ",
+              "useCode": "Corporate",
+              "preference": 1,
+              "availablePeriod": {
+                "end": "2025-12-31T17:00:00.0",
+                "start": "2025-01-01T08:00:00.0"
+              }
+            }
+          ]
+        },
+        "responsibilityCode": "Corporate",
+        "organizationUnitTypeCode": "GlobalHQ",
+        "id": {
+          "value": "PARENT-ORG-001",
+          "schemeId": "ParentOrganizationID",
+          "agencyUri": "https://mycompanyinternational.com/",
+          "schemeLink": "https://mycompanyinternational.com/",
+          "description": "Parent Organization ID",
+          "schemeAgencyId": "MyCompanyInternational",
+          "schemeVersionId": "1.0"
+        },
+        "code": "PARENTCODE",
+        "name": "MyCompany International"
+      },
+      "responsibilityCode": "Unit",
+      "industryIdentifiers": [
+        {
+          "value": "541612",
+          "schemeId": "NAICS",
+          "schemeVersionId": "2017",
+          "schemeAgencyId": "US-Census",
+          "description": "Human Resource Consulting Services",
+          "schemeLink": "https://www.census.gov/naics/",
+          "agencyUri": "https://www.census.gov/naics/"
+        }
+      ],
+      "workEnvironmentCode": "Hybrid",
+      "organizationActivity": [
+        {
+          "activityCode": [
+            "HRConsulting",
+            "Recruitment"
+          ],
+          "description": {
+            "value": "Primary activities include recruitment and HR consulting",
+            "languageCode": "en"
+          },
+          "percentage": 100.0
+        }
+      ],
+      "organizationUnitTypeCode": "DomesticSubsidiary",
+      "geographicResponsibilityCode": "Global",
+      "id": {
+        "value": "ORG-001",
+        "schemeId": "OrganizationID",
+        "agencyUri": "https://mycompany.com/",
+        "schemeLink": "https://mycompany.com/",
+        "description": "Internal Organization ID",
+        "schemeAgencyId": "MyCompany",
+        "schemeVersionId": "1.0"
+      },
+      "code": "HR001",
+      "name": "MyCompany HR Services"
+    }

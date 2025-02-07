@@ -28,7 +28,7 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import nu.xom.*;
-import org.sifassociation.XMLJSON.GoessnerNative;
+import org.sifassociation.XMLJSON.JacksonNative;
 import org.sifassociation.util.SIFAuthUtil;
 
 /**
@@ -183,6 +183,12 @@ public class LogEntry {
         {
             String value = response.getHeader(name);
             this.httpHeaders.addHttpHeader(name, value);
+        }
+        
+        // So we include headers that are handled special.
+        String contentType = response.getContentType();
+        if(null != contentType && !contentType.isEmpty()) {
+            this.httpHeaders.addHttpHeader("Content-Type", contentType);
         }
         
         // Body
@@ -424,7 +430,7 @@ public class LogEntry {
         } catch (Exception ex) {
             String temp = "";
             // The HTTP body was not XML (this is okay), see if we can convert.
-            temp = GoessnerNative.getInstance().json2xml(httpBody);
+            temp = JacksonNative.getInstance().json2xml(httpBody);
             if(!temp.isEmpty()) {
                 try {
                     doc = parser.build(temp, null);
@@ -439,7 +445,7 @@ public class LogEntry {
     }
 
     // So we can easily inspect the HTTP body.
-    public Element getParsedBody() {
+    public Element getParsedBody() {        
         return this.parsedBody;
     }
     
@@ -600,6 +606,33 @@ public class LogEntry {
         }
         
         return value;
+    }
+    
+    public String getReversePathSegment(int reverseIndex) {
+        URL parsedUrl = null;
+
+        // Attempt to parse the URL
+        try {
+            parsedUrl = new URL(this.relatedURL);
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(LogEntry.class.getName()).log(Level.SEVERE, 
+                    "Invalid URL: " + this.relatedURL, ex);
+            return null; // Return null if URL is invalid
+        }
+
+        // Get the path and split it into parts
+        String[] parts = Arrays.stream(parsedUrl.getPath()
+                                                .split("/"))
+                               .filter(part -> !part.isEmpty()) // Ignore empty segments
+                               .toArray(String[]::new);
+
+        // Reverse the array
+        List<String> partsList = Arrays.asList(parts);
+        Collections.reverse(partsList);
+        parts = partsList.toArray(new String[0]);
+
+        // Return the part at the specified reverse index or null if out of range
+        return reverseIndex < parts.length ? parts[reverseIndex] : null;
     }
     
     public List<SIFCertificateInfo> getCertificates() {

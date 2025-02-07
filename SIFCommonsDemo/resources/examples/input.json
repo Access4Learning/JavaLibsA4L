@@ -1,0 +1,275 @@
+{
+  "@context": [
+    "https://www.w3.org/2018/credentials/v1",
+    "http://schema.hropenstandards.org/4.4/recruiting/json/ler-rs/ProvisionalVerifiableCredentialLER-RSType.json"
+  ],
+  "credentialSubject": {
+    "type": "http://schema.hropenstandards.org/4.4/recruiting/json/ler-rs/LER-RSType.json",
+    "documentId": {
+      "value": "71202e91-a760-4173-a595-97bdfb514a63"
+    },
+    "person": {
+      "name": {
+        "formattedName": "Lia Andrews",
+        "given": "Lia",
+        "family": "Andrews"
+      }
+    },
+    "communication": {
+      "address": [
+        {
+          "city": "Springfield",
+          "line": "1234 Elm Street",
+          "postalCode": "62704",
+          "countryCode": "US",
+          "useCode": "ResidenceAddress"
+        }
+      ],
+      "phone": [
+        {
+          "useCode": "private",
+          "preference": 1,
+          "formattedNumber": "+1 312-555-7890",
+          "countryDialingCode": "1",
+          "areaDialingCode": "312",
+          "dialNumber": "5557890"
+        }
+      ],
+      "email": [
+        {
+          "useCode": "private",
+          "address": "lia.andrews@example.com"
+        }
+      ],
+      "web": [
+        {
+          "name": "Linkedin",
+          "url": "https://linkedin.com/in/liaandrews"
+        }
+      ]
+    },
+    "narratives": [
+      {
+        "name": "Objective",
+        "texts": [
+          {
+            "name": "goal",
+            "lines": [
+              "Looking for a corporate consulting job where my skills can be fully embraced. I have 10 years experience in the corporate consulting world."
+            ]
+          }
+        ]
+      }
+    ],
+    "job": {
+      "positionOpening": {
+        "documentId": {
+          "value": "J12345",
+          "schemeId": "ATS"
+        },
+        "positionProfiles": [
+          {
+            "positionId": {
+              "value": "EXT-J12345",
+              "schemeId": "ATS"
+            },
+            "positionTitle": "Corporate Consultant",
+            "positionOrganizations": [
+              {
+                "name": "Corporate Consulting SE",
+                "domainName": "dns:www.corporateconsultingse.com"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "skills": [
+      {
+        "name": "Project Management",
+        "comments": [
+          "I have 5 years of Project Management experience learned on the job."
+        ],
+        "yearsOfExperience": 5
+      }
+    ],
+    "educationAndLearnings": [
+      {
+        "start": "1996",
+        "end": "2000",
+        "institution": {
+          "name": "University of California, Berkeley",
+          "communication": {
+            "address": [
+              {
+                "countryCode": "US",
+                "countrySubDivisions": [
+                  {
+                    "type": "state",
+                    "value": "CA"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "educationDegrees": [
+          {
+            "name": "Bachelor of Commerce",
+            "iscedEducationLevelCode": "6",
+            "degreeGrantedStatus": "Granted",
+            "date": "2000",
+            "specializations": [
+              {
+                "name": "Corporate Business",
+                "type": "major"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "verifications": [
+          {
+            "@context": [
+              "https://www.w3.org/2018/credentials/v1",
+              "http://schema.hropenstandards.org/4.4/recruiting/json/ler-rs/ProvisionalVerifiableCredentialEducationAndLearningType.json"
+            ],
+            "id": "https://www.ncsu.edu/credentials/1872",
+            "type": [
+              "VerifiableCredential",
+              "FullTranscriptCredential"
+            ],
+            "issuer": "https://www.ncsu.edu",
+            "issuanceDate": "2011-05-01T19:23:24Z",
+            "credentialSubject": {
+              "id": "did:ebfeb1f712ebc6f1c276e12ec21",
+              "educationAndLearning": {
+                "institution": {
+                  "domainName": "dns:www.ncsu.edu",
+                  "tradeName": "North Carolina State University",
+                  "communication": {
+                    "web": [
+                      {
+                        "url": "https://www.ncsu.edu"
+                      }
+                    ]
+                  }
+                },
+                "educationDegrees": [
+                  {
+                    "name": "Computer Science, Cybersecurity Concentration, B.S.",
+                    "codes": [
+                      "BS"
+                    ],
+                    "degreeGrantedStatus": "Granted",
+                    "date": "2011-05"
+                  }
+                ],
+                "currentlyAttendingIndicator": false,
+                "goodStandingIndicator": true
+              }
+            },
+            "proof": [
+              {
+                "type": "RsaSignature2018",
+                "created": "2011-05-01T21:19:10Z",
+                "proofPurpose": "assertionMethod",
+                "verificationMethod": "https://www.ncsu.edu/issuers/565049#key-1",
+                "jws": "eyJhbGciOiJSUzI1NiIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19..TCYt5XsITJX1CxPCT8yAV-TVkIEq_PbChOMqsLfRoPsnsgw5WEuts01mq-pQy7UJiN5mgRxD-WUcX16dUEMGlv50aqzpqh4Qktb3rk-BuQy72IFLOqV0G_zS245-kronKb78cPN25DGlcTwLtjPAYuNzVBAh4vGHSrQyHUdBBPM"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "employmentHistories": [
+      {
+        "organization": {
+          "tradeName": "Acme Anvil",
+          "domainName": "dns:acmeanvil.com",
+          "communication": {
+            "web": [
+              {
+                "url": "http://www.acmeanvil.com/contactus"
+              }
+            ]
+          }
+        },
+        "positionHistories": [
+          {
+            "title": "Corporate Project Manager",
+            "location": {
+              "city": "New York City, NY",
+              "postalCode": "89440",
+              "countryCode": "US"
+            },
+            "organization": {
+              "responsibilityCode": "Unit",
+              "name": "Corporate IT"
+            },
+            "resourceRelationshipCode": "Employee",
+            "end": "2022-11-04",
+            "start": "2012-10-01",
+            "current": false
+          }
+        ]
+      }
+    ],
+    "certifications": [
+      {
+        "name": "Product Management Certificate",
+        "status": "Active",
+        "firstIssued": "2014-08-25",
+        "effectiveTimePeriod": {
+          "validTo": "2024-08-25T00:00:00.0",
+          "validFrom": "2014-08-25T00:00:00.0"
+        },
+        "issuingAuthority": {
+          "tradeName": "Cornell University",
+          "domainName": "dns:www.cornell.edu",
+          "communication": {
+            "address": [
+              {
+                "city": "Ithica, NY"
+              }
+            ]
+          }
+        },
+        "verifications": [
+          {
+            "reference": "https://online.cornell.edu/credentials/public/8798798798"
+          }
+        ]
+      }
+    ],
+    "attachments": [
+      {
+        "id": {
+          "value": "resume"
+        },
+        "content": {
+          "value": "R3VuaWxsYSBLbGVpbiAtIENWClLDtm1lcmJlcmcgMjMsIEZyYW5rZnVydCBhbSBNYWluLCBHZXJtYW4gNjAzMQpNb2JpbGU6ICs0OSAyMDMyMjIwMjAyCmd1bmlsbGEua2xlaW5AZXhhbXBsZS5jb20KaHR0cHM6Ly9saW5rZWRpbi5jb20vaW4vZ3VuaWxsYWtsZWlu",
+          "encoding": "base64",
+          "mimeType": "text/plain",
+          "filename": "liaandrews.txt"
+        }
+      }
+    ]
+  },
+  "id": "http://www.hropen.org",
+  "type": [
+    "LER-RS VC"
+  ],
+  "issuer": "Lia Andrews(Self)",
+  "issuanceDate": "2012-05-01T19:23:24Z",
+  "proof": [
+    {
+      "type": "RsaSignature2018",
+      "created": "2011-05-01T21:19:10Z",
+      "proofPurpose": "assertionMethod",
+      "verificationMethod": "https://www.ncsu.edu/issuers/565049#key-1",
+      "jws": "eyJhbGciOiJSUzI1NiIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19..TCYt5XsITJX1CxPCT8yAV-TVkIEq_PbChOMqsLfRoPsnsgw5WEuts01mq-pQy7UJiN5mgRxD-WUcX16dUEMGlv50aqzpqh4Qktb3rk-BuQy72IFLOqV0G_zS245-kronKb78cPN25DGlcTwLtjPAYuNzVBAh4vGHSrQyHUdBBPM"
+    }
+  ]
+}

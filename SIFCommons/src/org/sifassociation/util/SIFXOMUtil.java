@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -44,6 +45,9 @@ public class SIFXOMUtil {
     
     // So we can pretty print.
     public static String pretty(Element oldRoot) {    
+        if(null == oldRoot) {
+            return "null";
+        }
         Element root = new Element(oldRoot);
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         Serializer serializer = new Serializer(out);
@@ -243,6 +247,22 @@ public class SIFXOMUtil {
         return null;
     }
 
+    // Returns the value of the first matching XPath or null.
+    // Note: Only for use with XML that does not contain XPaths.
+    public static String getFirstXPath(String xpath, Element root) {
+        // So we execute the query.
+        Nodes results = root.copy().query(xpath);
+        if(0 < results.size()) {
+            Node first = results.get(0);
+            if(null != first) {
+                return first.getValue();
+            }
+        }
+        
+        // So we know the difference between failure and a blank field.
+        return null;
+    }
+    
     // Returns the node of the first matching XPath or null.
     // Note: To use the ns namespace use the prefix "ns" in your xpath.
     // Example: /ns:environment/ns:consumerName
@@ -262,6 +282,69 @@ public class SIFXOMUtil {
         
         // So we know the difference between failure and a blank field.
         return null;
+    }
+    
+    // Returns the node of the first matching XPath or null.
+    // Note: Only for use with XML that does not contain XPaths.
+    public static Node getFirstXPathNode(String xpath, Element root) {
+        // So we execute the query.
+        Nodes results = root.copy().query(xpath);
+        if(0 < results.size()) {
+            Node first = results.get(0);
+            if(null != first) {
+                return first;
+            }
+        }
+        
+        // So we know the difference between failure and a blank field.
+        return null;
+    }
+    
+    // Sets the value at an XPath in the first immediate parent creating the child node (elesment or attribute) if necessary.
+    // Note: Only for use with XML that does not contain namespaces.
+    public static void setValueAtXPath(Element root, String xpath, String value) throws Exception {
+        if (xpath == null || !xpath.startsWith("/")) {
+            throw new IllegalArgumentException("XPath must be absolute and start with '/'");
+        }
+
+        // Remove leading slash and split the path
+        String[] pathParts = xpath.substring(1).split("/");
+        Element currentElement = root;
+
+        // Check if root matches the first part of the path
+        String rootName = pathParts[0];
+        if (!root.getQualifiedName().equals(rootName)) {
+            throw new IllegalArgumentException("The provided root does not match the root of the XPath.");
+        }
+
+        // Traverse or create missing elements
+        for (int i = 1; i < pathParts.length - 1; i++) {
+            String part = pathParts[i];
+
+            Element child = currentElement.getFirstChildElement(part);
+            if (child == null) {
+                child = new Element(part);
+                currentElement.appendChild(child);
+            }
+            currentElement = child;
+        }
+
+        // Process the final part (element or attribute)
+        String finalPart = pathParts[pathParts.length - 1];
+        if (finalPart.startsWith("@")) {
+            // It's an attribute
+            String attributeName = finalPart.substring(1);
+            currentElement.addAttribute(new Attribute(attributeName, value));
+        } else {
+            // It's an element
+            Element targetChild = currentElement.getFirstChildElement(finalPart);
+            if (targetChild == null) {
+                targetChild = new Element(finalPart);
+                currentElement.appendChild(targetChild);
+            }
+            targetChild.removeChildren(); // Clear any existing content
+            targetChild.appendChild(value);
+        }
     }
     
     /**
@@ -1109,7 +1192,7 @@ public class SIFXOMUtil {
         }
     }
     
-    /* SIFisms */
+    /* SIFisms & Exceptions */
     
     /**
      * So we can support all know ID attributes consistently.
@@ -1117,8 +1200,12 @@ public class SIFXOMUtil {
      * @param object  Root of the element we want an ID for.
      * @return The retrieved id or the empty string.
      */
-    public static String getObjectId(Element object) {
+    public static String getObjectId(Element object, String idXPath) {
         String current = null;
+        // To Do:  Consider adding support for XML with namespaces.
+        if(null != idXPath && !idXPath.isEmpty()) {
+            return getFirstXPath(idXPath, object);
+        }
         current = object.getAttributeValue("refId");
         if(null != current) {
            return current;

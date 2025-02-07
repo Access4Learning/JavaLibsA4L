@@ -18,6 +18,7 @@ import nu.xom.Builder;
 import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Elements;
+import nu.xom.Node;
 import nu.xom.Nodes;
 import nu.xom.ParsingException;
 import nu.xom.XPathContext;
@@ -318,8 +319,10 @@ public class SIFEXistUtil {
             }
         }
         // To Do:  Explicitly find and utilize an unused prefix throughout.
-       
-        root.addNamespaceDeclaration("d", original.getNamespaceURI());
+        String namespaceURI = original.getNamespaceURI();
+        if(null != namespaceURI && !namespaceURI.isEmpty()) {
+            root.addNamespaceDeclaration("d", namespaceURI);
+        }
         root.addAttribute(new Attribute("version", "1.0"));
         
         for(String field : fields) {
@@ -340,7 +343,9 @@ public class SIFEXistUtil {
         
         // So we include the modification to make.
         ContentType type = ContentType.create("application/xml", "utf-8");
-        StringEntity request = new StringEntity(SIFXOMUtil.pretty(root), type);
+        String pretty = SIFXOMUtil.pretty(root);        
+        System.out.println(pretty);  // Debug
+        StringEntity request = new StringEntity(pretty, type);
         httpPost.setEntity(request);
         
         // So we request the XUpdate be executed (with a POST).
@@ -356,7 +361,9 @@ public class SIFEXistUtil {
             return 500;
         }
         
-        return result.getStatusLine().getStatusCode();
+        int statusCode = result.getStatusLine().getStatusCode();
+        System.out.println(statusCode);  // Debug
+        return statusCode;
     }
 
     // So we update consistently.
@@ -535,5 +542,26 @@ public class SIFEXistUtil {
     public static String escapeXQuery(String escape) {
         escape = escape.replaceAll("&", "&amp;");
         return escape;
+    }
+    
+    /**
+     * Inserts the xmlns:ns0="" attribute into the <modifications> tag if not present.
+     * Uses a regex to locate the first occurrence of xmlns="http://www.xmldb.org/xupdate"
+     * and then appends xmlns:ns0="" right after it.
+     */
+    public static String addNs0Namespace(String xml) {
+        // Check if 'xmlns:ns0' is already present
+        if (xml.contains("xmlns:ns0=")) {
+            // Already has an ns0 namespace declaration
+            return xml;
+        }
+
+        // Regex explanation:
+        //   (xmlns="http://www\.xmldb\.org/xupdate")   -> capture group for the match of that exact attribute
+        //   We insert our new attribute right after capture group 1 using $1
+        return xml.replaceFirst(
+            "(xmlns=\"http://www\\.xmldb\\.org/xupdate\")",
+            "$1 xmlns:ns0=\"\""
+        );
     }
 }

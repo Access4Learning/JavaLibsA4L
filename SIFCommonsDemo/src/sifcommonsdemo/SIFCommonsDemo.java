@@ -23,6 +23,7 @@ import nu.xom.ParsingException;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.sifassociation.XMLJSON.JacksonNative;
 import org.sifassociation.messaging.SIF2MessageXML;
 import org.sifassociation.messaging.SIF2Payloads;
 import org.sifassociation.messaging.SIF3Payloads;
@@ -111,7 +112,7 @@ public class SIFCommonsDemo {
         System.out.println(SIFXOMUtil.pretty(user));
         
         //*/
-        ///*
+        /*
         
         // So we know how to turn any SIF_ExtendedQuery into an XQuery.
         String xml = "<SIF_ExtendedQuery xmlns=\"http://www.sifinfo.org/infrastructure/2.x\"><SIF_Select Distinct=\"false\" RowCount=\"All\"><SIF_Element ObjectName=\"StudentPersonal\"/></SIF_Select><SIF_From ObjectName=\"StudentPersonal\"/></SIF_ExtendedQuery>";
@@ -180,6 +181,8 @@ public class SIFCommonsDemo {
         
         //*/
 
+        /*
+        
         // So we create clean SIF_Response messages.
         String ns = "http://www.sifinfo.org/infrastructure/2.x";
         SIF2MessageXML response = null;
@@ -203,6 +206,8 @@ public class SIFCommonsDemo {
             System.out.println(response.toString().getBytes("UTF-8").length);
         }
 
+        //*/
+        
         /*
         // So we know how to create SIF 3 payloads.
         System.out.println(SIF3Payloads.createEnvironment(
@@ -415,6 +420,19 @@ public class SIFCommonsDemo {
         System.out.println("Resource: " + SIFURLUtil.getResource(url));
         System.out.println("Collection: " + SIFURLUtil.getCollection(url));
         */
-    }
 
+        // So we can evaluate Jackson for round tripping the hard
+        // way:  JSON->XML->JSON
+        System.out.println("\nInput:");
+        String jsonInput = SIFFileUtil.readFile("resources/examples/input.json");
+        System.out.println(jsonInput);
+        System.out.println("\nMiddle:");
+        String xmlMiddle = JacksonNative.getInstance().json2xml(jsonInput);
+        System.out.println(xmlMiddle);
+        ///*
+        System.out.println("\nRound Tripped:");
+        String jsonAfter = JacksonNative.getInstance().xml2json(xmlMiddle);
+        System.out.println(jsonAfter);
+        //*/
+    }            
 }
