@@ -1,0 +1,13 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "version": "4.3.0",
+    "title": "SocialTypeArray",
+    "description": "Array of social network information details.",
+    "type": "array",
+    "items": {
+        "allOf": [
+            { "$ref": "SocialType.json#" },
+            { "$ref": "CommunicationItemInclusion.json#" }
+        ]
+    }
+}

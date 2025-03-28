@@ -1,0 +1,30 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"version": "4.3.0",
+	"title": "IdentifierType",
+	"description": "Identifies a specific entity in a managed scheme.",
+	"type": "object",
+	"properties": {
+		"id": {
+			"type": "string",
+			"description": "The value of the identifier. For example, a Social Security ID or FEIN."
+		},
+		"schemeURI": {
+			"type": "string",
+			"format": "uri",
+			"description": "A URI pointing to the scheme definition from which the identifier value and type are derived. The URI can be used to provide information about the scheme including format of the identifier."
+		},
+		"schemeID": {
+			"type": "string",
+			"description": "A source/issuing/managing authority identifier for the scheme in which the identifier is unique. Issuing organizations include those providing social security IDs and FEIN. Examples of schemeID are 'SSN' for Social Security numbers or 'BANK' for bank identifiers."
+		},
+		"type": {
+			"type": "string",
+			"description": "Indicates the type or category of the identifier within the specified scheme."
+		},
+		"issuingAuthority": {
+			"type": "string",
+			"description": "The organization that issued the identifier; that is, assigned the identification value to the object."
+		}
+	}
+}

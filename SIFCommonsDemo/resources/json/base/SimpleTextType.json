@@ -1,0 +1,7 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "version": "4.5.0",
+    "title": "SimpleTextType",
+    "description": "Simple (string) text to be used when metadata describing the language is not needed.",
+    "type": "string"
+}

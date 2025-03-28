@@ -1,0 +1,40 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "version": "4.5.0",
+    "title": "OrganizationReferenceType",
+    "description": "Basic information to reference a specific legal organization.",
+    "definitions": {
+        "ResponsibilityCodeList": {
+            "title": "ResponsibilityCodeList",
+            "description": "Values that classify the level or the responsibility at which the organization operates.",
+            "enum": [
+                "Unit",
+                "Department",
+                "Division",
+                "Parent",
+                "Group",
+                "Plant",
+                "Subsidiary",
+                "Joint Venture",
+                "Branch",
+                "Holding Affiliate"
+            ]
+        }
+    },
+    	"allOf": [
+		{
+			"$ref": "OrganizationReferenceType.json"
+		}
+	],
+    "type": "object",
+    "properties": {
+    		"taxId": {
+			"description": "A government assigned identifier to distinguish an organization. This typically is a country-level tax code. For example, Federal Employer Identification Number (FEIN) in the USA.",
+			"$ref": "../base/IdentifierType.json"
+		},
+		"legalId": {
+			"description": "An identifier of the organization for legal purposes. This could be a company, state, or other kind of identifier. For example, Data Universal Numbering System, abbreviated as DUNS.",
+			"$ref": "../base/IdentifierType.json"
+		}
+    }
+}

@@ -1,0 +1,19 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "version": "4.3.0",
+    "title": "SocialType",
+    "description": "The entity's unique social network URL which is a place where the person can be reached.",
+    "type": "object",
+    "properties": {
+        "handle": {
+            "description": "The handle or identifier of the entity on the social network.",
+            "type": "string"
+        },
+        "url": {
+            "description": "The fully qualified web address of the entity on the social network",
+            "type": "string",
+            "format": "uri"
+        }
+    },
+    "required": [ "url" ]
+}

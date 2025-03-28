@@ -1,0 +1,30 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"version": "4.5.0",
+	"title": "WorkAgreementType",
+	"description": "A work agreement is an implicit or explicit 'agreement' between a worker and an Employer or Contractee Organization in which said worker agrees to perform duties and responsibilities for the organization in some capacity.",
+	"type": "object",
+	"properties": {
+		"startWorkDate": {
+			"description": "Date of worker's planned day for start of work",
+			"$ref": "../base/DateType.json"
+		},
+		"endWorkDate": {
+			"description": "Date of worker's planned day for end of work",
+			"$ref": "../base/DateType.json"
+		},
+		"inceptionDate": {
+			"description": "The date on which the agreement (e.g., contract) starts.",
+			"$ref": "../base/DateType.json"
+		},
+		"terminationDate": {
+			"description": "The date on which the agreement (e.g., contract) ends.",
+			"$ref": "../base/DateType.json"
+		},
+		"probationaryDatePeriod": {
+			"description": "The start and end dates of a worker's probationary period or duration",
+			"$ref": "../base/DatePeriodType.json"
+		}
+
+	}
+}

@@ -1,0 +1,16 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "version": "4.5.0",
+    "title": "LegalOrganizationTypeCodeList",
+    "description": "Legal organization type codelist.",
+    "enum": [
+        "DomesticUltimate",
+        "GlobalUltimate",
+        "Parent",
+        "Subsidiary",
+        "Division",
+        "Department",
+        "Establishment",
+        "HeadQuarters"
+    ]
+}

@@ -1,0 +1,36 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"title": "MessageType",
+	"description": "Complete details of the user or developer message",
+	"type": "object",
+	"additionalProperties": false,
+	"allOf": [
+		{
+			"$ref": "./messageBaseType.json"
+		},
+		{
+			"type": "object",
+			"properties": {
+				"alternateMessageTexts": {
+					"description": "The content of the message expressed in an alternate language. The content language is identified by the languageCode property",
+					"type": "array",
+					"items": {
+						"$ref": "../base/TextType.json"
+					}
+				},
+				"resourcePath": {
+					"description": "A path expression used to specify the part of a resource representation that corresponds to the message.",
+					"$ref": "../base/SimpleTextType.json"
+				},
+				"messageArguments": {
+					"description": "Parameter and argument pairs associated with a message.",
+					"type": "array",
+					"items": {
+					"$ref": "./ArgumentType.json"
+					}
+				}
+			},
+			"additionalProperties": false
+		}
+	]
+}

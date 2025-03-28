@@ -1,0 +1,13 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"version": "4.5.0",
+	"title": "WorkRelationshipCodeList",
+	"description": "Resource relationship code list.",
+	"enum": [
+		"Employment",
+		"Contract",
+		"Externship",
+		"Internship",
+		"Volunteering"
+	]
+}

@@ -1,0 +1,21 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"title": "ArgumentType",
+	"description": "A parameter and argument pair.",
+	"type": "object",
+	"properties": {
+		"parameterName": {
+			"description": "Name of the parameter or element",
+			"$ref": "../base/SimpleTextType.json"
+		},
+		"parameterPath": {
+			"description": "Argument path if referenced within the same schema",
+			"$ref": "../base/UriIdentifierType.json"
+		},
+		"argument": {
+			"description": "The value or data passed in the parmeter or element",
+			"$ref": "../base/SimpleTextType.json"
+		}
+	},
+	"additionalProperties": false
+}

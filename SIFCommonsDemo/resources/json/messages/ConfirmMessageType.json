@@ -1,0 +1,89 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"title": "ConfirmMessageType",
+	"description": "The confirm message contains the processing results for the corresponding request.  A request may have its processing reported as: succeeded, partially failed, or failed.",
+	"type": "object",
+	"properties": {
+		"messageID": {
+			"description": "An identifier for the instance of the confirm message",
+			"$ref": "../base/IdentifierType.json"
+		},
+		"messageDateTime": {
+			"description": "The date & time that the confirm message instance was created",
+			"$ref": "../base/DateTimeType.json"
+		},
+		"requestID": {
+			"description": "The identifier for the request to which a confirm message is related.  In the asynchronous processing case, this identifier may be used to refer to the processing job that is servicing a request",
+			"$ref": "../base/SimpleIdentifierType.json"
+		},
+		"requestProcessingStatusCode": {
+			"description": "The processing results status code for the request",
+			"type": "string",
+			"enum": [
+				"received",
+				"validated",
+				"started",
+				"in-progress",
+				"completed"
+			]
+		},
+		"requestResultStatusCode": {
+			"description": "The processing results status code for the request",
+			"type": "string",
+			"enum": [
+				"succeeded",
+				"partiallyFailed",
+				"failed"
+			]
+		},
+		"messages": {
+			"description": "Processing messages related to the request; multiple messages may be communicated about the request",
+			"type": "array",
+			"items": {
+				"$ref": "./MessageType.json"
+			}
+		},
+		"resourceMessages": {
+			"description": "Resource messages contain the resource-specific processing results for resources being managed in the request. In the case of a request that manages multiple resources, each array item would correspond to one of the resources",
+			"type": "array",
+			"items": {
+				"type": "object",
+				"properties": {
+					"resourceId": {
+						"description": "An identifier for a resource in the request",
+						"$ref": "../base/IdentifierType.json"
+					},
+					"resourceResultStatusCode": {
+						"description": "The processing results status code for a resource",
+						"type": "string",
+						"enum": [
+							"succeeded",
+							"failed"
+						]
+					},
+					"messages": {
+						"description": "Processing messages related to the resource; multiple messages may be communicated about a resource",
+						"type": "array",
+						"items": {
+							"$ref": "MessageType.json"
+						}
+					},
+					"links": {
+						"type": "array",
+						"items": {
+							"$ref": "../base/LinkType.json"
+						}
+					}
+				},
+				"additionalProperties": false
+			}
+		},
+		"links": {
+			"type": "array",
+			"items": {
+				"$ref": "../base/LinkType.json"
+			}
+		}
+	},
+	"additionalProperties": false
+}

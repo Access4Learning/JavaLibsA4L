@@ -1,0 +1,15 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"version": "4.3.x",
+	"title": "WorkerType",
+	"description": "Worker is a Person Role and is defined as someone who performs labor for an organization. Worker is an abstraction for other more specific work-related roles, for example, Employee and Contractor.",
+	"type": "object",
+	"allOf": [
+		{
+			"$ref": "WorkerType.json"
+		},
+		{
+			"$ref": "../base/NounType.json"
+		}
+	]
+}

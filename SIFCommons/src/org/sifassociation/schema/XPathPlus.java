@@ -15,7 +15,7 @@ import org.apache.ws.commons.schema.XmlSchemaAnnotation;
  * @author jlovell
  * @since 3.0
  */
-public class XPathPlus {
+public class XPathPlus implements IPathPlus {
     private String path;
     private boolean compleatlyMandatory;
     private Map<String, String> appInfos;
@@ -153,6 +153,16 @@ public class XPathPlus {
         this.appInfos = appInfos;
     }
     
+    @Override
+    public Map<String, String> getMetadata() {
+        return getAppInfos();
+    }
+    
+    @Override
+    public void setMetadata(Map<String, String> metadata) {
+        setAppInfos(metadata);
+    }
+    
     public String getDocumentation() {
         return documentation;
     }
@@ -272,4 +282,22 @@ public class XPathPlus {
         return true;
     }
     
+    /**
+     * Convert this XPathPlus object to a JsonPathPlus object
+     * 
+     * @return Equivalent JsonPathPlus object
+     */
+    public JsonPathPlus toJsonPathPlus() {
+        return PathConverter.convertToJsonPathPlus(this);
+    }
+    
+    /**
+     * Create an XPathPlus object from a JsonPathPlus object
+     * 
+     * @param jsonPathPlus Source JsonPathPlus object
+     * @return Equivalent XPathPlus object
+     */
+    public static XPathPlus fromJsonPathPlus(JsonPathPlus jsonPathPlus) {
+        return PathConverter.convertToXPathPlus(jsonPathPlus);
+    }
 }

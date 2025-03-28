@@ -1,0 +1,2 @@
+Manifest-Version: 1.0
+Created-By: Claude Code - Java 11 Build

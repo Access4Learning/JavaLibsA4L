@@ -1,0 +1,7 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "version": "4.5.0",
+    "title": "SimpleIdentifierType",
+    "description": "The URI of the related entity, typically used to represent any internet or social network address",
+    "type": "string"
+}

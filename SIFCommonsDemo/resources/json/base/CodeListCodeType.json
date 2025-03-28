@@ -1,0 +1,40 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "version": "4.5.0",
+    "title": "CodeListCodeType",
+    "description": "A code is a character string of letters, numbers, special characters (except escape sequences), and symbols. It represents a definitive value, a method, or a property description in an abbreviated or language-independent form that is part of a finite list of allowed values within a code list that is managed by an agency. Use this type when the list or values are controlled by an external entity, the list or values are public and could be referenced or validated.",
+    "type": "object",
+    "properties": {
+        "value": { 
+            "description": "The code.",
+            "type": "string" 
+        },
+        "listId": {
+            "description": "The identification of the code list.",
+            "type": "string"
+        },
+        "listVersionId": {
+            "description": "The identification of the version of the code list.",
+            "type": "string"
+        },
+        "listAgencyId": {
+            "description": "The identification of the agency that manages the code list.",
+            "type": "string"
+        },
+        "description": { 
+            "description": "The description of the code.",
+            "type": "string" 
+        },
+        "listLink": {
+            "description": "The URI that identifies where the code list is located.",
+            "type": "string",
+            "format": "uri"
+        },
+        "agencyUri": {
+            "description": "The URI that identifies where the code list scheme is located.",
+            "type": "string",
+            "format": "uri"
+        }
+    },
+    "required": [ "value" ]
+}

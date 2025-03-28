@@ -1,0 +1,30 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "version": "4.3.0",
+    "title": "CommunicationType",
+    "description": "Allows capture of information about a variety of communication channels (telephone, email, fax, messaging, address, etc.).",
+    "type": "object",
+    "properties": {
+        "address": { 
+            "description": "An array of the address, which is the physical or mailing address of the entity.",
+            "$ref": "AddressTypeArray.json#" 
+        },
+        "phone": { 
+             "description": "An array of the phone numbers of the entity.",
+            "$ref": "PhoneTypeArray.json#" 
+        },
+        "email": {
+            "description": "An array of the email addresses of the entity.",
+            "$ref": "EmailTypeArray.json#" 
+        },
+        "web": { 
+            "description": "An array of the web sites or web addresses of the entity.",
+            "$ref": "WebTypeArray.json#" 
+        },
+        "social": {
+            "description": "An array of the social media handles or identifiers of the entity.",
+            "$ref": "SocialTypeArray.json#"
+        }
+    },
+    "minProperties": 1
+}

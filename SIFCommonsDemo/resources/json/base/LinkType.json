@@ -1,0 +1,93 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"title": "LinkType",
+	"description": "A link description object is used to describe link relations.  In the context of a schema, it defines the link relations of the instances of the schema, and can be parameterized by the instance values.  The link description format can be used on its own in regular (non-schema) documents, and use of this format can be declared by referencing the normative link description schema as the schema for the data structure that uses the links.",
+	"type": "object",
+	"properties": {
+		"href": {
+			"description": "The URI of the related entity, typically used to represent any internet or social network address",
+			"type": "string",
+			"format": "uri"
+		},
+		"rel": {
+			"description": "Indicates the nature of the relationship of the related resource to the resource that generated this representation",
+			"type": "string",
+			"enum": [
+				"alternate",
+				"create",
+				"canonical",
+				"describedby",
+				"edit-form",
+				"enclosure",
+				"full",
+				"related",
+				"root",
+				"self",
+				"up",
+				"search",
+				"first",
+				"last",
+				"next",
+				"previous"
+			]
+		},
+		"title": {
+			"description": "This property defines a title for the link.  The value must be a string. User agents MAY use this title when presenting the link to the user.",
+			"type": "string"
+		},
+		"mediaType": {
+			"description": "The media type that the linked resource will return (Response) in",
+			"type": "string",
+			"enum": [
+				"application/gzip",
+				"application/json",
+				"application/msword",
+				"application/pdf",
+				"application/postscript",
+				"application/vnd.ms-excel",
+				"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+				"application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+				"application/xml",
+				"application/x-www-form-urlencoded",
+				"image/gif",
+				"image/jpeg",
+				"image/png",
+				"image/tiff",
+				"multipart/mixed",
+				"text/html",
+				"text/plain",
+				"application/vnd.visio",
+				"image/bmp",
+				"application/vnd.openxmlformats-officedocument.presentationml.presentation",
+				"application/vnd.ms-powerpoint",
+				"video/mp4",
+				"audio/mpeg",
+				"video/x-msvideo",
+				"video/x-ms-wmv",
+				"application/rtf",
+				"application/vnd.ms-outlook",
+				"text/csv",
+				"video/quicktime",
+				"application/zip",
+				"application/illustrator",
+				"text/xml",
+				"application/x-shockwave-flash"
+			]
+		},
+		"method": {
+			"description": "The HTTP method code (HTTP Verb) traverse the link (GET, POST, PUT, PATCH or DELETE)",
+			"type": "string",
+			"enum": [
+				"GET",
+				"POST",
+				"PUT",
+				"PATCH",
+				"DELETE"
+			]
+		}
+	},
+	"required": [
+		"href"
+	],
+	"additionalProperties": false
+}

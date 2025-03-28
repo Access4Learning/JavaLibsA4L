@@ -1,0 +1,23 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "version": "4.5.0",
+    "title": "LegalOrganizationTypeCodeList",
+    "description": "Legal organization type codelist.",
+    "enum": [
+        "FederalGovernmentAgency",
+        "StateGovernmentAgency",
+        "TerritorialGovernmentAgency",
+        "LocalGovernmentAgency",
+        "NonGovernmentAgency",
+        "GeneralPartnership",
+        "LimitedLiabilityPartnership",
+        "LimitedPartnership",
+		"BCorporation",
+		"BenefitCorporation",
+		"CCorporation",
+		"CloseCorporation",
+		"SCorporation",
+		"LimitedLiabilityCompany",
+		"Cooperative"
+    ]
+}

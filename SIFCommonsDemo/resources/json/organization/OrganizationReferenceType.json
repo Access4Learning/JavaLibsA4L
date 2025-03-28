@@ -1,0 +1,53 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "version": "4.3.0",
+    "title": "OrganizationReferenceType",
+    "description": "Basic information to reference a specific legal organization.",
+    "definitions": {
+        "ResponsibilityCodeList": {
+            "title": "ResponsibilityCodeList",
+            "description": "DEPRECATED - Use LegalOrganizationUnitTypeCodeList",
+            "enum": [
+                "Unit",
+                "Department",
+                "Division",
+                "Parent",
+                "Group",
+                "Plant",
+                "Subsidiary",
+                "Joint Venture",
+                "Branch",
+                "Holding Affiliate"
+            ]
+        }
+    },
+    "allOf": [
+        { "$ref": "../base/EntityType.json" }
+    ],
+    "type": "object",
+    "properties": {
+		"typeCode": {
+            "description": "The type of legal organization.",
+			"$ref": "../codelist/LegalOrganizationTypeCodeList.json"
+		},
+		"organizationUnitTypeCode": {
+            "description": "The type of legal organization unit.",
+			"$ref": "../codelist/LegalOrganizationUnitTypeCodeList.json"
+		},
+        "responsibilityCode": { 
+            "description": "DEPRECATED - Use organizationUnitTypeCode",
+            "$ref": "#/definitions/ResponsibilityCodeList" 
+        },
+        	"addresses": {
+			"description": "The physical or postal addresses of the organization.",
+			"type": "array",
+					"items": {
+						"$ref": "../communication/AddressType.json"
+					}
+		},
+        "communication": {
+            "description": "The methods of communication by which the organization can be contacted.",
+				"$ref": "../communication/CommunicationType.json"
+        }
+    }
+}

@@ -1,0 +1,8 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "version": "4.5.0",
+    "title": "SimpleIdentifierType",
+    "description": "Simple (string) identifier to be used when metadata describing the scheme and scheme agency are not needed.",
+    "type": "string",
+    "pattern": "^[a-zA-Z0-9.$-_\/]+$"
+}

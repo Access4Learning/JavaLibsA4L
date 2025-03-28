@@ -1,0 +1,15 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"version": "4.3.0",
+	"title": "OrganizationNounType",
+	"description": "Information to identify and reference a specific legal organization.",
+	"type": "object",
+	"allOf": [
+		{
+			"$ref": "OrganizationType.json"
+		},
+		{
+			"$ref": "../base/NounType.json"
+		}
+	]
+}

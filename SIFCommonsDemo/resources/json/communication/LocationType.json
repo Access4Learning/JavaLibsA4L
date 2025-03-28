@@ -1,0 +1,17 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "version": "4.3.0",
+    "title": "LocationType",
+    "description": "Identified address type.",
+    "allOf": [
+        { "$ref": "AddressType.json" }
+    ],
+    "type": "object",
+    "properties": {
+        "id": { "$ref": "../base/IdentifierType.json" },
+        	"name": {
+			"description": "Name of the location.",
+			"type": "string"
+		}
+    }
+}

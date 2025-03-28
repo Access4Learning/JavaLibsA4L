@@ -1,0 +1,101 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"version": "4.3.0",
+	"title": "JobType",
+	"description": "A job serves as a template for more specifically defined positions and assignments in a company, in part, to provide equitable opportunity for similar work done across disparate business units inside and outside the organization",
+	"type": "object",
+	"properties": {
+		"id": {
+			"description": "The id of the job.",
+			"$ref": "../base/IdentifierType.json"
+		},
+		"code": {
+			"description": "A company-specific alphanumeric code assigned by the employer to classify the employee’s specific job duties.",
+			"$ref": "../base/CodeType.json"
+		},
+		"title": {
+			"description": "The title of a job.",
+			"type": "string"
+		},
+		"categoryCode": {
+			"description": "A code classifying the job category code. Examples include Officials And Managers, Professionals, Technicians, Sales, Official And Clerical, Craft Worker Skilled, Operative Semi-Skilled, Laborers Unskilled, Service Workers, etc.",
+			"$ref": "../base/CodeType.json"
+		},
+		"jobFunction": {
+			"description": "A code classifying the job function e.g., HR, Finance, Marketing, Sales, Product Development, etc.",
+			"$ref": "../base/CodeType.json"
+		},
+		"planCode": {
+			"description": "Identifies a specific salary structure or program used either throughout, or in specific segments of, an enterprise.",
+			"$ref": "../base/CodeType.json"
+		},
+		"gradeCode": {
+			"description": "Defines the salary range or band that a job falls within, based on the formal structure. Formal pay structures are less common today than in the past, but remain common in certain sectors, such as in public-sector employment and in employment covered by collective bargaining agreements.",
+			"$ref": "../base/CodeType.json"
+		},
+		"stepCode": {
+			"description": "Pinpoints a job's specific level or point within a salary range or band.",
+			"$ref": "../base/CodeType.json"
+		},
+		"managerIndicator": {
+			"description": "Specifies if the job is at the management level.",
+			"$ref": "../base/IndicatorType.json"
+		},
+		"managerLevel": {
+			"description": "If this is a manager level job, this describes the type of management level, ie. Supervisor, First Line, Senior Officer, CEO, etc.",
+			"type": "string"
+		},
+		"wageHourLawCoverageIndicator": {
+			"description": "This determines if a person is covered by wage hour laws. In the US, a person would be considered non-exempt if the indicator is true (they are covered under the law).",
+			"$ref": "../base/IndicatorType.json"
+		},
+		"standardHours": {
+			"description": "The typical hours required for this job. For example, 40 hour per week or 2080 hours per year.",
+			"$ref": "../base/QuantityType.json"
+		},
+		"occupationId": {
+			"description": "DEPRECATED - Use occupationalClassificationCodes",
+			"$ref": "../base/IdentifierType.json"
+		},
+		"occupationalClassificationCodes": {
+			"description": "DEPRECATED: Use standardOccupationalClassificationCodes instead.",
+			"type": "array",
+			"items": {
+				"$ref": "../base/CodeType.json"
+			}
+		},
+		"standardOccupationalClassificationCodes": {
+			"description": "A Standard Occupational Classification Codes classifies a job's essential work activities/functions/tasks. Several countries have their own standard occupational classification systems.  For example, the US Standard Occcupational Classification is used by federal statistical agencies to classify workers into job categories for collecting, calculating and disseminating data.",
+			"type": "array",
+			"items": {
+				"$ref": "../base/CodeListCodeType.json"
+			}
+		},
+		"jobResponsibilities": {
+			"description": "Describes the tasks and responsibilities of a job.",
+			"type": "string"
+		},
+		"requiredEducationAndExperience": {
+			"description": "Describes the required education and experience of a job.",
+			"type": "string"
+		},
+		"requiredCompetencyIds": {
+			"description": "Identifiers for the essential knowledge, skills, abilities, attitude and behavior required to perform the job at the organization; alternatively use requiredCompetencies.",
+			"type": "array",
+			"items": {
+				"$ref": "../base/IdentifierType.json"
+			}
+		},
+		"requiredCompetencies": {
+			"description": "The essential compentencies required to perform the Job.",
+			"type": "array",
+			"items": {
+				"$ref": "../competency/SpecifiedCompetencyType.json"
+			}
+		},
+		"description": {
+			"description": "The description of a job.",
+			"type": "string"
+		}
+	}
+}

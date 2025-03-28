@@ -1,0 +1,38 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "version": "4.3.0",
+    "title": "SpecifiedCompetencyType",
+    "description": "A specified competency is a reference to a particular competency at a specified level of proficiency.",
+    "type": "object",
+    "properties": {
+        "competencyIds": {
+            "description": "Array of competency identifiers.",
+            "type": "array",
+            "items": { "$ref": "../base/IdentifierType.json" }
+        },
+        "name": {
+            "description": "Competency name.",
+            "type": "string"
+        },
+        "typeCode": {
+			"description": "A code that identifes the type of competency: knowledge, skills, abilities, attitude and behavior.",
+			"$ref": "../codelist/CompetencyTypeCodeList.json"
+		},
+		"evidenceRequiredIndicator" : {
+			"description": "Indicates if evidence is required for the competency.",
+			"$ref": "../base/IndicatorType.json"
+		},
+		"allowableCompetencyEvidenceTypeCodes": {
+			"description": "Array of competency evideence type codes. For example, 'assessment', 'degree', 'performance appraisal', etc.",
+            "type": "array",
+            "items": { "$ref": "../base/CodeType.json" }
+		},
+		"requiredCompetencyEvidence" : {
+			"description": "The essential compentencies required to perform the Job or Position.",
+            "items": { "$ref": "../competency/RequiredCompetencyEvidenceType.json" }
+        },			
+        "proficiencyLevel": { 
+			"description": "The proficiency level required for the competency.",
+			"$ref": "../evaluation/BaseScoreType.json" }
+    }
+}

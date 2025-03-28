@@ -1,0 +1,37 @@
+#!/bin/bash
+# Script to run the SIFCommonsDemo program
+# This script handles setting up the classpath with all necessary JAR files
+
+CLASSPATH="SIFCommonsDemo/dist/SIFCommonsDemo.jar"
+CLASSPATH="${CLASSPATH}:SIFCommonsDemo/lib/SIFCommons.jar"
+CLASSPATH="${CLASSPATH}:SIFCommonsDemo/lib/xom-1.3.8.jar"
+CLASSPATH="${CLASSPATH}:SIFCommonsDemo/lib/aopalliance.jar"
+CLASSPATH="${CLASSPATH}:SIFCommonsDemo/lib/jruby.jar"
+CLASSPATH="${CLASSPATH}:SIFCommonsDemo/lib/log4j-1.2.15.jar"
+CLASSPATH="${CLASSPATH}:SIFCommonsDemo/lib/ws-commons-util-1.0.2.jar"
+CLASSPATH="${CLASSPATH}:SIFCommonsDemo/lib/exist.jar"
+CLASSPATH="${CLASSPATH}:SIFCommonsDemo/lib/xmldb.jar"
+CLASSPATH="${CLASSPATH}:SIFCommonsDemo/lib/xmlrpc-client-3.1.2.jar"
+CLASSPATH="${CLASSPATH}:SIFCommonsDemo/lib/xmlrpc-common-3.1.2.jar"
+CLASSPATH="${CLASSPATH}:SIFCommonsDemo/lib/httpcomponents-client-4.2.1/lib/commons-codec-1.6.jar"
+CLASSPATH="${CLASSPATH}:SIFCommonsDemo/lib/httpcomponents-client-4.2.1/lib/commons-logging-1.1.1.jar"
+CLASSPATH="${CLASSPATH}:SIFCommonsDemo/lib/httpcomponents-client-4.2.1/lib/fluent-hc-4.2.1.jar"
+CLASSPATH="${CLASSPATH}:SIFCommonsDemo/lib/httpcomponents-client-4.2.1/lib/httpclient-4.2.1.jar"
+CLASSPATH="${CLASSPATH}:SIFCommonsDemo/lib/httpcomponents-client-4.2.1/lib/httpclient-cache-4.2.1.jar"
+CLASSPATH="${CLASSPATH}:SIFCommonsDemo/lib/httpcomponents-client-4.2.1/lib/httpcore-4.2.1.jar"
+CLASSPATH="${CLASSPATH}:SIFCommonsDemo/lib/httpcomponents-client-4.2.1/lib/httpmime-4.2.1.jar"
+CLASSPATH="${CLASSPATH}:SIFCommonsDemo/lib/jakarta.xml.bind-api.jar"
+CLASSPATH="${CLASSPATH}:SIFCommonsDemo/lib/jackson-annotations-2.8.0.jar"
+CLASSPATH="${CLASSPATH}:SIFCommonsDemo/lib/jackson-core-2.8.1.jar"
+CLASSPATH="${CLASSPATH}:SIFCommonsDemo/lib/jackson-databind-2.8.5.jar"
+CLASSPATH="${CLASSPATH}:SIFCommonsDemo/lib/jackson-dataformat-xml-2.8.6.jar"
+CLASSPATH="${CLASSPATH}:SIFCommonsDemo/lib/woodstox-core-5.4.0.jar"
+CLASSPATH="${CLASSPATH}:SIFCommonsDemo/lib/stax2-api-3.1.4.jar"
+CLASSPATH="${CLASSPATH}:SIFCommonsDemo/lib/spring-framework-5.3.26/libs/spring-core-5.3.26.jar"
+CLASSPATH="${CLASSPATH}:SIFCommonsDemo/lib/spring-framework-5.3.26/libs/spring-context-5.3.26.jar"
+CLASSPATH="${CLASSPATH}:SIFCommonsDemo/lib/spring-framework-5.3.26/libs/spring-beans-5.3.26.jar"
+CLASSPATH="${CLASSPATH}:SIFCommonsDemo/lib/spring-framework-5.3.26/libs/spring-jcl-5.3.26.jar"
+CLASSPATH="${CLASSPATH}:SIFCommonsDemo/lib/spring-framework-5.3.26/libs/spring-expression-5.3.26.jar"
+
+echo "Running SIFCommonsDemo with Java 11..."
+java -cp "$CLASSPATH" sifcommonsdemo.SIFCommonsDemo SIFCommonsDemo/resources/examples/student.schema.json

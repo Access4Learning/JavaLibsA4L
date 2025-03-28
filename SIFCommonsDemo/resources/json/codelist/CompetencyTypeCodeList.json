@@ -1,0 +1,13 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "version": "4.5.0",
+    "title": "WeekdayCodeList",
+    "description": "Values that classify the various days of week.",
+    "enum": [
+        "Knowledge",
+        "Skill",
+        "Ability",
+        "Attitude",
+        "Behavior"
+    ]
+}

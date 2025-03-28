@@ -1,0 +1,33 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"version": "4.5.0",
+	"title": "WorkRelationshipType",
+	"description": "The relationship of the worker with the Employer or Contractee Organization.",
+	"type": "object",
+	"properties": {
+		"typeCode": {
+			"description": "The type of work relationship between the Employer or Contractee Organization and the worker.",
+			"$ref": "../codelist/WorkRelationshipTypeCodeList.json"
+		},
+		"organizationId": {
+			"description": "Provides a unique identifier to the Employer or Contractee Organization.",
+			"type": "object",
+			"$ref": "../base/IdentifierType.json"
+		},
+		"status": {
+			"description": "Status of the relationship between the Employer or Contractee Organization and the Worker.",
+			"$ref": "WorkRelationshipStatusType.json"
+		},
+		"workAgreement": {
+			"description": "The work agreement for a work relationship.",
+			"$ref": "WorkAgreementType.json"
+		},
+		"workAssignments": {
+			"description": "The assignments for the worker. An assignment may override the position and/or job information.",
+			"type": "array",
+			"items": {
+				"$ref": "WorkAssignmentType.json"
+			}
+		}
+	}
+}

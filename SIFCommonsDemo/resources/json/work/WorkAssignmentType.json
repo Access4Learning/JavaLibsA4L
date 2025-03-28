@@ -1,0 +1,75 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"version": "4.3.x",
+	"title": "WorkAssignmentType",
+	"description": "WorkAssignment associates a Job and/or Position with a Worker.",
+	"type": "object",
+	"properties": {
+		"id": {
+			"description": "Identifier of the assignment.",
+			"$ref": "../base/IdentifierType.json"
+		},
+		"description": {
+			"description": "Describes the assignment.",
+			"$ref": "../base/TextType.json"
+		},
+		"hireDate": {
+			"description": "Date of worker original hire.",
+			"$ref": "../base/DateType.json"
+		},
+		"assignmentTermTypeCode": {
+			"description": "DEPRECATED - Use workAgreement.",
+			"$ref": "../codelist/PositionTermTypeCodeList.json"
+		},
+		"assignmentLifeCyle": {
+			"description": "DEPRECATED - workAgreement and related work assignment properties.",
+			"$ref": "AssignmentLifeCycleType.json"
+		},
+		"workAgreement": {
+			"description": "The work agreement for a work assignment",
+			"$ref": "WorkAgreementType.json"
+		},
+		"status": {
+			"description": "The work agreement for a work assignment",
+			"$ref": "WorkAssignmentStatusType.json"
+		},
+		"assignmentLocation": {
+			"description": "DEPRECATED - Use assignedWorkLocation.",
+			"$ref": "../communication/AddressType.json"
+		},
+		"jobId": {
+			"description": "Identifier of the job to which the work assignment is related; alternatively use job.",
+			"$ref": "../base/IdentifierType.json"
+		},
+		"positionId": {
+			"description": "Identifier of the position to which the work assignment is related; alternatively use position.",
+			"$ref": "../base/IdentifierType.json"
+		},
+		"job": {
+			"description": "The job to which the work assignment is related.",
+			"$ref": "JobType.json"
+		},
+		"position": {
+			"description": "The position to which the work assignment is related.",
+			"$ref": "PositionType.json"
+		},
+		"payCycleCode": {
+			"description": "Describes how often the payee is paid. Pay Frequency - The period of time covered by the employee's regular pay checks.",
+			"$ref": "../codelist/PayCycleIntervalCodeList.json"
+		},
+		"assignedOrganizations": {
+			"description": "The organization for which the worker in the work assignment does work.",
+			"type": "array",
+			"items": {
+				"$ref": "../organization/OrganizationType.json"
+			}
+		},
+		"workLocations": {
+			"description": "The location where the worker in the work assignment does work.",
+			"type": "array",
+			"items": {
+				"$ref": "../communication/LocationType.json"
+			}	
+		}
+	}
+}
