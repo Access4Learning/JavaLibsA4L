@@ -26,8 +26,6 @@ public class SIFCommonsDemo {
     
     /**
      * Load a JSON Schema with improved reference resolution.
-     * This uses our enhanced JsonSchemaDemo class instead of the basic SIFJsonSchemaUtil
-     * implementation for better reference resolution, especially for complex schemas.
      * 
      * @param schemaPath Path to the schema file
      * @return The schema with all references resolved
@@ -47,76 +45,6 @@ public class SIFCommonsDemo {
         } catch (IOException ex) {
             logger.error("Error saving schema: " + ex.getMessage(), ex);
             return false;
-        }
-    }
-    
-    /**
-     * Load a JSON Schema with improved reference resolution.
-     * This uses our enhanced JsonSchemaDemo class instead of the basic SIFJsonSchemaUtil
-     * implementation for better reference resolution, especially for complex schemas.
-     * 
-     * @param schemaPath Path to the schema file
-     * @return The schema with all references resolved
-     */
-    private static JsonNode loadSchemaWithImprovedResolver(String schemaPath) {
-        try {
-            // Use reflection to access the JsonSchemaDemo class dynamically
-            Class<?> demoClass = Class.forName("JsonSchemaDemo");
-            
-            // Create the ReferenceContext class
-            Class<?> refContextClass = Class.forName("JsonSchemaDemo$ReferenceContext");
-            
-            // Load the schema
-            File schemaFile = new File(schemaPath);
-            if (!schemaFile.exists()) {
-                logger.error("Schema file not found: " + schemaPath);
-                return null;
-            }
-            
-            // Parse the schema
-            JsonNode schema = mapper.readTree(schemaFile);
-            
-            // Make the constructor accessible
-            java.lang.reflect.Constructor<?> constructor = refContextClass.getDeclaredConstructor(File.class, JsonNode.class);
-            constructor.setAccessible(true);
-            
-            // Create a context
-            Object context = constructor.newInstance(schemaFile.getParentFile(), schema);
-            
-            // Make the setVerbose method accessible
-            java.lang.reflect.Method setVerboseMethod = refContextClass.getDeclaredMethod("setVerbose", boolean.class);
-            setVerboseMethod.setAccessible(true);
-            setVerboseMethod.invoke(context, false);
-            
-            // Get and make accessible the resolveAllReferences method
-            java.lang.reflect.Method resolveMethod = demoClass.getDeclaredMethod(
-                    "resolveAllReferences", JsonNode.class, refContextClass);
-            resolveMethod.setAccessible(true);
-            
-            JsonNode resolvedSchema = (JsonNode) resolveMethod.invoke(null, schema, context);
-            return resolvedSchema;
-        } catch (Exception e) {
-            logger.error("Error using improved resolver: " + e.getMessage(), e);
-            
-            // Fall back to the original implementation
-            logger.info("Falling back to original reference resolver");
-            
-            // Since the SIFJsonSchemaUtil doesn't have a loadSchemaWithRefs method that we 
-            // can call directly (it has implementation issues), implement our own basic version
-            try {
-                // Load the schema
-                JsonNode schema = SIFJsonSchemaUtil.loadSchema(schemaPath);
-                if (schema == null) {
-                    return null;
-                }
-                
-                // Load each referenced schema manually
-                // This is a very simplified version without circular reference detection
-                return schema;
-            } catch (Exception ex) {
-                logger.error("Error with fallback resolver: " + ex.getMessage(), ex);
-                return null;
-            }
         }
     }
     
@@ -274,113 +202,7 @@ public class SIFCommonsDemo {
         }
         
         // First analyze the original schema
-        System.out.println("\n============= ORIGINAL SCHEMA ANALYSIS =============\n");
+        System.out.println("\n============= SCHEMA ANALYSIS =============\n");
         demonstrateJsonSchemaAnalysis(schemaPath);
-        
-        // Now demonstrate resolving references
-        System.out.println("\n============= JSON SCHEMA REFERENCE RESOLUTION =============\n");
-        System.out.println("Resolving references in: " + schemaPath);
-        
-        // Load the schema with references resolved using our improved resolver
-        JsonNode resolvedSchema = loadSchemaWithImprovedResolver(schemaPath);
-        if (resolvedSchema != null) {
-            // Save the resolved schema
-            String resolvedPath = schemaPath.replace(".json", "_resolved.json");
-            boolean saved = saveSchema(resolvedSchema, resolvedPath);
-            if (saved) {
-                System.out.println("Resolved schema saved to: " + resolvedPath);
-                
-                // Count references in the original and resolved schemas
-                JsonNode originalSchema = SIFJsonSchemaUtil.loadSchema(schemaPath);
-                int originalRefs = countReferences(originalSchema);
-                int resolvedRefs = countReferences(resolvedSchema);
-                
-                System.out.println("Original schema had " + originalRefs + " references");
-                System.out.println("Resolved schema has " + resolvedRefs + " references");
-                
-                if (resolvedRefs < originalRefs) {
-                    System.out.println("Successfully resolved " + (originalRefs - resolvedRefs) + " references");
-                } else if (resolvedRefs == originalRefs) {
-                    System.out.println("Warning: No references were resolved");
-                }
-                
-                // Now analyze the resolved schema
-                System.out.println("\n============= RESOLVED SCHEMA ANALYSIS =============\n");
-                System.out.println("Analyzing resolved schema...");
-                
-                // Create a temporary file if needed for analysis
-                if (resolvedPath != null) {
-                    // Analyze the resolved schema - with already resolved schema
-                    List<JsonPathPlus> resolvedPaths = SIFJsonSchemaUtil.getAllPaths(resolvedSchema);
-                    if (resolvedPaths != null && !resolvedPaths.isEmpty()) {
-                        // Print summary table of fields from the resolved schema
-                        System.out.println("\n===== Resolved Schema Field Summary =====");
-                        System.out.printf("%-40s | %-10s | %-12s | %-12s | %-8s | %s\n", 
-                                "JSON Path", "Required", "Type", "Format", "Array", "Description");
-                        System.out.println(String.format("%s+%s+%s+%s+%s+%s", 
-                                "----------------------------------------", 
-                                "------------", 
-                                "--------------", 
-                                "--------------",
-                                "----------",
-                                "--------------------"));
-                        
-                        // Limit the display to a reasonable number of paths
-                        int displayLimit = 20;
-                        int displayCount = 0;
-                        
-                        for (JsonPathPlus path : resolvedPaths) {
-                            // Skip very deep paths to keep the table readable
-                            if (path.getPath().split("\\.").length > 4) continue;
-                            
-                            System.out.printf("%-40s | %-10s | %-12s | %-12s | %-8s | %s\n",
-                                    truncateString(path.getPath(), 40),
-                                    path.isMandatory() ? "Required" : "Optional",
-                                    path.getJsonType() != null ? path.getJsonType() : "unknown",
-                                    truncateString(path.getFormat(), 12),
-                                    path.isRepeatable() ? "Yes" : "No",
-                                    truncateString(path.getDocumentation(), 30));
-                            
-                            if (++displayCount >= displayLimit) {
-                                System.out.println("... " + (resolvedPaths.size() - displayLimit) + " more paths (not shown)");
-                                break;
-                            }
-                        }
-                        
-                        // Print constraint summary
-                        System.out.println("\n===== Resolved Schema Constraints =====");
-                        displayCount = 0;
-                        System.out.printf("%-40s | %-30s | %-30s\n", 
-                                "JSON Path", "Enum Values", "Pattern");
-                        System.out.println(String.format("%s+%s+%s", 
-                                "----------------------------------------", 
-                                "--------------------------------",
-                                "--------------------------------"));
-                        
-                        for (JsonPathPlus path : resolvedPaths) {
-                            // Only show paths with constraints
-                            if ((path.getEnumerations() != null && !path.getEnumerations().isEmpty()) ||
-                                (path.getPatterns() != null && !path.getPatterns().isEmpty())) {
-                                
-                                System.out.printf("%-40s | %-30s | %-30s\n",
-                                        truncateString(path.getPath(), 40),
-                                        truncateString(path.getEnumerations(), 30),
-                                        truncateString(path.getPatterns(), 30));
-                                
-                                if (++displayCount >= displayLimit) {
-                                    break;
-                                }
-                            }
-                        }
-                    } else {
-                        System.out.println("No paths found in the resolved schema");
-                    }
-                }
-            } else {
-                System.out.println("Error: Failed to save resolved schema");
-            }
-        } else {
-            System.out.println("Error: Failed to resolve references in schema");
-        }
     }            
 }
