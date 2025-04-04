@@ -221,12 +221,20 @@ public class JacksonNative implements IXmlJson {
         // No longer checking json-anonymous here—it's handled in elementToJson.
         JsonNode jsonRoot = elementToJson(rootElement);
 
-        // Wrap in an object keyed by the root element name.
-        ObjectNode wrapper = mapper.createObjectNode();
-        wrapper.set(rootElement.getLocalName(), jsonRoot);
-        
-        // So original JSON keys are restored.
-        jsonRoot = postprocessJsonKeys(wrapper);
+        if ("true".equals(rootElement.getAttributeValue("json-anonymous")) &&
+                "root".equals(rootElement.getLocalName())) {
+            // Annonymous/Singular
+            // So original JSON keys are restored.
+            jsonRoot = postprocessJsonKeys(jsonRoot);            
+        }
+        else {  // Named/Collection
+            // Wrap in an object keyed by the root element name.
+            ObjectNode wrapper = mapper.createObjectNode();
+            wrapper.set(rootElement.getLocalName(), jsonRoot);
+
+            // So original JSON keys are restored.
+            jsonRoot = postprocessJsonKeys(wrapper);
+        }
 
         try {
             return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonRoot);
