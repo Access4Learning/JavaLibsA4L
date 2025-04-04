@@ -218,43 +218,16 @@ public class JacksonNative implements IXmlJson {
         }
 
         Element rootElement = doc.getRootElement();
-        JsonNode jsonRoot;
+        // No longer checking json-anonymous here—it's handled in elementToJson.
+        JsonNode jsonRoot = elementToJson(rootElement);
 
-        if ("true".equals(rootElement.getAttributeValue("json-anonymous"))) {
-            Elements children = rootElement.getChildElements();
-            if (children.size() == 0) {
-                jsonRoot = mapper.createArrayNode();
-            } else {
-                boolean allItems = true;
-                for (int i = 0; i < children.size(); i++) {
-                    if (!"item".equals(children.get(i).getLocalName())) {
-                        allItems = false;
-                        break;
-                    }
-                }
-                if (allItems) {
-                    ArrayNode arrayNode = mapper.createArrayNode();
-                    for (int i = 0; i < children.size(); i++) {
-                        arrayNode.add(elementToJson(children.get(i)));
-                    }
-                    jsonRoot = arrayNode;
-                } else {
-                    ObjectNode objectNode = mapper.createObjectNode();
-                    for (int i = 0; i < children.size(); i++) {
-                        addChildToObjectNode(objectNode, children.get(i));
-                    }
-                    jsonRoot = objectNode;
-                }
-            }
-        } else {
-            ObjectNode objectNode = mapper.createObjectNode();
-            addChildToObjectNode(objectNode, rootElement);
-            jsonRoot = objectNode;
-        }
-
-        // So original JSON keys are restored.
-        jsonRoot = postprocessJsonKeys(jsonRoot);
+        // Wrap in an object keyed by the root element name.
+        ObjectNode wrapper = mapper.createObjectNode();
+        wrapper.set(rootElement.getLocalName(), jsonRoot);
         
+        // So original JSON keys are restored.
+        jsonRoot = postprocessJsonKeys(wrapper);
+
         try {
             return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonRoot);
         } catch (JsonProcessingException ex) {
@@ -262,7 +235,7 @@ public class JacksonNative implements IXmlJson {
             return "";
         }
     }
-
+    
     // Method to posttrocess XML names to restore the JSON key names.
     private JsonNode postprocessJsonKeys(JsonNode jsonNode) {
         if (jsonNode.isObject()) {
@@ -320,83 +293,137 @@ public class JacksonNative implements IXmlJson {
     }    
     
     private JsonNode elementToJson(Element element) {
-        Elements children = element.getChildElements();
-        int attrCount = element.getAttributeCount();
-        String textValue = getDirectText(element);
-
-        if (children.size() == 0) {
-            // Check for the json-null attribute explicitly
-            String jsonNullAttr = element.getAttributeValue("json-null");
-            if ("true".equals(jsonNullAttr)) {
-                return NullNode.instance; // Explicit null
-            } else if ("false".equals(jsonNullAttr)) {
-                return new TextNode(""); // Explicit empty string
-            }
-
-            // Check for the json-number attribute explicitly
-            String jsonNumberAttr = element.getAttributeValue("json-number");
-            if ("true".equals(jsonNumberAttr)) {
-                try {
-                    // Parse the text as a number
-                    return new DoubleNode(Double.parseDouble(textValue));
-                } catch (NumberFormatException e) {
-                    LOG.log(Level.WARNING, "Invalid number format", e);
-                    return NullNode.instance; // Invalid number treated as null
-                }
-            }
-
-            // Handle case where the element has no meaningful children or attributes
-            if (attrCount == 0) {
-                if (textValue.isEmpty()) {
-                    return new TextNode(""); // Treat as empty string
-                } else {
-                    return new TextNode(textValue); // Return the text value
-                }
-            }
-
-            // If the element has attributes other than json-* metadata
-            ObjectNode obj = mapper.createObjectNode();
+        // --- Special handling for json-anonymous elements ---
+        if ("true".equals(element.getAttributeValue("json-anonymous"))) {
+            // Gather non‑json-* attributes.
+            ObjectNode anonAttrs = mapper.createObjectNode();
+            int attrCount = element.getAttributeCount();
             for (int i = 0; i < attrCount; i++) {
                 Attribute attr = element.getAttribute(i);
                 String attrName = attr.getLocalName();
                 if (!attrName.startsWith("json-")) {
-                    obj.put("@" + attrName, attr.getValue()); // Add non-metadata attributes
+                    anonAttrs.put("@" + attrName, attr.getValue());
+                }
+            }
+            // Also capture any direct text.
+            String textValue = getDirectText(element);
+            if (!textValue.isEmpty()) {
+                anonAttrs.put("#text", textValue);
+            }
+            Elements children = element.getChildElements();
+            // If no children, return the attributes (and text) as the node.
+            if (0 == children.size()) {
+                return anonAttrs;
+            }
+            // Check if all children are named "item". If so, produce an array.
+            boolean allItems = true;
+            for (Element child : children) {
+                if (!"item".equals(child.getLocalName())) {
+                    allItems = false;
+                    break;
+                }
+            }
+            if (allItems) {
+                ArrayNode arrayNode = mapper.createArrayNode();
+                for (Element child : children) {
+                    arrayNode.add(elementToJson(child));
+                }
+                // Merge anonymous attributes into each item.
+                if (anonAttrs.size() > 0) {
+                    for (int i = 0; i < arrayNode.size(); i++) {
+                        JsonNode item = arrayNode.get(i);
+                        if (item.isObject()) {
+                            ((ObjectNode) item).setAll(anonAttrs);
+                        }
+                    }
+                }
+                return arrayNode;
+            } else {
+                // Otherwise, build an object:
+                ObjectNode anonObj = mapper.createObjectNode();
+                anonObj.setAll(anonAttrs);
+                // Process children normally:
+                Map<String, List<Element>> grouped = new LinkedHashMap<>();
+                for (Element child : children) {
+                    grouped.computeIfAbsent(child.getLocalName(), k -> new ArrayList<>()).add(child);
+                }
+                for (Map.Entry<String, List<Element>> entry : grouped.entrySet()) {
+                    String childName = entry.getKey();
+                    List<Element> childList = entry.getValue();
+                    if (childList.size() == 1) {
+                        anonObj.set(childName, elementToJson(childList.get(0)));
+                    } else {
+                        ArrayNode arr = mapper.createArrayNode();
+                        for (Element c : childList) {
+                            arr.add(elementToJson(c));
+                        }
+                        anonObj.set(childName, arr);
+                    }
+                }
+                return anonObj;
+            }
+        }
+
+        // --- Normal processing for non-anonymous elements ---
+        Elements children = element.getChildElements();
+        int attrCount = element.getAttributeCount();
+        String textValue = getDirectText(element);
+
+        // If there are no children, handle json-null, json-number, or just return text.
+        if (0 == children.size()) {
+            String jsonNullAttr = element.getAttributeValue("json-null");
+            if ("true".equals(jsonNullAttr)) {
+                return NullNode.instance;
+            } else if ("false".equals(jsonNullAttr)) {
+                return new TextNode("");
+            }
+            if ("true".equals(element.getAttributeValue("json-number"))) {
+                try {
+                    return new DoubleNode(Double.parseDouble(textValue));
+                } catch (NumberFormatException e) {
+                    LOG.log(Level.WARNING, "Invalid number format", e);
+                    return NullNode.instance;
+                }
+            }
+            // No children and possibly some attributes: return either a simple text node or an object.
+            if (attrCount == 0) {
+                return new TextNode(textValue);
+            }
+            ObjectNode simpleObj = mapper.createObjectNode();
+            for (int i = 0; i < attrCount; i++) {
+                Attribute attr = element.getAttribute(i);
+                String attrName = attr.getLocalName();
+                if (!attrName.startsWith("json-")) {
+                    simpleObj.put("@" + attrName, attr.getValue());
                 }
             }
             if (!textValue.isEmpty()) {
-                obj.put("#text", textValue); // Include the direct text value, if present
+                simpleObj.put("#text", textValue);
             }
-            return obj;
+            return simpleObj;
         }
 
-        if (children.size() == 0 && attrCount == 1 && "true".equals(element.getAttributeValue("json-number"))) {
-            try {
-                return new DoubleNode(Double.parseDouble(textValue));
-            } catch (NumberFormatException e) {
-                LOG.log(Level.WARNING, "Invalid number format in json-number", e);
-                return NullNode.instance;
-            }
-        }
-
+        // If the element is explicitly marked as a JSON array.
         if ("true".equals(element.getAttributeValue("json-array"))) {
             ArrayNode arrayNode = mapper.createArrayNode();
-            for (int i = 0; i < children.size(); i++) {
-                arrayNode.add(elementToJson(children.get(i)));
+            for (Element child : children) {
+                arrayNode.add(elementToJson(child));
             }
             return arrayNode;
         }
 
-        ObjectNode objectNode = mapper.createObjectNode();
-
+        // Otherwise, process as an object.
+        ObjectNode obj = mapper.createObjectNode();
+        // Process non-json-* attributes.
         for (int i = 0; i < attrCount; i++) {
             Attribute attr = element.getAttribute(i);
-            if (!"json-array".equals(attr.getLocalName()) && !"json-null".equals(attr.getLocalName()) && !"json-number".equals(attr.getLocalName())) {
-                objectNode.put("@" + attr.getLocalName(), attr.getValue());
+            String localName = attr.getLocalName();
+            if (!localName.startsWith("json-")) {
+                obj.put("@" + localName, attr.getValue());
             }
         }
-
         if (!textValue.isEmpty() && !"true".equals(element.getAttributeValue("json-number"))) {
-            objectNode.put("#text", textValue);
+            obj.put("#text", textValue);
         } else if ("true".equals(element.getAttributeValue("json-number"))) {
             try {
                 return new DoubleNode(Double.parseDouble(textValue));
@@ -405,43 +432,54 @@ public class JacksonNative implements IXmlJson {
                 return NullNode.instance;
             }
         }
-
+        // Group child elements by their local name.
         Map<String, List<Element>> groupedChildren = new LinkedHashMap<>();
-        for (int i = 0; i < children.size(); i++) {
-            Element child = children.get(i);
+        for (Element child : children) {
             groupedChildren.computeIfAbsent(child.getLocalName(), k -> new ArrayList<>()).add(child);
         }
-
+        // --- Special grouping: if the only child group is "root" and each such child is json-anonymous,
+        // then treat that group like an array (i.e. drop the "root" key and return an array of its converted items) ---
+        if (groupedChildren.size() == 1 && groupedChildren.containsKey("root") &&
+            groupedChildren.get("root").stream().allMatch(e -> "true".equals(e.getAttributeValue("json-anonymous")))) {
+            ArrayNode arrayNode = mapper.createArrayNode();
+            for (Element rootChild : groupedChildren.get("root")) {
+                arrayNode.add(elementToJson(rootChild));
+            }
+            return arrayNode;
+        }
+        // Default: add each group to the object.
         for (Map.Entry<String, List<Element>> entry : groupedChildren.entrySet()) {
             String childName = entry.getKey();
-            List<Element> childElements = entry.getValue();
-            if (childElements.size() > 1) {
-                ArrayNode arrayNode = mapper.createArrayNode();
-                for (Element child : childElements) {
-                    arrayNode.add(elementToJson(child));
-                }
-                objectNode.set(childName, arrayNode);
+            List<Element> childList = entry.getValue();
+            if (childList.size() == 1) {
+                obj.set(childName, elementToJson(childList.get(0)));
             } else {
-                objectNode.set(childName, elementToJson(childElements.get(0)));
+                ArrayNode arr = mapper.createArrayNode();
+                for (Element c : childList) {
+                    arr.add(elementToJson(c));
+                }
+                obj.set(childName, arr);
             }
         }
-
-        return objectNode;
+        return obj;
     }
 
-    private void addChildToObjectNode(ObjectNode parentObj, Element childEl) {
-        String childName = childEl.getLocalName();
-
-        if (parentObj.has(childName)) {
-            JsonNode existing = parentObj.get(childName);
-            if (!existing.isArray()) {
-                ArrayNode newArray = mapper.createArrayNode();
-                newArray.add(existing);
-                parentObj.set(childName, newArray);
+    private void addChildToObjectNode(ObjectNode parent, Element child) {
+        String key = child.getLocalName();
+        JsonNode childJson = elementToJson(child);
+        if (parent.has(key)) {
+            JsonNode existing = parent.get(key);
+            ArrayNode arrayNode;
+            if (existing.isArray()) {
+                arrayNode = (ArrayNode) existing;
+            } else {
+                arrayNode = mapper.createArrayNode();
+                arrayNode.add(existing);
+                parent.set(key, arrayNode);
             }
-            ((ArrayNode) parentObj.get(childName)).add(elementToJson(childEl));
+            arrayNode.add(childJson);
         } else {
-            parentObj.set(childName, elementToJson(childEl));
+            parent.set(key, childJson);
         }
     }
 
