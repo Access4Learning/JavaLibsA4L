@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
+import org.sifassociation.messaging.SIFJsonSchemaValidator;
 import org.sifassociation.schema.JsonPathPlus;
 import org.sifassociation.schema.SIFJsonSchemaUtil;
 import org.sifassociation.util.SIFFileUtil;
@@ -204,5 +205,31 @@ public class SIFCommonsDemo {
         // First analyze the original schema
         System.out.println("\n============= SCHEMA ANALYSIS =============\n");
         demonstrateJsonSchemaAnalysis(schemaPath);
+        
+        
+        System.out.println("\n============= SCHEMA USE =============\n");
+
+        String JEDxSchemaPath = "resources/examples/worker_compensation_report.jschema";
+        String JEDxDataPath = "resources/examples/worker_compensation_report.json";
+        
+        String JEDxSchema = SIFFileUtil.readFile(JEDxSchemaPath);
+        System.out.println("Example Schema:");
+        System.out.println(JEDxSchema);
+        
+        String JEDxData = SIFFileUtil.readFile(JEDxDataPath);
+        System.out.println("");
+        System.out.println("Example Payload:");
+        System.out.println(JEDxData);
+        
+        Thread.sleep(1000);  // Debug
+        
+        SIFJsonSchemaValidator.ValidationResult validatePayload = SIFJsonSchemaValidator.validatePayload(JEDxData, JEDxSchemaPath);
+        if(validatePayload.isValid()) {
+            System.out.println("Example Payload: Valid");
+        }
+        else {
+            System.out.println("Example Payload: Invalid");
+            System.out.println(validatePayload.getErrorSummary());
+        }
     }            
 }

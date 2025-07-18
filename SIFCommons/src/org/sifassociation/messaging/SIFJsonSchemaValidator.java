@@ -1,6 +1,7 @@
 package org.sifassociation.messaging;
 
 import org.leadpony.justify.api.JsonSchema;
+import org.leadpony.justify.api.JsonSchemaResolver;
 import org.leadpony.justify.api.JsonValidationService;
 import org.leadpony.justify.api.Problem;
 import org.leadpony.justify.api.ProblemHandler;
@@ -9,12 +10,14 @@ import org.leadpony.justify.api.SpecVersion;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
+import java.net.URI;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jakarta.json.stream.JsonParser;
@@ -33,6 +36,101 @@ public class SIFJsonSchemaValidator {
     
     private static final Logger logger = Logger.getLogger(SIFJsonSchemaValidator.class.getName());
     private static final JsonValidationService service = JsonValidationService.newInstance();
+    
+    // Cache for resolved schemas to avoid redundant file operations
+    private static final ConcurrentHashMap<String, JsonSchema> schemaCache = new ConcurrentHashMap<>();
+    
+    // Schema resolver to handle external schema references
+    private static final JsonSchemaResolver schemaResolver = new JsonSchemaResolver() {
+        @Override
+        public JsonSchema resolveSchema(URI uri) {
+            String uriString = uri.toString();
+            
+            // Check cache first
+            JsonSchema cachedSchema = schemaCache.get(uriString);
+            if (cachedSchema != null) {
+                logger.fine("Using cached schema for: " + uriString);
+                return cachedSchema;
+            }
+            
+            logger.fine("Resolving schema URI: " + uriString);
+            
+            // Extract just the filename from the URI
+            String fileName = uriString;
+            if (fileName.contains("/")) {
+                fileName = fileName.substring(fileName.lastIndexOf("/") + 1);
+            }
+            if (fileName.contains("#")) {
+                fileName = fileName.substring(0, fileName.indexOf("#"));
+            }
+            
+            JsonSchema resolvedSchema = null;
+            
+            // First try to load from classpath resources
+            InputStream stream = SIFJsonSchemaValidator.class.getClassLoader().getResourceAsStream(fileName);
+            if (stream != null) {
+                logger.fine("Found schema in classpath: " + fileName);
+                try {
+                    resolvedSchema = service.readSchema(stream);
+                } catch (Exception e) {
+                    logger.warning("Error loading schema from classpath: " + fileName + " - " + e.getMessage());
+                }
+            }
+            
+            // Try loading from examples directory in resources
+            if (resolvedSchema == null) {
+                stream = SIFJsonSchemaValidator.class.getClassLoader().getResourceAsStream("examples/" + fileName);
+                if (stream != null) {
+                    logger.fine("Found schema in examples directory: " + fileName);
+                    try {
+                        resolvedSchema = service.readSchema(stream);
+                    } catch (Exception e) {
+                        logger.warning("Error loading schema from examples directory: " + fileName + " - " + e.getMessage());
+                    }
+                }
+            }
+            
+            // Try loading from file system relative to current working directory  
+            if (resolvedSchema == null) {
+                try {
+                    Path filePath = Paths.get(fileName);
+                    if (Files.exists(filePath)) {
+                        logger.fine("Found schema in file system: " + fileName);
+                        try (InputStream fileStream = Files.newInputStream(filePath)) {
+                            resolvedSchema = service.readSchema(fileStream);
+                        }
+                    }
+                } catch (IOException e) {
+                    logger.warning("Error accessing file system for: " + fileName + " - " + e.getMessage());
+                }
+            }
+            
+            // Try loading from resources/examples directory (for demo usage)
+            if (resolvedSchema == null) {
+                try {
+                    Path resourcePath = Paths.get("resources", "examples", fileName);
+                    if (Files.exists(resourcePath)) {
+                        logger.info("Schema resolver loaded: " + fileName);
+                        try (InputStream fileStream = Files.newInputStream(resourcePath)) {
+                            resolvedSchema = service.readSchema(fileStream);
+                        }
+                    }
+                } catch (IOException e) {
+                    logger.warning("Error accessing resources/examples for: " + fileName + " - " + e.getMessage());
+                }
+            }
+            
+            if (resolvedSchema != null) {
+                // Cache the successfully resolved schema
+                schemaCache.put(uriString, resolvedSchema);
+                logger.fine("Cached schema: " + fileName);
+            } else {
+                logger.warning("Could not resolve schema: " + uriString);
+            }
+            
+            return resolvedSchema;
+        }
+    };
     
     /**
      * Validation result containing success status and any validation problems.
@@ -126,7 +224,12 @@ public class SIFJsonSchemaValidator {
         }
         
         try (StringReader schemaReader = new StringReader(schemaString)) {
-            JsonSchema schema = service.readSchema(schemaReader);
+            // Create a schema reader factory with the resolver
+            var readerFactory = service.createSchemaReaderFactoryBuilder()
+                .withSchemaResolver(schemaResolver)
+                .build();
+            var reader = readerFactory.createSchemaReader(schemaReader);
+            JsonSchema schema = reader.read();
             return validateWithSchema(jsonPayload, schema);
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Error parsing schema string", e);
@@ -143,7 +246,12 @@ public class SIFJsonSchemaValidator {
      */
     private static ValidationResult validatePayload(String jsonPayload, InputStream schemaStream) {
         try {
-            JsonSchema schema = service.readSchema(schemaStream);
+            // Create a schema reader factory with the resolver
+            var readerFactory = service.createSchemaReaderFactoryBuilder()
+                .withSchemaResolver(schemaResolver)
+                .build();
+            var reader = readerFactory.createSchemaReader(schemaStream);
+            JsonSchema schema = reader.read();
             return validateWithSchema(jsonPayload, schema);
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Error reading or parsing schema", e);

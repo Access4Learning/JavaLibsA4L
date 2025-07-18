@@ -1,0 +1,70 @@
+{
+	"worker_compensation_report": {
+		"RefId": "4faa53ee-8f4d-4c56-90da-73cb8c42fbfb",
+		"senderId": "",
+		"receiverId": "",
+		"workerRefId": "f22dd612-22b9-44cd-87da-1562da553a13",
+		"podURL": "https://pod.example.org/pods/privacy-obligation-8923",
+		"workerId": {
+			"value": "WKR-100272",
+			"schemeId": "NationalWorkerID",
+			"schemeVersionId": "1.0",
+			"schemeAgencyId": "EDU-AGENCY",
+			"description": "Primary worker identifier",
+			"schemeLink": "https://example.org/schemes/worker-identifier",
+			"agencyUri": "https://example.org/agencies/edu-agency"
+		},
+		"reportingTimePeriod": {
+			"validFrom": "2023-01-01T08:00:00Z",
+			"validTo": "2023-12-31T17:00:00Z"
+		},
+		"salaryAmount": {
+			"value": 85000,
+			"currencyCode": "USD"
+		},
+		"regularHourlyWagesAmount": {
+			"workedPayTypeCode": "Regular",
+			"description": "Standard hourly rate",
+			"workedPayAmount": {
+				"value": 25,
+				"currency": "USD"
+			}
+		},
+		"premiumHourlyWagesAmount": [
+			{
+				"PayTypeCode": "Overtime",
+				"description": "Overtime premium rate",
+				"workedPayAmount": {
+					"value": 37.5,
+					"currency": "USD"
+				}
+			},
+			{
+				"PayTypeCode": "Hazard",
+				"description": "Holiday premium rate",
+				"workedPayAmount": {
+					"value": 50,
+					"currency": "USD"
+				}
+			}
+		],
+		"paidTimeOffAmount": [
+			{
+				"timeOffPayType": "OtherCompensation",
+				"description": "Paid sick leave payout",
+				"timeOffPayAmount": {
+					"value": 200,
+					"currency": "USD"
+				}
+			},
+			{
+				"timeOffPayType": "OtherCompensation",
+				"description": "Jury duty leave payout",
+				"timeOffPayAmount": {
+					"value": 300,
+					"currency": "USD"
+				}
+			}
+		]
+	}
+}
