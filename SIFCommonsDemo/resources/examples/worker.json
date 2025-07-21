@@ -1,0 +1,79 @@
+{
+	"worker": {
+		"RefId": "40cf39a4-3706-41e6-b3c6-d355b36af89b",
+		"senderId": "",
+		"receiverId": "",
+		"organizationRefId": "41dc55db-d7de-4486-b922-c0fe5ebdc94e",
+		"podURL": "https://privacy.example.org/pod/4729",
+		"workerId": {
+			"value": "W-572913",
+			"schemeId": "CustomScheme",
+			"schemeVersionId": "1.0",
+			"schemeAgencyId": "EDU-Registry",
+			"description": "Internal employee identifier",
+			"schemeLink": "https://registry.example.org/scheme/CustomScheme",
+			"agencyUri": "https://registry.example.org"
+		},
+		"ssn": {
+			"value": "745239861"
+		},
+		"name": {
+			"languageCode": "en-US",
+			"firstName": "Selena",
+			"middleName": "Raquel",
+			"family": "Cortés",
+			"previousLastName": "Martínez"
+		},
+		"physicalAddresses": [
+			{
+				"typeCode": "business",
+				"line": "820 Crescent Mall Suite 4A",
+				"countryCode": "US",
+				"countrySubDivisions": [
+					{
+						"type": "state",
+						"value": "SC"
+					}
+				],
+				"city": "Charleston",
+				"postalCode": "29403",
+				"postOfficeBox": "PO Box 219",
+				"geoLocation": {
+					"latitude": 32.7876,
+					"longitude": -79.9404,
+					"altitude": {
+						"value": 15,
+						"unitCode": "FOT"
+					},
+					"name": "Silverpeak HQ"
+				},
+				"formattedAddress": "820 Crescent Mall Suite 4A, Charleston, SC 29403, USA"
+			},
+			{
+				"typeCode": "home",
+				"line": "1234 Lakeshore Ave",
+				"countryCode": "US",
+				"countrySubDivisions": [
+					{
+						"type": "state",
+						"value": "CA"
+					}
+				],
+				"city": "Oakland",
+				"postalCode": "94607",
+				"postOfficeBox": "PO Box 317",
+				"geoLocation": {
+					"latitude": 37.8044,
+					"longitude": -122.2711,
+					"altitude": {
+						"value": 30,
+						"unitCode": "FOT"
+					},
+					"name": "Home Location"
+				},
+				"formattedAddress": "1234 Lakeshore Ave, Oakland, CA 94607, USA"
+			}
+		],
+		"birthDate": "1985-06-23"
+	}
+}

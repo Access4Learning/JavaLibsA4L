@@ -1,0 +1,24 @@
+{
+	"job": {
+		"RefId": "39538896-21d7-4172-a134-c61373f71cf5",
+		"senderId": "",
+		"receiverId": "",
+		"organizationRefId": "41dc55db-d7de-4486-b922-c0fe5ebdc94e",
+		"organizationId": "ORG-9028374",
+		"jobId": "JOB-2094",
+		"title": "Machine Learning Applications Developer",
+		"jobDuties": "Design, implement, and maintain machine learning applications; collaborate with data scientists to integrate predictive models; optimize performance and scalability of services.",
+		"socInfo": [
+			{
+				"classificationSys": "1",
+				"assigningEntity": "1",
+				"socCodeValue": "15-1252"
+			},
+			{
+				"classificationSys": "1",
+				"assigningEntity": "3",
+				"socCodeValue": "15-1252"
+			}
+		]
+	}
+}

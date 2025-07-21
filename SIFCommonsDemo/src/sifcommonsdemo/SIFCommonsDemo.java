@@ -209,8 +209,8 @@ public class SIFCommonsDemo {
         
         System.out.println("\n============= SCHEMA USE =============\n");
 
-        String JEDxSchemaPath = "resources/examples/worker_compensation_report.jschema";
-        String JEDxDataPath = "resources/examples/worker_compensation_report.json";
+        String JEDxSchemaPath = "resources/examples/worker.jschema";
+        String JEDxDataPath = "resources/examples/worker.json";
         
         String JEDxSchema = SIFFileUtil.readFile(JEDxSchemaPath);
         System.out.println("Example Schema:");

@@ -40,6 +40,9 @@ public class SIFJsonSchemaValidator {
     // Cache for resolved schemas to avoid redundant file operations
     private static final ConcurrentHashMap<String, JsonSchema> schemaCache = new ConcurrentHashMap<>();
     
+    // Thread-local storage for schema directory context
+    private static final ThreadLocal<Path> currentSchemaDirectory = new ThreadLocal<>();
+    
     // Schema resolver to handle external schema references
     private static final JsonSchemaResolver schemaResolver = new JsonSchemaResolver() {
         @Override
@@ -66,7 +69,23 @@ public class SIFJsonSchemaValidator {
             
             JsonSchema resolvedSchema = null;
             
-            // First try to load from classpath resources
+            // First try to load from the schema directory (if available)
+            Path schemaDir = currentSchemaDirectory.get();
+            if (schemaDir != null) {
+                try {
+                    Path refPath = schemaDir.resolve(fileName);
+                    if (Files.exists(refPath)) {
+                        logger.fine("Found schema in schema directory: " + refPath);
+                        try (InputStream fileStream = Files.newInputStream(refPath)) {
+                            resolvedSchema = service.readSchema(fileStream);
+                        }
+                    }
+                } catch (IOException e) {
+                    logger.warning("Error accessing schema directory for: " + fileName + " - " + e.getMessage());
+                }
+            }
+            
+            // Fallback: try to load from classpath resources
             InputStream stream = SIFJsonSchemaValidator.class.getClassLoader().getResourceAsStream(fileName);
             if (stream != null) {
                 logger.fine("Found schema in classpath: " + fileName);
@@ -178,10 +197,8 @@ public class SIFJsonSchemaValidator {
                 return new ValidationResult(false, List.of("Schema file not found: " + schemaPath));
             }
             
-            try (InputStream schemaStream = Files.newInputStream(path)) {
-                return validatePayload(jsonPayload, schemaStream);
-            }
-        } catch (IOException e) {
+            return validatePayloadWithPath(jsonPayload, path);
+        } catch (Exception e) {
             logger.log(Level.SEVERE, "Error reading schema file: " + schemaPath, e);
             return new ValidationResult(false, List.of("Error reading schema file: " + e.getMessage()));
         }
@@ -234,6 +251,31 @@ public class SIFJsonSchemaValidator {
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Error parsing schema string", e);
             return new ValidationResult(false, List.of("Error parsing schema: " + e.getMessage()));
+        }
+    }
+    
+    /**
+     * Validates a JSON payload string against a JSON Schema loaded from a file path.
+     * This method preserves file context for resolving relative schema references.
+     * 
+     * @param jsonPayload The JSON payload string to validate
+     * @param schemaPath The Path to the JSON Schema file
+     * @return ValidationResult containing success status and any errors
+     */
+    private static ValidationResult validatePayloadWithPath(String jsonPayload, Path schemaPath) {
+        try {
+            // Store the schema directory for the resolver to use
+            currentSchemaDirectory.set(schemaPath.getParent());
+            
+            try (InputStream schemaStream = Files.newInputStream(schemaPath)) {
+                return validatePayload(jsonPayload, schemaStream);
+            } finally {
+                // Clean up thread local
+                currentSchemaDirectory.remove();
+            }
+        } catch (IOException e) {
+            logger.log(Level.SEVERE, "Error reading schema file: " + schemaPath, e);
+            return new ValidationResult(false, List.of("Error reading schema file: " + e.getMessage()));
         }
     }
     

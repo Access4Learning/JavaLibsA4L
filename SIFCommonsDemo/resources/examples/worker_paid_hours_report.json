@@ -1,0 +1,28 @@
+{
+	"worker_paid_hours_report": {
+		"RefId": "feea6b13-23b1-4153-958c-dbbf38f61504",
+		"senderId": "",
+		"receiverId": "",
+		"workerRefId": "40cf39a4-3706-41e6-b3c6-d355b36af89b",
+		"podURL": "https://orion-logistics.example.com/pods/privacy/45f2a1b",
+		"workerId": {
+			"value": "W-572913",
+			"schemeId": "CustomScheme",
+			"schemeVersionId": "1.0",
+			"schemeAgencyId": "EDU-Registry",
+			"description": "Internal employee identifier",
+			"schemeLink": "https://registry.example.org/scheme/CustomScheme",
+			"agencyUri": "https://registry.example.org"
+		},
+		"reportingTimePeriod": {
+			"validFrom": "2023-03-01T00:00:00Z",
+			"validTo": "2023-03-31T23:59:59Z"
+		},
+		"workedWeeks": 4,
+		"totalHoursPaid": 158,
+		"totalHoursWorked": 150,
+		"regularHoursWorked": 140,
+		"totalPremiumHours": 10,
+		"totalPaidLeaveHours": 8
+	}
+}

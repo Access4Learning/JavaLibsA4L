@@ -1,0 +1,125 @@
+{
+	"organization": {
+		"RefId": "41dc55db-d7de-4486-b922-c0fe5ebdc94e",
+		"senderId": "",
+		"receiverId": "",
+		"isMulti-state": false,
+		"organizationId": {
+			"value": "ORG-9028374",
+			"issuingAuthority": "Dun & Bradstreet"
+		},
+		"taxIds": [
+			{
+				"value": "12-3456789",
+				"schemeId": "EIN",
+				"schemeVersionId": "1.0",
+				"schemeAgencyId": "IRS",
+				"description": "Employer Identification Number",
+				"schemeLink": "https://www.irs.gov/businesses/small-businesses-self-employed/employer-id-numbers",
+				"agencyUri": "https://www.irs.gov/"
+			},
+			{
+				"value": "SC1234567",
+				"schemeId": "SCTR",
+				"schemeVersionId": "2022",
+				"schemeAgencyId": "SC Department of Revenue",
+				"description": "South Carolina Franchise Tax Account Number",
+				"schemeLink": "https://dor.sc.gov/",
+				"agencyUri": "https://dor.sc.gov/"
+			}
+		],
+		"industryIdentifiers": [
+			{
+				"value": "541512",
+				"schemeId": "NAICS",
+				"schemeVersionId": "2022",
+				"schemeAgencyId": "US Census Bureau",
+				"description": "North American Industry Classification System",
+				"schemeLink": "https://www.census.gov/naics/?58967?yearbck=2022",
+				"agencyUri": "https://www.census.gov/naics/?58967?yearbck=2022"
+			},
+			{
+				"value": "518210",
+				"schemeId": "NAICS",
+				"schemeVersionId": "2022",
+				"schemeAgencyId": "US Census Bureau",
+				"description": "North American Industry Classification System",
+				"schemeLink": "https://www.census.gov/naics/?58967?yearbck=2022",
+				"agencyUri": "https://www.census.gov/naics/?58967?yearbck=2022"
+			}
+		],
+		"organizationActivity": [
+			{
+				"activityCode": [
+					"541512"
+				],
+				"description": {
+					"value": "Computer Systems Design Services",
+					"languageCode": "en-US"
+				},
+				"percentage": 65
+			},
+			{
+				"activityCode": [
+					"518210"
+				],
+				"description": {
+					"value": "Data Processing, Hosting, and Related Services",
+					"languageCode": "en-US"
+				},
+				"percentage": 35
+			}
+		],
+		"tradeName": "Silverpeak Innovations",
+		"physicalAddresses": [
+			{
+				"typeCode": "business",
+				"line": "820 Crescent Mall Suite 4A",
+				"countryCode": "US",
+				"countrySubDivisions": [
+					{
+						"type": "state",
+						"value": "SC"
+					}
+				],
+				"city": "Charleston",
+				"postalCode": "29403",
+				"postOfficeBox": "P.O. Box 4321",
+				"geoLocation": {
+					"latitude": 32.7876,
+					"longitude": -79.9404,
+					"altitude": {
+						"value": 15,
+						"unitCode": "FOT"
+					},
+					"name": "Silverpeak HQ"
+				},
+				"formattedAddress": "820 Crescent Mall, Suite 4A, Charleston, SC 29403, USA"
+			},
+			{
+				"typeCode": "branch",
+				"line": "1750 Innovation Pkwy",
+				"countryCode": "US",
+				"countrySubDivisions": [
+					{
+						"type": "state",
+						"value": "AR"
+					}
+				],
+				"city": "Fayetteville",
+				"postalCode": "72701",
+				"postOfficeBox": "P.O. Box 987",
+				"geoLocation": {
+					"latitude": 36.0822,
+					"longitude": -94.1719,
+					"altitude": {
+						"value": 410,
+						"unitCode": "FOT"
+					},
+					"name": "Silverpeak Research"
+				},
+				"formattedAddress": "1750 Innovation Parkway, Fayetteville, AR 72701, USA"
+			}
+		]
+	}
+}
